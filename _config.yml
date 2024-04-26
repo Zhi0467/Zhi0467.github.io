@@ -8,7 +8,7 @@
 
 # Basic Site Settings
 locale                   : "en-US"
-title                    : "Zhi Wang"
+title                    : "Homepage"
 title_separator          : "-"
 name                     : &name "Zhi Wang"
 description              : &description "personal description"
@@ -22,10 +22,10 @@ repository               : "https://github.com/Zhi0467/Zhi0467.github.io"
 author:
   # Biographic information
   avatar           : "simplyme.JPG"
-  name             : "Your Sidebar Name"
+  name             : "Zhi Wang"
   pronouns         : # example: "she/her"  
-  bio              : "Mathematics and its application"
-  location         : "Earth"
+  bio              : "Mathematics undergrad"
+  location         : "The blue dot"
   employer         : "Univ of Science & Tech of China"
   uri              : # URL
   email            : "wangzhi0467@outlook.com" 
@@ -34,7 +34,7 @@ author:
   arxiv            : # URL - Update with the correct link to your profile
   googlescholar    : 
   impactstory      : # URL
-  orcid            : 
+  orcid            : "https://orcid.org/0009-0000-2193-9031"
   pubmed           : 
   researchgate     : # URL
 
@@ -47,16 +47,16 @@ author:
   stackoverflow    : # User number or user number and name (i.e., use "1" or "1/jeff-atwood")    
 
   # Social media
-  bluesky          : "bsky.app" # Replace this with you Bluesky username
+  bluesky          : # Replace this with you Bluesky username
   facebook         : # Username
   flickr           : # Username
   foursquare       : # Username
   goodreads        : # Username
   google_plus      : # Username
   keybase          : # Username
-  instagram        : # Username
+  instagram        : felons_etoi
   lastfm           : # Username
-  linkedin         : # Username
+  linkedin         : Zhi Wang
   mastodon         : # URL
   medium           : # URL
   pinterest        : # Username
