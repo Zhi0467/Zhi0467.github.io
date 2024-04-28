@@ -31,3 +31,5 @@ C
 Fun facts
 ------
 ah I love this.
+
+[Here](http://Zhi0467.github.io/files/CV.pdf) is my CV.
