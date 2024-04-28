@@ -10,26 +10,11 @@ redirect_from:
 
 Bio
 ======
-sup
-
-My works 
-======
-duh
-check [this](https://zhi0467.github.io/portfolio/) out.
-
-A
-------
-
-B
-------
-
-
-C
-------
+HI MY FELLOW PRIMATES
 
 
 Fun facts
 ------
-ah I love this.
+Let's hit the ggggym.
 
 [Here](http://Zhi0467.github.io/files/CV.pdf) is my CV.

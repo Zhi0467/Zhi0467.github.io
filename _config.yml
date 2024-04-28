@@ -24,8 +24,8 @@ author:
   avatar           : "simplyme.JPG"
   name             : "Zhi Wang"
   pronouns         : # example: "she/her"  
-  bio              : "Mathematics undergrad"
-  location         : "The blue dot"
+  bio              : "Learning mathematics and its application"
+  location         : "La Terre"
   employer         : "Univ of Science & Tech of China"
   uri              : # URL
   email            : "wangzhi0467@outlook.com" 
@@ -54,7 +54,7 @@ author:
   goodreads        : # Username
   google_plus      : # Username
   keybase          : # Username
-  instagram        : felons_etoi
+  instagram        : 
   lastfm           : # Username
   linkedin         : Zhi Wang
   mastodon         : # URL

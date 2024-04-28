@@ -1,8 +1,8 @@
 ---
-title: "Paper Title Number 4"
+title: "My paper"
 collection: publications
-permalink: /publication/2024-02-17-paper-title-number-4
-excerpt: 'This paper is about fixing template issue #693.'
+permalink: /publication/papername
+excerpt: 'This paper is about XXX. I don't have a paper yet.'
 date: 2024-02-17
 venue: 'GitHub Journal of Bugs'
 paperurl: 'http://academicpages.github.io/files/paper3.pdf'
