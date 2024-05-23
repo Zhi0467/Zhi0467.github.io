@@ -1,10 +1,7 @@
 ---
-title: "math notes"
+title: "Notes"
 collection: portfolio
 ---
 
-Here are some of my math notes:
--  [Numerical Methods for Differential Equations](http://Zhi0467.github.io/files/Numerical_Methods_for_Differential_Equations.pdf).
-- [Game Theory Reading](http://Zhi0467.github.io/files/drp_report.pdf).
-- [Birkhoff Polytopes](http://Zhi0467.github.io/files/249final_notes.pdf).
 - [Measure Theory](http://Zhi0467.github.io/files/measure_Notes.pdf).
+- [Stochastic Processes](http://Zhi0467.github.io/files/Stochastic_process.pdf).
