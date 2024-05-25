@@ -10,7 +10,7 @@ redirect_from:
 
 Bio
 ------
-Hi! I'm an undergraduate student majoring in mathematics, my name is Zhi(志), but feel free to call me Sid, Z, big Z... any one of those above, as long as it's not "Hey you!". I'm honored to be supervised by [Difan Zou](https://difanzou.github.io) and [Andrés R. Vindas Meléndez](https://math.hmc.edu/arvm/), and I'm currently seeking for opportunities to continue my study as a PhD student.
+Hi! I'm an undergraduate student majoring in mathematics, my name is Zhi(志), but feel free to call me Sid or Z etc., as long as it's not "Hey you!". I'm honored to be supervised by [Difan Zou](https://difanzou.github.io) and [Andrés R. Vindas Meléndez](https://math.hmc.edu/arvm/), and I'm currently seeking for opportunities to continue my study as a PhD student.
 
 Research Interests
 ------
