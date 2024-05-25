@@ -2,5 +2,6 @@
 title: "Monographs"
 collection: portfolio
 ---
-Nothing is guaranteed to be accurate or comprehensive here, but I hope they're interesting readings.
-[something](https://www.youtube.com/@Zhi-zv1in/featured).
+Nothing is guaranteed to be comprehensive here, but I hope they're interesting readings.
+
+[LCH + separable, but not $\sigma$-compact.](http://Zhi0467.github.io/files/mono_LCH_example.pdf).
