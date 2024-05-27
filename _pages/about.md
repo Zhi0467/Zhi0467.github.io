@@ -6,7 +6,7 @@ redirect_from:
   - /about/
   - /about.html
 ---
-
+[Here](http://Zhi0467.github.io/files/CV.pdf) is my CV.
 
 Bio
 ------
@@ -22,8 +22,7 @@ The rise of efforts to narrow the gap between two fundamental approaches in appl
 
 Besides,
 - I'm generally interested in combinatorics and analysis.
-
-[Here](http://Zhi0467.github.io/files/CV.pdf) is my CV.
+- Making videos in manim and coding personalized chatbots are of great interests to me.
 
 Personal Interests
 ------
