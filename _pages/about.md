@@ -1,6 +1,6 @@
 ---
 permalink: /
-title: "Welcome to Zhi's homepage! (last update: May 25, 2024)"
+title: "Welcome to Zhi's homepage! (last updated: May 25, 2024)"
 author_profile: true
 redirect_from: 
   - /about/
@@ -10,13 +10,13 @@ redirect_from:
 
 Bio
 ------
-Hi! I'm an undergraduate student majoring in mathematics, my name is Zhi(志), but feel free to call me Sid or Z etc., as long as it's not "Hey you!". I'm honored to be supervised by [Difan Zou](https://difanzou.github.io) and [Andrés R. Vindas Meléndez](https://math.hmc.edu/arvm/), and I'm currently seeking for opportunities to continue my study as a PhD student.
+Hi! I'm a third-year undergraduate student majoring in mathematics, my name is Zhi(志), but feel free to call me Sid or Z etc. I'm honored to be supervised by [Difan Zou](https://difanzou.github.io) and [Andrés R. Vindas Meléndez](https://math.hmc.edu/arvm/) during my undergrad years, and I'm currently seeking for opportunities to continue my study as a PhD student.
 
 Research Interests
 ------
-The rise of efforts to narrow the gap between two fundamental approaches in applied mathematics is intriguing to me: first principle style (emphasizes rigorous theory and interpretability) and data-driven style (emphasizes experiments and learning from datasets).
+The rise of efforts to narrow the gap between two fundamental approaches in applied mathematics is intriguing to me: first principle style (*rigorous theory and interpretability*) and data-driven style (*learning the function from large datasets*).
 
-- First principle → data-driven: learning theory, how to establish a theory for various emergent phase-change-like behaviors in machine learning, why over-parameterization works, and how to utilize pure math theory to develop and optimize algorithms (e.g., compressed sensing, UMAP).
+- First principle → data-driven: learning theory, various emergent phase-change-like behaviors in machine learning (e.g. grokking), why over-parameterization works, and algorithms that are underpinned by clear mathematical or physical intuitions (e.g., compressed sensing, UMAP). In short, developing theory like a scientist.
 
 - Data-driven → first principle: using AI to discover and prove theorems, formalize mathematics, and use machine learning to tackle high-dimensional challenges in computational mathematics.
 
