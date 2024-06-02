@@ -1,11 +1,13 @@
 ---
 permalink: /
-title: "Welcome to Zhi's homepage! (last updated: May 25, 2024)"
+title: "Zhi Wang"
 author_profile: true
 redirect_from: 
   - /about/
   - /about.html
 ---
+Welcome to Zhi's homepage! (last updated: May 25, 2024)
+------
 [Here](http://Zhi0467.github.io/files/CV.pdf) is my CV.
 
 Bio

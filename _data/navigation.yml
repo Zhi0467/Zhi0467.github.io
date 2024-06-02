@@ -5,5 +5,8 @@ main:
     
   - title: "Writings"
     url: /portfolio/
+
+  - title: "Blog Posts"
+     url: /year-archive/
         
 
