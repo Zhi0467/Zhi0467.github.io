@@ -30,6 +30,7 @@ Personal Interests
 ------
 I value work life balance and I spend a decent amount of time on the following things:
 - picking up heavy objects then put them back.
-- taking long walks in the mountains.
 - playing around with piano and eletronic music.
 - learning new languages.
+- Rubik's cube
+![pic](http://Zhi0467.github.io/files/cubing.jpg)
