@@ -18,7 +18,7 @@ Research Interests
 ------
 The rise of efforts to narrow the gap between two fundamental approaches in applied mathematics is intriguing to me: first principle style (*rigorous theory and interpretability*) and data-driven style (*learning the function from large datasets*).
 
-- First principle → data-driven: learning theory, various emergent phase-change-like behaviors in machine learning (e.g. grokking), why over-parameterization works, and algorithms that are underpinned by clear mathematical or physical intuitions (e.g., compressed sensing, UMAP). In short, developing theory like a scientist.
+- First principle → data-driven: learning theory, various emergent behaviors in machine learning (e.g. grokking), and optimization in over-parameterized models (kernel and rich regimes).
 
 - Data-driven → first principle: using AI to discover and prove theorems, formalize mathematics, and use machine learning to tackle high-dimensional challenges in computational mathematics.
 
@@ -29,8 +29,8 @@ Besides,
 Personal Interests
 ------
 I value work life balance and I spend a decent amount of time on the following things:
+- learning new languages. I'm fluent in both Mandarin Chinese and English, moreover, I've been learning French and Spanish for a while, so we can try to communicate in these two languages as well!
 - picking up heavy objects then put them back.
 - playing around with piano and eletronic music.
-- learning new languages.
 - Rubik's cube
 ![pic](http://Zhi0467.github.io/files/cubing.jpg)
