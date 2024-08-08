@@ -12,19 +12,15 @@ Welcome to Zhi's homepage! (last updated: May 25, 2024)
 
 Bio
 ------
-Hi! I'm a third-year undergraduate student majoring in mathematics, my name is Zhi(志), but feel free to call me Sid or Z etc. I'm honored to be supervised by [Difan Zou](https://difanzou.github.io) and [Andrés R. Vindas Meléndez](https://math.hmc.edu/arvm/) during my undergrad years, and I'm currently seeking for opportunities to continue my study as a PhD student.
+Hi! I'm an undergraduate student majoring in mathematics, my name is Zhi(志), you can simply call me Z. I'm honored to be supervised by [Difan Zou](https://difanzou.github.io) and [Andrés R. Vindas Meléndez](https://math.hmc.edu/arvm/) for my undergraduate research in machine learning theory and combinatorics, respectively, and I'm currently seeking for opportunities to continue my study as a PhD student in either applied math or ieor!
 
 Research Interests
 ------
-The rise of efforts to narrow the gap between two fundamental approaches in applied mathematics is intriguing to me: first principle style (*rigorous theory and interpretability*) and data-driven style (*learning the function from large datasets*).
-
-- First principle → data-driven: learning theory, various emergent behaviors in machine learning (e.g. grokking), and optimization in over-parameterized models (kernel and rich regimes).
-
-- Data-driven → first principle: using AI to discover and prove theorems, formalize mathematics, and use machine learning to tackle high-dimensional challenges in computational mathematics.
+Learning theory, explain various emergent behaviors in machine learning (e.g. grokking), learning regimes and transitions in over-parameterized models, and feature learning.
 
 Besides,
-- I'm generally interested in combinatorics and analysis.
-- Making videos in manim and coding personalized chatbots are of great interests to me.
+- I'm generally interested in analysis.
+- how machine learning and theoretical neuroscience relate to each other.
 
 Personal Interests
 ------
