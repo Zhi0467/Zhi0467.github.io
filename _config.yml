@@ -21,7 +21,7 @@ repository               : "https://github.com/Zhi0467/Zhi0467.github.io"
 #               Additional customization can be done by editing /_includes/author-profile.html
 author:
   # Biographic information
-  avatar           : "simplyme.JPG"
+  avatar           : "me.jpg"
   name             : "Zhi Wang"
   pronouns         : # example: "she/her"  
   bio              : "Learning mathematics and its application, at University of Science and Technology of China."
