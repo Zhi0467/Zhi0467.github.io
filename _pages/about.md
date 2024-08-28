@@ -15,12 +15,12 @@ Hi! I'm an undergraduate student majoring in mathematics, from [*the school of g
 
 Research Interests
 ------
-- *Learning theory*, emergent behaviors (e.g. grokking), learning regimes and transitions in over-parameterized models, and feature learning.
-- *computer graphics and AIGC*.
+I'm fascinated by the dance between AI and mathematics.
+- *Learning theory*, emergent behaviors (e.g. grokking), learning regimes, over-parameterized models, and feature learning.
+- *AI for mathematics.*
 
-underlying both areas, *non-convex optimization* is of great interest to me.
 
-Besides, I'm generally interested in analysis and optimization.
+Besides, I'm also generally interested in analysis and computer graphics.
 
 Publications
 ------
