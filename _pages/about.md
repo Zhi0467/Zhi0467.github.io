@@ -11,16 +11,18 @@ redirect_from:
 
 Bio
 ------
-Hi! I'm an undergraduate student majoring in mathematics, from [*the school of gifted young at USTC*](http://en.scgy.ustc.edu.cn), my name is Zhi (志), you can simply call me Z. I'm honored to be supervised by [Difan Zou](https://difanzou.github.io), [Andrés R. Vindas Meléndez](https://math.hmc.edu/arvm/), and [Ligang Liu](http://staff.ustc.edu.cn/~lgliu/), in machine learning theory, combinatorics and computer graphics, respectively, and I'm currently actively seeking for opportunities to continue my study as a PhD student!
+Hi! I'm an undergraduate student majoring in mathematics, from [*the school of gifted young at USTC*](http://en.scgy.ustc.edu.cn), my name is Zhi (志), you can simply call me Z. I'm honored to be supervised by [Difan Zou](https://difanzou.github.io)(learning theory, grokking), [Andrés R. Vindas Meléndez](https://math.hmc.edu/arvm/)(algebraic combinatorics), and [Quan Wen](http://www.wenlab.org) (neuroai).
+
+ I'm currently actively seeking for opportunities to continue my study as a PhD student!
 
 Research Interests
 ------
-I'm fascinated by the dance between AI and mathematics.
+I'm fascinated by the dance between machine learning, mathematics, and neuroscience.
 - *Learning theory*, emergent behaviors (e.g. grokking), learning regimes, over-parameterized models, and feature learning.
-- *AI for mathematics.*
+- *AI for neuroscience, neuro-inspired AI.*
 
 
-Besides, I'm also generally interested in analysis and computer graphics.
+Besides, I'm also generally interested in analysis and optimization.
 
 Publications
 ------
