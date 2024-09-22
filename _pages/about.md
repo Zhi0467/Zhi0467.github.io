@@ -31,8 +31,8 @@ Currently working on two papers.
 Personal Interests
 ------
 I value work life balance and I spend a decent amount of time on the following things:
-- learning new languages. I've been learning French and Spanish, so we can try to communicate in these two languages as well!
-- picking up heavy objects then put them back.
-- playing around with electronic music and piano.
-- Rubik's cube
+- learning new languages. I've been learning French and Spanish! 
+- picking up heavy objects.
+- the art of dramatic writing, cinema analysis, and potentially directing films.
+- Rubik's cube.
 ![pic](http://Zhi0467.github.io/files/cubing.jpg)
