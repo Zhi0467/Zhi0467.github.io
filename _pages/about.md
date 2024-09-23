@@ -1,13 +1,13 @@
 ---
 permalink: /
-title: "Z (last updated: Sept 23, 2024)"
+title: "Z"
 author_profile: true
 redirect_from: 
   - /about/
   - /about.html
 ---
 
-[Here](http://Zhi0467.github.io/files/CV.pdf) is my CV.
+[Here](http://Zhi0467.github.io/files/CV.pdf) is my CV. (last updated: Sept 23, 2024)
 
 Bio
 ------
