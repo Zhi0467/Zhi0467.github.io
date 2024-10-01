@@ -11,7 +11,7 @@ redirect_from:
 
 Bio
 ------
-Hi! I'm an undergraduate student majoring in mathematics, from [*the school of gifted young at USTC*](http://en.scgy.ustc.edu.cn), my name is Zhi (志), you can simply call me Z. I'm honored to be supervised by [Difan Zou](https://difanzou.github.io) (learning theory, grokking), [Andrés R. Vindas Meléndez](https://math.hmc.edu/arvm/) (algebraic combinatorics), and [Quan Wen](http://www.wenlab.org) (neuroscience, undergrad thesis).
+Hi! I'm an undergraduate student majoring in mathematics, from [*the school of gifted young at USTC*](http://en.scgy.ustc.edu.cn), my name is Zhi (志), you can simply call me Z. I'm honored to be supervised by [Difan Zou](https://difanzou.github.io) (learning theory, grokking), [Andrés R. Vindas Meléndez](https://math.hmc.edu/arvm/) (algebraic combinatorics), and [Quan Wen](http://www.wenlab.org) (neuroscience, undergrad thesis)!
 
  I'm actively seeking for opportunities to continue my study as a PhD student!
 
