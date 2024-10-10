@@ -32,7 +32,7 @@ Personal Interests
 ------
 I value work life balance and I spend a decent amount of time on the following things:
 - learning new languages. I've been learning French and Spanish! 
-- picking up heavy objects and 🏀🛹.
+- 🏀🛹🏄🏼🥊.
 - the art of dramatic writing, cinema analysis, and potentially directing films.
 - Rubik's cube.
 ![pic](http://Zhi0467.github.io/files/cubing.jpg)
