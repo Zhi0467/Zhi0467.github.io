@@ -18,19 +18,19 @@ I'm actively seeking for opportunities to continue my study as a PhD student!
 Research Interests
 ------
 I'm interested in using mathematics to unveil and understand the complexity in both artificial and biological computation models.
-- *Learning theory*, emergent behaviors (e.g. grokking), learning regimes and dynamics, feature learning, and properties of weight matrices needed for generalizable learning.
-- *computational neuroscience.*
-
+- *Learning theory*, emergent behaviors (e.g. grokking), learning regimes and dynamics, feature learning, and model compression.
+- *Computational neuroscience*
 
 Besides, I'm also generally interested in analysis and optimization.
 
 Publications
 ------
-Currently working on two papers in grokking and algebraic combinatorics. Feel free to contact me for drafts!
+Lee Eon, Andrés R. Vindas-Meléndez, and Zhi Wang. Generalized Snake Posets, Order Polytopes, and Lattice-Point Enumeration. *Preprint*.
+Currently working on a paper in grokking and low-rank training!
 
 Personal Interests
 ------
-I value work life balance and I spend a decent amount of time on the following things:
+*sleep faster, die slower; build more, suffer less.*
 - learning new languages. I've been learning French and Spanish! 
 - 🏀🛹🏄🏼🥊.
 - the art of dramatic writing, cinema analysis, and potentially directing films.
