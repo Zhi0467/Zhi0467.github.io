@@ -7,7 +7,7 @@ redirect_from:
   - /about.html
 ---
 
-[Here](http://Zhi0467.github.io/files/CV.pdf) is my CV. (last updated: Sept 23, 2024)
+[Here](http://Zhi0467.github.io/files/CV.pdf) is my CV. (last updated: Dec 2, 2024)
 
 Bio
 ------
@@ -17,15 +17,16 @@ I'm actively seeking for opportunities to continue my study as a PhD student!
 
 Research Interests
 ------
-I'm interested in using mathematics to unveil and understand the complexity in both artificial and biological computation models.
+I'm interested in using mathematics to unveil and understand how artificial and biological computational systems *learn and generalize*.
 - *Learning theory*, emergent behaviors (e.g. grokking), learning regimes and dynamics, feature learning, and model compression.
-- *Computational neuroscience*
+- *Computational neuroscience, especially the relation between connectivity and activity.*
 
 Besides, I'm also generally interested in analysis and optimization.
 
 Publications
 ------
-Lee Eon, Andrés R. Vindas-Meléndez, and Zhi Wang. Generalized Snake Posets, Order Polytopes, and Lattice-Point Enumeration. *Preprint*.
+Lee Eon, Andrés R. Vindas-Meléndez, and Zhi Wang. *Generalized Snake Posets, Order Polytopes, and Lattice-Point Enumeration*, [2024. arxiv:2411.18695](https://arxiv.org/abs/2411.18695). 
+
 Currently working on a paper in grokking and low-rank training!
 
 Personal Interests
