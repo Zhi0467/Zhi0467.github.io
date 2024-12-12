@@ -1,9 +1,9 @@
 # main links links
 main: 
-    
   - title: "Writings & Miscellaneous"
     url: /portfolio/
-  - title: "Blogs"
-    url: /blogs/
+    
+  - title: "Blog Posts"
+    url: /year-archive/
         
 
