@@ -19,13 +19,13 @@ Research Interests
 ------
 I'm interested in using mathematics to unveil and understand how artificial and biological computational systems *learn and generalize*.
 - *Learning theory*, emergent behaviors (e.g. grokking), learning regimes and dynamics, feature learning, and model compression.
-- *Computational neuroscience, especially the relation between connectivity and activity.*
+- *Computational neuroscience*, especially the relation between (low-rank and non-normal) connectivity and activity (dimension and latent dynamics).
 
 Besides, I'm also generally interested in analysis and optimization.
 
 Publications
 ------
-Lee Eon, Andrés R. Vindas-Meléndez, and Zhi Wang. *Generalized Snake Posets, Order Polytopes, and Lattice-Point Enumeration*, [2024. arxiv:2411.18695](https://arxiv.org/abs/2411.18695). 
+Lee Eon, Andrés R. Vindas-Meléndez, and Zhi Wang. *Generalized Snake Posets, Order Polytopes, and Lattice-Point Enumeration*, 2024, submitted. [arxiv:2411.18695](https://arxiv.org/abs/2411.18695). 
 
 Currently working on a paper in grokking and low-rank training!
 
