@@ -17,9 +17,9 @@ I'm actively seeking for opportunities to continue my study as a PhD student!
 
 Research Interests
 ------
-I'm interested in using mathematics to unveil and understand how artificial and biological computational systems *learn and generalize*.
+I'm interested in using mathematics to unveil how artificial and biological computational systems *learn and generalize*, focusing on *connectivity* in these networks.
 - *Learning theory*, emergent behaviors (e.g. grokking), learning regimes and dynamics, feature learning, and model compression.
-- *Computational neuroscience*, especially the relation between (low-rank and non-normal) connectivity and activity (dimension and latent dynamics).
+- *Computational neuroscience*, especially the relation between connectivity and activity: the forward problem of predicting neural activity given connectome (e.g. prediction of activity dimension from the low-rank structure of connectome), and the inverse problem of inferring synaptic strength from neural activity recordings and connectome (e.g. via Simulation-Based Inference).
 
 Besides, I'm also generally interested in analysis and optimization.
 
