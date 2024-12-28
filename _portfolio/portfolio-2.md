@@ -1,5 +1,5 @@
 ---
-title: "Expository Writings and Monographs"
+title: "Expository Writings"
 collection: portfolio
 ---
 *Expository* really just means lack of novelty here.
@@ -10,3 +10,5 @@ collection: portfolio
 
 Nothing is guaranteed to be comprehensive here, but I hope they're interesting readings.
 - [LCH and separable, but not sigma compact.](http://Zhi0467.github.io/files/mono_LCH_example.pdf).
+- [On Meritocracy](http://Zhi0467.github.io/files/On-Meritocracy.pdf). 
+- [Attempt: an one-act play](http://Zhi0467.github.io/files/In-Search-of-Lost-Memory.pdf)

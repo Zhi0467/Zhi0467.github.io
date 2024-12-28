@@ -1,7 +1,6 @@
 ---
-title: "Miscellaneous"
+title: "Code"
 collection: portfolio
 ---
-- [On Meritocracy](http://Zhi0467.github.io/files/On-Meritocracy.pdf). 
-- [Attempt: an one-act play](http://Zhi0467.github.io/files/In-Search-of-Lost-Memory.pdf)
+- A [Linear Programming Solver](https://github.com/Zhi0467/LP_solver) implemented with simplex method and big-M initialization.
 
