@@ -11,29 +11,23 @@ redirect_from:
 
 Bio
 ------
-*Update - Apr 15, 2025:* I am now an incoming Data Science PhD student @UCSD starting this Fall.
+*Update - Apr 15, 2025:* I am now an incoming Data Science PhD student @UCSD starting this Fall, advised by [Tianhao Wang](https://tianhaowang.ttic.edu), I will work on ML.
 
-Hi! I'm an undergraduate student majoring in mathematics, from [*the school of gifted young at USTC*](http://en.scgy.ustc.edu.cn), my name is Zhi (志), you can simply call me Z. I'm honored to be supervised by [Difan Zou](https://difanzou.github.io) (grokking [@HKU](http://Zhi0467.github.io/files/hku_cer.pdf).), [Andrés R. Vindas Meléndez](https://math.hmc.edu/arvm/) (algebraic combinatorics @Berkeley), and [Quan Wen](http://www.wenlab.org) (neuroscience @USTC)!
+I got my Bachelor's degree in mathematics, from [*the school of gifted young at USTC*](http://en.scgy.ustc.edu.cn), my name is Zhi (志), you can simply call me Z. I'm honored to be supervised by [Difan Zou](https://difanzou.github.io) (grokking [@HKU](http://Zhi0467.github.io/files/hku_cer.pdf).), [Andrés R. Vindas Meléndez](https://math.hmc.edu/arvm/) (algebraic combinatorics @Berkeley), and [Quan Wen](http://www.wenlab.org) (neuroscience @USTC)!
 
 
 
 Research Interests
 ------
-I'm interested in using mathematics to unveil how artificial and biological computational systems *learn and generalize*.
+I'm interested in:
 - *Learning theory*, especially feature learning and compression.
-- *Reinforcement Learning*
+- *Reinforcement Learning in all contexts, especially post-training of LLMs.*
 - *Computational neuroscience*, especially the relation between connectivity and activity.
 - *ML for science*: time series forecasting and its applications in market prediction and climate science.
+- *Open source and build fun projects with ML.*
 
 Publications
 ------
 Lee Eon, Andrés R. Vindas-Meléndez, and Zhi Wang. *Generalized Snake Posets, Order Polytopes, and Lattice-Point Enumeration*, 2024, submitted. [arxiv:2411.18695](https://arxiv.org/abs/2411.18695). 
 
-Personal Interests
-------
-*sleep faster, die slower; build more, suffer less.*
-- learning new languages. I've been learning French and Spanish! 
-- 🏀🛹🏄🏼🥊.
-- the art of dramatic writing, cinema analysis, and potentially directing films.
-- Rubik's cube.
-![pic](http://Zhi0467.github.io/files/cubing.jpg)
+

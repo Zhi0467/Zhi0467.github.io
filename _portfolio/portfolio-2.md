@@ -1,14 +1,5 @@
 ---
-title: "Expository Writings"
+title: "Videos"
 collection: portfolio
 ---
-*Expository* really just means lack of novelty here.
--  [Numerical methods for differential equations](http://Zhi0467.github.io/files/Numerical_Methods_for_Differential_Equations.pdf).
-- [Repeated games](http://Zhi0467.github.io/files/drp_report.pdf).
-- [Birkhoff polytopes and a related conjecture](http://Zhi0467.github.io/files/249final_notes.pdf).
-- [The history of Antarctica](http://Zhi0467.github.io/files/an.pdf).
-
-Nothing is guaranteed to be comprehensive here, but I hope they're interesting readings.
-- [LCH and separable, but not sigma compact.](http://Zhi0467.github.io/files/mono_LCH_example.pdf).
-- [On Meritocracy](http://Zhi0467.github.io/files/On-Meritocracy.pdf). 
-- [Attempt: an one-act play](http://Zhi0467.github.io/files/In-Search-of-Lost-Memory.pdf)
+See videos I made using manim (like 3b1b) on PBD simulation method [here](https://www.youtube.com/@Zhi-zv1in/featured) or [here](https://www.bilibili.com/video/BV1Yb421H7AY/?vd_source=4aea28ed8fcafc51e0903dfab8cae40a).
