@@ -1,6 +1,6 @@
 ---
 permalink: /
-title: "Main"
+title: "Home"
 author_profile: true
 redirect_from: 
   - /about/
@@ -24,6 +24,6 @@ Huge thanks to all my mentors and collaborators.
 
 Publications
 ------
-Lee Eon, Andrés R. Vindas-Meléndez, and Zhi Wang. *Generalized Snake Posets, Order Polytopes, and Lattice-Point Enumeration*, 2024, submitted. [arxiv:2411.18695](https://arxiv.org/abs/2411.18695). 
+- Lee Eon, Andrés R. Vindas-Meléndez, and Zhi Wang. *Generalized Snake Posets, Order Polytopes, and Lattice-Point Enumeration*, 2024, submitted. [arxiv:2411.18695](https://arxiv.org/abs/2411.18695). 
 
 
