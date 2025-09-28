@@ -8,7 +8,7 @@
 
 # Basic Site Settings
 locale                   : "en-US"
-title                    : "Homepage"
+title                    : ""
 title_separator          : "-"
 name                     : &name "Zhi Wang"
 description              : &description "personal description"
@@ -21,14 +21,14 @@ repository               : "https://github.com/Zhi0467/Zhi0467.github.io"
 #               Additional customization can be done by editing /_includes/author-profile.html
 author:
   # Biographic information
-  avatar           : "me.jpg"
+  avatar           : "me.JPG"
   name             : "Zhi Wang"
   pronouns         : # example: "she/her"  
-  bio              : "Data Science PhD Student @ UC San Diego"
-  location         : "Earth, maybe CA"
+  bio              : ""
+  location         : "San Diego, CA, USA"
   employer         : 
   uri              : # URL
-  email            : "wangzhi0467@outlook.com" 
+  email            : "zhw119@ucsd.edu" 
 
   # Academic websites
   arxiv            : "http://arxiv.org/a/wang_z_27"
