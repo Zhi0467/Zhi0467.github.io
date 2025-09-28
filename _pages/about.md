@@ -15,7 +15,7 @@ I do research mainly on reinforcement learning, meta learning, and continual lea
 
 People I've worked with
 ------
-- [Tianhao Wang](https://tianhaowang.ttic.edu)
+- [Tianhao Wang](https://tiiao.github.io)
 - [Difan Zou](https://difanzou.github.io)
 - [Andrés R. Vindas Meléndez](https://math.hmc.edu/arvm/), Eon Lee
 - [Quan Wen](http://www.wenlab.org)
