@@ -8,7 +8,7 @@
 
 # Basic Site Settings
 locale                   : "en-US"
-title                    : ""
+title                    : "Main"
 title_separator          : "-"
 name                     : &name "Zhi Wang"
 description              : &description "personal description"
