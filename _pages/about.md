@@ -1,6 +1,6 @@
 ---
 permalink: /
-title: "Home"
+title: "Welcome"
 author_profile: true
 redirect_from: 
   - /about/
@@ -11,7 +11,8 @@ redirect_from:
 
 I am a PhD student at UC San Diego. 
 
-I do research mainly on reinforcement learning, meta learning, and continual learning.
+I do research on reinforcement learning, inference, continual learning, and memory, all in the context of agents. 
+I also work on machine learning theory.
 
 People I've worked with
 ------
