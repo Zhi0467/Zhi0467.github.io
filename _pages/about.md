@@ -11,8 +11,14 @@ redirect_from:
 
 I am a PhD student at UC San Diego. 
 
-I do research on reinforcement learning, inference, continual learning, and memory, all in the context of agents. 
-I also work on machine learning theory.
+I am interested in reinforcement learning and continual learning via memory, all in the context of a general, multi-modal, and long-horizon agentic system. I also work on machine learning theory such as optimizers.
+
+To be more specific, here are some key words that I focus on:
+- working context management
+- visual reasoning
+- credit assignment
+- RL environments
+- episodic memory, and continually learn from it.
 
 People I've worked with
 ------
@@ -21,7 +27,7 @@ People I've worked with
 - [Andrés R. Vindas Meléndez](https://math.hmc.edu/arvm/), Eon Lee
 - [Quan Wen](http://www.wenlab.org)
 
-Huge thanks to all my mentors and collaborators.
+Huge thanks to all my mentors and collaborators!
 
 Publications
 ------
