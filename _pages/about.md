@@ -9,16 +9,14 @@ redirect_from:
 
 [Here](http://Zhi0467.github.io/files/CV.pdf) is my CV. (last updated: Dec 2, 2024)
 
-I am a PhD student at UC San Diego. 
+I am a PhD student at UC San Diego advised by [Tianhao Wang](https://tiiao.github.io). 
 
-I am interested in reinforcement learning and continual learning via memory, all in the context of a general, multi-modal, and long-horizon agentic system. I also work on machine learning theory such as optimizers.
+I am interested in reinforcement learning, context/memory, and continual learning, with the ultimate goal of building general and long-horizon agents. I also work on machine learning theory.
 
-To be more specific, here are some key words that I focus on:
-- working context management
-- visual reasoning
-- credit assignment
-- RL environments
-- episodic memory, and continually learn from it.
+
+Publications
+------
+- Lee Eon, Andrés R. Vindas-Meléndez, and Zhi Wang. **Generalized Snake Posets, Order Polytopes, and Lattice-Point Enumeration**, 2024, submitted. [arxiv:2411.18695](https://arxiv.org/abs/2411.18695). *We derived the Ehrhart and h-star polynomials for the generalized snake posets, with closed-form formulae for the two extreme cases, and obtained a monotonicity result using a novel technique that bridges combinatorics and lattice polytopes, extending several previous results.*
 
 People I've worked with
 ------
@@ -26,11 +24,6 @@ People I've worked with
 - [Difan Zou](https://difanzou.github.io)
 - [Andrés R. Vindas Meléndez](https://math.hmc.edu/arvm/), Eon Lee
 - [Quan Wen](http://www.wenlab.org)
+- [Misha Belkin](http://misha.belkin-wang.org)
 
 Huge thanks to all my mentors and collaborators!
-
-Publications
-------
-- Lee Eon, Andrés R. Vindas-Meléndez, and Zhi Wang. *Generalized Snake Posets, Order Polytopes, and Lattice-Point Enumeration*, 2024, submitted. [arxiv:2411.18695](https://arxiv.org/abs/2411.18695). 
-
-
