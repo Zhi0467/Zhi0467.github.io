@@ -2,7 +2,7 @@
 title: "My paper"
 collection: publications
 permalink: /publication/papername
-excerpt: 'This paper is about XXX. I don't have a paper yet.'
+excerpt: "This paper is about XXX. I don't have a paper yet."
 date: 2024-02-17
 venue: 'GitHub Journal of Bugs'
 paperurl: 'http://academicpages.github.io/files/paper3.pdf'

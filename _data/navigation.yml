@@ -1,6 +1,7 @@
 # main links links
-main: 
-  - title: "Blog Posts"
-    url: /year-archive/
+main:
+  - title: "Blog"
+    url: /blog/
+  - title: "Research"
+    url: /research/
         
-

@@ -8,13 +8,13 @@
 
 # Basic Site Settings
 locale                   : "en-US"
-title                    : "Main"
+title                    : "Home"
 title_separator          : "-"
 name                     : &name "Zhi Wang"
 description              : &description "personal description"
 url                      : https://Zhi0467.github.io # the base hostname & protocol for your site e.g. "https://mmistakes.github.io"
 baseurl                  : "" # the subpath of your site, e.g. "/blog"
-repository               : "https://github.com/Zhi0467/Zhi0467.github.io"
+repository               : "Zhi0467/Zhi0467.github.io"
 
 # Site Author - The following control what appear as part of the author content on the side bar.
 #               If a field is blank the icon and link will not appear, otherwise it will be shown.
@@ -25,7 +25,7 @@ author:
   name             : "Zhi Wang"
   pronouns         : # example: "she/her"  
   bio              : ""
-  location         : "San Diego, CA, USA"
+  location         : "San Diego, USA"
   employer         : 
   uri              : # URL
   email            : "zhw119@ucsd.edu" 
@@ -190,6 +190,7 @@ kramdown:
   input: GFM
   hard_wrap: false
   auto_ids: true
+  math_engine: null
   footnote_nr: 1
   entity_output: as_char
   toc_levels: 1..6

@@ -1,6 +1,6 @@
 ---
 permalink: /
-title: "Welcome"
+title: "Hi! I'm Zhi."
 author_profile: true
 redirect_from: 
   - /about/
