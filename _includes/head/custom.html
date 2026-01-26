@@ -34,6 +34,23 @@ window.MathJax = {
     displayMath: [['$$', '$$'], ['\\[', '\\]']],
     processEscapes: true,
     processEnvironments: true
+  },
+  options: {
+    // Support kramdown's mathjax script tags on GitHub Pages builds.
+    renderActions: {
+      findScript: [10, function (doc) {
+        const scripts = document.querySelectorAll('script[type^="math/tex"]');
+        for (const script of scripts) {
+          const display = script.type.includes('mode=display');
+          const math = new doc.options.MathItem(script.textContent, doc.inputJax[0], display);
+          const text = document.createTextNode('');
+          script.parentNode.replaceChild(text, script);
+          math.start = { node: text, delim: '', n: 0 };
+          math.end = { node: text, delim: '', n: 0 };
+          doc.math.push(math);
+        }
+      }, '']
+    }
   }
 };
 </script>
