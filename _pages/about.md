@@ -16,7 +16,8 @@ I am interested in reinforcement learning, context/memory, and continual learnin
 
 Publications
 ------
-- Lee Eon, Andrés R. Vindas-Meléndez, and Zhi Wang. **Generalized Snake Posets, Order Polytopes, and Lattice-Point Enumeration**. Discrete Mathematics (2026): 115072. [arxiv:2411.18695](https://arxiv.org/abs/2411.18695). *We derived the Ehrhart and h-star polynomials for the generalized snake posets, with closed-form formulae for the two extreme cases, and obtained a monotonicity result using a novel technique that bridges combinatorics and lattice polytopes, extending several previous results.*
+- Lee Eon, Andrés R. Vindas-Meléndez, and Zhi Wang. **Generalized Snake Posets, Order Polytopes, and Lattice-Point Enumeration**. Discrete Mathematics (2026): [115072](https://doi.org/10.1016/j.disc.2026.115072). *We derived the Ehrhart and h-star polynomials for the generalized snake posets, with closed-form formulae for the two extreme cases, and obtained a monotonicity result using a novel technique that bridges combinatorics and lattice polytopes, extending several previous results.*
+
 
 People I've worked with
 ------
