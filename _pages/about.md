@@ -11,7 +11,7 @@ redirect_from:
 
 I am a PhD student at UC San Diego advised by [Tianhao Wang](https://tiiao.github.io). 
 
-I am interested in reinforcement learning, context/memory, and continual learning, with the ultimate goal of building general and long-horizon agents. I also work on machine learning theory.
+I am interested in agentic training and inference (e.g. RL algorithms and LM post-training methods), agentic system design (e.g. Lean prover training frameworks), multi-agent systems, and learning mechanics.
 
 
 Publications
