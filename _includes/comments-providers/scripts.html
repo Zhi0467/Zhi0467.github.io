@@ -1,4 +1,4 @@
-{% if site.comments.provider and page.comments %}
+{% if site.comments.provider and page.comments and page.collection == "posts" %}
 
 {% case site.comments.provider %}
 {% when "disqus" %}

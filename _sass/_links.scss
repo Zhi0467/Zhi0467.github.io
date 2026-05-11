@@ -1,0 +1,21 @@
+/* ==========================================================================
+   Link treatment
+   ========================================================================== */
+
+a:not(#goog-wm-sb):not(.btn) {
+  color: $link-color;
+  font-family: $monospace;
+  text-decoration: underline;
+  text-decoration-thickness: 0.08em;
+  text-underline-offset: 0.14em;
+
+  &:visited {
+    color: $link-color-visited;
+  }
+
+  &:hover,
+  &:active {
+    color: $link-color-hover;
+    text-decoration: underline;
+  }
+}

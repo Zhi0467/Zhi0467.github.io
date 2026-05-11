@@ -11,8 +11,9 @@ redirect_from:
 
 I am a PhD student at UC San Diego advised by [Tianhao Wang](https://tiiao.github.io). 
 
-I am interested in agentic training and inference (e.g. RL algorithms and LM post-training methods), agentic system design (e.g. Lean prover training frameworks), multi-agent systems, and learning mechanics.
+I am interested in agentic training and inference (e.g. RL algorithms and LM post-training methods), AI for math (e.g. Lean prover training frameworks), multi-agent systems, and learning mechanics.
 
+If possible, I would love to learn more about robotics and ML system/infra as well. 
 
 Publications
 ------
@@ -21,10 +22,6 @@ Publications
 
 People I've worked with
 ------
-- [Tianhao Wang](https://tiiao.github.io)
-- [Difan Zou](https://difanzou.github.io)
-- [Andrés R. Vindas Meléndez](https://math.hmc.edu/arvm/), Eon Lee
-- [Quan Wen](http://www.wenlab.org)
-- [Misha Belkin](http://misha.belkin-wang.org)
+[Tianhao Wang](https://tiiao.github.io), [Difan Zou](https://difanzou.github.io), [Andrés R. Vindas Meléndez](https://math.hmc.edu/arvm/), Eon Lee, [Quan Wen](http://www.wenlab.org), [Misha Belkin](http://misha.belkin-wang.org).
 
 Huge thanks to all my mentors and collaborators!

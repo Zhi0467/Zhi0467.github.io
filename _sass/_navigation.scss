@@ -257,7 +257,7 @@
     padding: 5px;
     border: 1px solid $border-color;
     border-radius: $border-radius;
-    background: #fff;
+    background: $background-color;
     box-shadow: 0 0 10px rgba(#000, 0.25);
 
     a {
@@ -292,7 +292,7 @@
       width: 0;
       border-style: solid;
       border-width: 0 10px 10px;
-      border-color: #fff transparent;
+      border-color: $background-color transparent;
       display: block;
       z-index: 1;
     }
@@ -326,7 +326,8 @@
     color: inherit;
 
     &:hover {
-      text-decoration: underline;
+      color: $link-color-hover;
+      text-decoration: none;
     }
   }
 
@@ -374,7 +375,7 @@
   color: $gray;
   text-transform: uppercase;
   letter-spacing: 1px;
-  background-color: #fff;
+  background-color: $background-color;
   border: 1px solid $border-color;
   border-radius: $border-radius;
   box-shadow: $box-shadow;

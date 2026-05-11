@@ -12,18 +12,31 @@
   {% assign title = post.title %}
 {% endif %}
 
-<div class="{{ include.type | default: "list" }}__item">
-  <article class="archive__item" itemscope itemtype="http://schema.org/CreativeWork">
-    {% if include.type == "grid" and teaser %}
+{% assign archive_type = include.type | default: "list" %}
+
+<div class="{{ archive_type }}__item">
+  <article class="archive__item{% if archive_type == "blog" %} archive__item--blog{% unless teaser %} archive__item--no-teaser{% endunless %}{% endif %}" itemscope itemtype="http://schema.org/CreativeWork">
+    {% if teaser %}
+    {% if archive_type == "grid" or archive_type == "blog" %}
       <div class="archive__item-teaser">
-        <img src=
-          {% if teaser contains "://" %}
-            "{{ teaser }}"
-          {% else %}
-            "{{ teaser | prepend: "/images/" | prepend: base_path }}"
-          {% endif %}
-          alt="">
+        {% if archive_type == "blog" %}
+        <a href="{{ base_path }}{{ post.url }}" rel="permalink" aria-label="Read {{ title | strip_html | strip_newlines }}">
+        {% endif %}
+        {% if teaser contains "://" %}
+          {% assign teaser_src = teaser %}
+        {% else %}
+          {% assign teaser_src = teaser | prepend: "/images/" | prepend: base_path %}
+        {% endif %}
+        <img src="{{ teaser_src }}" alt="{{ post.header.teaser_alt | default: title | strip_html | strip_newlines }}">
+        {% if archive_type == "blog" %}
+        </a>
+        {% endif %}
       </div>
+    {% endif %}
+    {% endif %}
+
+    {% if archive_type == "blog" %}
+    <div class="archive__item-body">
     {% endif %}
 
     <h2 class="archive__item-title" itemprop="headline">
@@ -46,10 +59,13 @@
          <p class="page__date"><strong><i class="fa fa-fw fa-calendar" aria-hidden="true"></i> {{ site.data.ui-text[site.locale].date_label | default: "Published:" }}</strong> <time datetime="{{ post.date | default: "1900-01-01" | date_to_xmlschema }}">{{ post.date | default: "1900-01-01" | date: "%B %d, %Y" }}</time></p>
         {% endif %}
 
-    {% if post.excerpt and site.read_more != 'enabled' %}
-    <p class="archive__item-excerpt" itemprop="description">{{ post.excerpt | markdownify }}</p>
+    {% if post.excerpt and archive_type == "blog" %}
+    {% assign excerpt = post.excerpt | markdownify | strip_html | strip_newlines %}
+    <div class="archive__item-excerpt" itemprop="description"><p>{{ excerpt | truncatewords: 55 }}</p></div>
+    {% elsif post.excerpt and site.read_more != 'enabled' %}
+    <div class="archive__item-excerpt" itemprop="description">{{ post.excerpt | markdownify }}</div>
     {% elsif post.excerpt and site.read_more == 'enabled' %}
-    <p class="archive__item-excerpt" itemprop="description"><p>{{ post.excerpt | markdownify | remove: '<p>' | remove: '</p>' }}<strong><a href="{{ base_path }}{{ post.url }}" rel="permalink"> Read more</a></strong></p></p>
+    <div class="archive__item-excerpt" itemprop="description"><p>{{ post.excerpt | markdownify | remove: '<p>' | remove: '</p>' }}<strong><a href="{{ base_path }}{{ post.url }}" rel="permalink"> Read more</a></strong></p></div>
     {% endif %}
     
     {% if post.citation and post.paperurl %}
@@ -58,6 +74,10 @@
       <p>Recommended citation: {{ post.citation }} </p>
     {% elsif post.paperurl %}
       <p class="wordwrap">Download <a href=" {{ post.paperurl }} ">here</a></p>
+    {% endif %}
+
+    {% if archive_type == "blog" %}
+    </div>
     {% endif %}
 
   </article>

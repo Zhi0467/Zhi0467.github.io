@@ -68,7 +68,7 @@ layout: default
       {% include post_pagination.html %}
     </div>
 
-    {% if site.comments.provider and page.comments %}
+    {% if site.comments.provider and page.comments and page.collection == "posts" %}
       {% include comments.html %}
     {% endif %}
   </article>

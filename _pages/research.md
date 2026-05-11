@@ -5,6 +5,4 @@ permalink: /research/
 author_profile: true
 ---
 
-I work on reinforcement learning, context/memory, and continual learning, with the goal of building general, long-horizon agents.
-
-I will come back with more details on my research here.
+I will update this.

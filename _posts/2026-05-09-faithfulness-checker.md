@@ -4,7 +4,9 @@ date: 2026-05-09
 permalink: /posts/2026/post2/
 tags:
   - Lean
-  - formalization
+header:
+  teaser: blog/faithfulness-checker.png
+  teaser_alt: "Natural-language theorem statement mapped to a Lean 4 formal statement"
 ---
 
 I tested this question with two local LLMs: Qwen3.6-27B and DeepSeek-Prover-V2-7B.

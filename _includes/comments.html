@@ -76,6 +76,15 @@
       {% endif %}
     </section>
   {% when "custom" %}
-    <section id="comments"></section>
+    <h4 class="page__comments-title">{{ site.data.ui-text[site.locale].comments_title | default: "Comments" }}</h4>
+    <section id="comments">
+      <script src="https://utteranc.es/client.js"
+              repo="{{ site.repository }}"
+              issue-term="pathname"
+              theme="github-light"
+              crossorigin="anonymous"
+              async>
+      </script>
+    </section>
   {% endcase %}
 </div>

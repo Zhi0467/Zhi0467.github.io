@@ -4,6 +4,9 @@ date: 2026-03-04
 permalink: /posts/2026/post1/
 tags:
   - agent
+header:
+  teaser: murphy-architecture.png
+  teaser_alt: "Architecture diagram for Agent Murphy"
 ---
 Recently my research lab built a custom agent running on a spare lower-end Mac mini box that my mentor happens to have. We call it Murphy, in defiant spirit to Murphy's law and tribute to the beloved Interstellar.
 

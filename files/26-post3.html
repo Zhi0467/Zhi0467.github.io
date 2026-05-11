@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WiFi / Codex Debug Note</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; font-size: 15px; line-height: 1.7; color: #1a1a1a; background: #FFFCE5; padding: 3rem 2rem; }
+  .note { max-width: 680px; margin: 0 auto; }
+  h1 { font-size: 12px; font-weight: 500; letter-spacing: .09em; text-transform: uppercase; color: #888; margin-bottom: 2.5rem; }
+  h2 { font-size: 15px; font-weight: 600; margin: 2rem 0 .75rem; color: #111; display: flex; align-items: center; gap: 8px; }
+  p { color: #444; font-size: 14px; margin-bottom: .5rem; }
+  code { font-family: "SF Mono", "Fira Code", monospace; font-size: 12px; background: #f3f3f0; padding: 1px 5px; border-radius: 4px; }
+  hr { border: none; border-top: 1px solid #eee; margin: 1.75rem 0; }
+
+  .diag { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: .75rem; }
+  .diag-card { background: #f8f8f6; border-radius: 8px; padding: 12px 14px; }
+  .diag-card .label { font-size: 12px; color: #999; margin-bottom: 4px; }
+  .diag-card .val { font-size: 15px; font-weight: 600; font-family: "SF Mono", monospace; }
+  .diag-card .sub { font-size: 12px; color: #888; margin-top: 4px; }
+  .badge { display: inline-block; font-size: 11px; font-weight: 500; padding: 2px 8px; border-radius: 99px; margin-left: 6px; vertical-align: middle; }
+  .badge-warn { background: #fff3cd; color: #856404; }
+  .badge-ok   { background: #d1e7dd; color: #0f5132; }
+
+  .gloss { display: flex; flex-direction: column; gap: 10px; margin-top: .75rem; }
+  .gloss-row { display: grid; grid-template-columns: 100px 1fr; gap: 12px; }
+  .gloss-term { font-family: "SF Mono", monospace; font-size: 12px; font-weight: 600; color: #222; padding-top: 2px; }
+  .gloss-def { font-size: 13px; color: #555; line-height: 1.55; }
+
+  .diagrams { display: flex; flex-direction: column; gap: 16px; margin-top: .75rem; }
+  .diagram-wrap { border: 1px solid #eee; border-radius: 10px; overflow: hidden; }
+  .diagram-title { font-size: 11px; font-weight: 600; color: #888; letter-spacing: .06em; text-transform: uppercase; padding: 9px 16px; border-bottom: 1px solid #eee; background: #fafafa; }
+
+  .fix { background: #d1e7dd; border-radius: 8px; padding: 12px 16px; margin-top: .75rem; }
+  .fix p { color: #0a3622; font-size: 13px; margin: 0; }
+  .fix code { background: rgba(0,0,0,.08); }
+</style>
+</head>
+<body>
+<div class="note">
+  <h1>Debug note — WiFi latency · Claude Code &amp; Codex</h1>
+
+  <h2>&#9888; Issue</h2>
+  <p>Claude Code and Codex CLI were consistently slow on home WiFi, but fast when tethered to a mobile hotspot. Browser-based AI and video streaming were unaffected on the same WiFi.</p>
+
+  <hr>
+
+  <h2>&#128300; Diagnosis</h2>
+  <p>Two curl tests measured round-trip time to <code>api.anthropic.com</code> over each network protocol.</p>
+  <div class="diag">
+    <div class="diag-card">
+      <div class="label">IPv6 connection <span class="badge badge-warn">slow</span></div>
+      <div class="val">0.173 s</div>
+      <div class="sub">Default path — what CLI tools use</div>
+    </div>
+    <div class="diag-card">
+      <div class="label">IPv4 connection <span class="badge badge-ok">fast</span></div>
+      <div class="val">0.078 s</div>
+      <div class="sub">2.2× faster; what hotspot uses</div>
+    </div>
+  </div>
+  <p style="margin-top:.75rem">The verbose curl output confirmed the OS defaulted to IPv6 (address <code>2607:6bc0::10</code>). No proxy interception detected. TLS certificate was legitimate (Google Trust Services / Anthropic on Google Cloud).</p>
+  <p style="margin-top:.5rem"><strong>Root cause:</strong> The WiFi router advertises IPv6, so the OS prefers it. The ISP's IPv6 routing path to Anthropic's servers is poorly optimized — 95ms slower per connection. Hotspot uses a different carrier with no IPv6, or a better IPv6 path.</p>
+  <p style="margin-top:.5rem">Browser AI is unaffected because browsers silently retry IPv4 on slow IPv6. CLI tools do not.</p>
+
+  <hr>
+
+  <h2>&#128218; Glossary</h2>
+  <div class="gloss">
+    <div class="gloss-row">
+      <span class="gloss-term">ISP</span>
+      <span class="gloss-def">Internet Service Provider — the company you pay for internet. All traffic travels through their hardware before reaching the wider internet.</span>
+    </div>
+    <div class="gloss-row">
+      <span class="gloss-term">IPv4</span>
+      <span class="gloss-def">The original internet addressing scheme. Addresses look like <code>192.168.1.1</code>. 40 years of infrastructure = fast, well-optimized routes everywhere.</span>
+    </div>
+    <div class="gloss-row">
+      <span class="gloss-term">IPv6</span>
+      <span class="gloss-def">The newer, larger address scheme. Addresses look like <code>2607:6bc0::10</code>. Routes are less mature — ISPs vary wildly in IPv6 quality.</span>
+    </div>
+    <div class="gloss-row">
+      <span class="gloss-term">TCP conn.</span>
+      <span class="gloss-def">A "phone call" between your machine and a server. Must be opened before any data flows. Each API call opens one.</span>
+    </div>
+    <div class="gloss-row">
+      <span class="gloss-term">SSE</span>
+      <span class="gloss-def">Server-Sent Events — how AI APIs stream tokens back one by one over a single open connection. You feel every millisecond of latency in real time.</span>
+    </div>
+    <div class="gloss-row">
+      <span class="gloss-term">Happy Eyeballs</span>
+      <span class="gloss-def">The OS algorithm that picks IPv6 over IPv4 when both are available. Browsers implement fallback to IPv4; CLI tools often don't.</span>
+    </div>
+  </div>
+
+  <hr>
+
+  <h2>&#128268; How a CLI session works</h2>
+
+  <div class="diagrams">
+
+    <div class="diagram-wrap">
+      <div class="diagram-title">Single API call — token streaming</div>
+      <svg viewBox="0 0 620 80" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block;padding:16px 20px;font-family:-apple-system,sans-serif">
+        <defs>
+          <marker id="a1" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M1,1 L6,3.5 L1,6" fill="none" stroke="#999" stroke-width="1.2"/></marker>
+          <marker id="a2" markerWidth="7" markerHeight="7" refX="6" refY="3.5" orient="auto"><path d="M1,1 L6,3.5 L1,6" fill="none" stroke="#1D9E75" stroke-width="1.2"/></marker>
+        </defs>
+        <rect x="0" y="20" width="110" height="36" rx="6" fill="#f3f3f0"/>
+        <text x="55" y="43" text-anchor="middle" font-size="12" fill="#333" font-weight="500">your terminal</text>
+        <rect x="170" y="20" width="110" height="36" rx="6" fill="#f3f3f0"/>
+        <text x="225" y="43" text-anchor="middle" font-size="12" fill="#333" font-weight="500">ISP network</text>
+        <rect x="340" y="20" width="110" height="36" rx="6" fill="#d1e7dd"/>
+        <text x="395" y="43" text-anchor="middle" font-size="12" fill="#0a3622" font-weight="500">Anthropic API</text>
+        <rect x="510" y="20" width="110" height="36" rx="6" fill="#d1e7dd"/>
+        <text x="565" y="38" text-anchor="middle" font-size="11" fill="#0a3622" font-weight="500">tokens stream</text>
+        <text x="565" y="51" text-anchor="middle" font-size="10" fill="#198754">word · by · word</text>
+        <line x1="112" y1="38" x2="168" y2="38" stroke="#999" stroke-width="1" marker-end="url(#a1)"/>
+        <text x="140" y="33" text-anchor="middle" font-size="10" fill="#999">HTTPS</text>
+        <line x1="282" y1="38" x2="338" y2="38" stroke="#999" stroke-width="1" marker-end="url(#a1)"/>
+        <text x="310" y="33" text-anchor="middle" font-size="10" fill="#c0392b">IPv6 ⚠</text>
+        <line x1="452" y1="38" x2="508" y2="38" stroke="#1D9E75" stroke-width="1" marker-end="url(#a2)"/>
+        <text x="480" y="33" text-anchor="middle" font-size="10" fill="#1D9E75">SSE</text>
+      </svg>
+    </div>
+
+    <div class="diagram-wrap">
+      <div class="diagram-title">A coding task — sequential calls, latency multiplies</div>
+      <svg viewBox="0 0 620 120" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block;padding:16px 20px;font-family:-apple-system,sans-serif">
+        <rect x="0"   y="44" width="90" height="22" rx="3" fill="#f8d7da"/>
+        <rect x="100" y="44" width="90" height="22" rx="3" fill="#f8d7da"/>
+        <rect x="200" y="44" width="90" height="22" rx="3" fill="#f8d7da"/>
+        <rect x="300" y="44" width="90" height="22" rx="3" fill="#f8d7da"/>
+        <rect x="400" y="44" width="90" height="22" rx="3" fill="#f8d7da"/>
+        <text x="45"  y="36" text-anchor="middle" font-size="10" fill="#842029">read files</text>
+        <text x="145" y="36" text-anchor="middle" font-size="10" fill="#842029">analyze</text>
+        <text x="245" y="36" text-anchor="middle" font-size="10" fill="#842029">generate</text>
+        <text x="345" y="36" text-anchor="middle" font-size="10" fill="#842029">tool call</text>
+        <text x="445" y="36" text-anchor="middle" font-size="10" fill="#842029">refine</text>
+        <rect x="90"  y="48" width="10" height="14" rx="1" fill="#dc3545" opacity=".4"/>
+        <rect x="190" y="48" width="10" height="14" rx="1" fill="#dc3545" opacity=".4"/>
+        <rect x="290" y="48" width="10" height="14" rx="1" fill="#dc3545" opacity=".4"/>
+        <rect x="390" y="48" width="10" height="14" rx="1" fill="#dc3545" opacity=".4"/>
+        <text x="95"  y="86" text-anchor="middle" font-size="9" fill="#842029">+95ms</text>
+        <text x="195" y="86" text-anchor="middle" font-size="9" fill="#842029">+95ms</text>
+        <text x="295" y="86" text-anchor="middle" font-size="9" fill="#842029">+95ms</text>
+        <text x="395" y="86" text-anchor="middle" font-size="9" fill="#842029">+95ms</text>
+        <text x="510" y="60" font-size="12" fill="#842029" font-weight="600">≈ 380ms wasted</text>
+        <text x="510" y="75" font-size="10" fill="#888">per task</text>
+        <text x="310" y="108" text-anchor="middle" font-size="10" fill="#666">each gap = IPv6 overhead · calls are sequential — can't skip any</text>
+      </svg>
+    </div>
+
+    <div class="diagram-wrap">
+      <div class="diagram-title">Why video is unaffected</div>
+      <svg viewBox="0 0 620 90" xmlns="http://www.w3.org/2000/svg" style="width:100%;display:block;padding:14px 20px;font-family:-apple-system,sans-serif">
+        <text x="0" y="20" font-size="11" fill="#555" font-weight="600">Video stream</text>
+        <rect x="0" y="26" width="360" height="18" rx="3" fill="#a3cfbb"/>
+        <text x="370" y="39" font-size="10" fill="#0f5132">30s buffered ahead — latency invisible</text>
+        <text x="0" y="66" font-size="11" fill="#555" font-weight="600">CLI token stream</text>
+        <rect x="0"  y="72" width="30" height="18" rx="3" fill="#a3cfbb"/>
+        <rect x="34" y="72" width="5"  height="18" rx="2" fill="#f8d7da"/>
+        <rect x="43" y="72" width="30" height="18" rx="3" fill="#a3cfbb"/>
+        <rect x="77" y="72" width="5"  height="18" rx="2" fill="#f8d7da"/>
+        <rect x="86" y="72" width="30" height="18" rx="3" fill="#a3cfbb"/>
+        <rect x="120" y="72" width="5" height="18" rx="2" fill="#f8d7da"/>
+        <text x="135" y="85" font-size="10" fill="#842029">wait · token · wait · token · wait... you feel every gap</text>
+      </svg>
+    </div>
+
+  </div>
+
+  <hr>
+
+  <h2>&#128295; Fix</h2>
+  <div class="fix">
+    <p>Disable IPv6 on the WiFi interface. On macOS: <code>System Settings → Network → WiFi → Details → TCP/IP → Configure IPv6 → Off</code>. Or via terminal: <code>sudo networksetup -setv6off Wi-Fi</code>. This forces all CLI traffic onto the faster IPv4 path without affecting anything else.</p>
+  </div>
+
+</div>
+</body>
+</html>

@@ -54,7 +54,7 @@ body:hover .visually-hidden button {
   font-size: 1em;
   font-weight: bold;
   padding: 15px 23px 14px;
-  background: #fff;
+  background: $background-color;
   z-index: 100000;
   text-decoration: none;
   box-shadow: 0 0 2px 2px rgba(0,0,0,.6);
@@ -326,7 +326,7 @@ body:hover .visually-hidden button {
   position: relative;
   width: $navicon-width;
   height: $navicon-height;
-  background: #fff;
+  background: $background-color;
   margin: auto;
   -webkit-transition: 0.3s;
   transition: 0.3s;
@@ -444,7 +444,7 @@ body:hover .visually-hidden button {
   margin-top: -150px;
   min-height: 0;
   z-index: 9999;
-  background: #fff;
+  background: $background-color;
   border: 1px solid $border-color;
   border-radius: $border-radius;
   box-shadow: $box-shadow;
@@ -488,7 +488,8 @@ a.reversefootnote {
   text-decoration: none;
 
   &:hover {
-    text-decoration: underline;
+    color: $link-color-hover;
+    text-decoration: none;
   }
 }
 

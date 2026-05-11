@@ -73,10 +73,13 @@
   }
 
   a {
-    text-decoration: underline;
+    color: inherit;
+    font-weight: 600;
+    text-decoration: none;
 
     &:hover {
-      text-decoration: underline;
+      color: $link-color-hover;
+      text-decoration: none;
 
       img {
         box-shadow: 0 0 10px rgba(#000, 0.25);
