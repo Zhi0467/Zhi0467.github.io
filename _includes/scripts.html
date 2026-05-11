@@ -1,4 +1,55 @@
 <script src="{{ base_path }}/assets/js/main.min.js"></script>
+<script>
+  (function () {
+    var root = document.documentElement;
+    var toggle = document.querySelector(".theme-toggle");
+
+    function prefersDark() {
+      return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+    }
+
+    function storedTheme() {
+      try {
+        return localStorage.getItem("theme");
+      } catch (e) {
+        return null;
+      }
+    }
+
+    function saveTheme(theme) {
+      try {
+        localStorage.setItem("theme", theme);
+      } catch (e) {}
+    }
+
+    function applyTheme(theme) {
+      var isDark = theme === "dark" || (!theme && prefersDark());
+      root.classList.toggle("theme-dark", isDark);
+      root.classList.toggle("theme-light", !isDark);
+
+      if (!toggle) return;
+      toggle.setAttribute("aria-pressed", isDark ? "true" : "false");
+      toggle.setAttribute("title", isDark ? "Switch to light mode" : "Switch to dark mode");
+      toggle.setAttribute("aria-label", isDark ? "Switch to light mode" : "Switch to dark mode");
+
+      var icon = toggle.querySelector(".theme-toggle__icon");
+      if (icon) {
+        icon.classList.toggle("fa-moon", !isDark);
+        icon.classList.toggle("fa-sun", isDark);
+      }
+    }
+
+    applyTheme(storedTheme());
+
+    if (toggle) {
+      toggle.addEventListener("click", function () {
+        var nextTheme = root.classList.contains("theme-dark") ? "light" : "dark";
+        saveTheme(nextTheme);
+        applyTheme(nextTheme);
+      });
+    }
+  })();
+</script>
 
 {% include analytics.html %}
 {% include /comments-providers/scripts.html %}

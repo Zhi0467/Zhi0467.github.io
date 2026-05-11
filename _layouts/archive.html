@@ -12,7 +12,7 @@ layout: default
   {% endunless %}
 {% endif %}
 
-<div id="main" role="main">
+<div id="main" class="{% unless page.author_profile or layout.author_profile or page.sidebar %}main--no-sidebar{% endunless %}{% if page.url == '/blog/' %} main--blog{% endif %}" role="main">
   {% include sidebar.html %}
 
   <div class="archive">

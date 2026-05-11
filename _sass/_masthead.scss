@@ -37,6 +37,8 @@
 }
 
 .masthead__menu {
+  position: relative;
+  padding: 0 2.5rem;
 
   ul {
     margin: 0;
@@ -51,8 +53,27 @@
   list-style-type: none;
   white-space: nowrap;
 
-  &--lg {
-    padding-right: 2em;
+  &--active {
     font-weight: 700;
+  }
+}
+
+.theme-toggle {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  transform: translateY(-50%);
+  border: 0;
+  background: transparent;
+  color: $masthead-link-color;
+  cursor: pointer;
+  line-height: 1;
+
+  &:hover,
+  &:focus {
+    color: $masthead-link-color-hover;
   }
 }

@@ -29,6 +29,29 @@
   }
 }
 
+.main--no-sidebar {
+  .archive,
+  .page {
+    @include breakpoint($large) {
+      width: 100%;
+      float: none;
+      margin-left: auto;
+      margin-right: auto;
+      padding-left: 0;
+      padding-right: 0;
+    }
+  }
+}
+
+.main--blog {
+  .archive,
+  .page {
+    @include breakpoint($large) {
+      max-width: 960px;
+    }
+  }
+}
+
 .archive__subtitle {
   margin: 1.414em 0 0;
   padding-bottom: 0.5em;

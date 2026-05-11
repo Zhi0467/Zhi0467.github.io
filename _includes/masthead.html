@@ -6,18 +6,30 @@
       <nav id="site-nav" class="greedy-nav">
         <button><div class="navicon"></div></button>
         <ul class="visible-links">
-          <li class="masthead__menu-item masthead__menu-item--lg"><a href="{{ base_path }}/">{{ site.title }}</a></li>
+          <li class="masthead__menu-item{% if page.url == '/' %} masthead__menu-item--active{% endif %}"><a href="{{ base_path }}/">{{ site.title }}</a></li>
           {% for link in site.data.navigation.main %}
             {% if link.url contains 'http' %}
               {% assign domain = '' %}
               {% else %}
               {% assign domain = base_path %}
             {% endif %}
-            <li class="masthead__menu-item"><a href="{{ domain }}{{ link.url }}">{{ link.title }}</a></li>
+            {% assign item_active = false %}
+            {% if page.url == link.url %}
+              {% assign item_active = true %}
+            {% elsif link.url == '/blog/' and page.collection == 'posts' %}
+              {% assign item_active = true %}
+            {% elsif link.url != '/' and page.url contains link.url %}
+              {% assign item_active = true %}
+            {% endif %}
+            <li class="masthead__menu-item{% if item_active %} masthead__menu-item--active{% endif %}"><a href="{{ domain }}{{ link.url }}">{{ link.title }}</a></li>
           {% endfor %}
         </ul>
         <ul class="hidden-links hidden"></ul>
       </nav>
+      <button class="theme-toggle" type="button" aria-label="Toggle dark mode" aria-pressed="false" title="Toggle dark mode">
+        <i class="fas fa-moon theme-toggle__icon" aria-hidden="true"></i>
+        <span class="visually-hidden">Toggle dark mode</span>
+      </button>
     </div>
   </div>
 </div>

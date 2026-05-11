@@ -14,7 +14,7 @@ layout: default
   {% endunless %}
 {% endif %}
 
-<div id="main" role="main">
+<div id="main" class="{% unless page.author_profile or layout.author_profile or page.sidebar %}main--no-sidebar{% endunless %}{% if page.collection == 'posts' %} main--blog{% endif %}" role="main">
   {% include sidebar.html %}
 
   <article class="page" itemscope itemtype="http://schema.org/CreativeWork">

@@ -1,0 +1,189 @@
+/* ==========================================================================
+   Toggleable dark mode
+   ========================================================================== */
+
+$dark-background: #151515;
+$dark-surface: #1c1b18;
+$dark-surface-strong: #25231f;
+$dark-text: #e8e0cd;
+$dark-muted: #b8ad98;
+$dark-border: #3a362e;
+$dark-link: #eee5d0;
+$dark-link-hover: #ffd36a;
+
+@mixin dark-mode-colors {
+  &,
+  body {
+    background-color: $dark-background;
+    color: $dark-text;
+    color-scheme: dark;
+  }
+
+  ::selection {
+    color: $dark-background;
+    background: $dark-link-hover;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  .page__title,
+  .archive__item-title,
+  .archive__item-title a,
+  .blog__item .archive__item-title a {
+    color: $dark-text;
+  }
+
+  .masthead,
+  .greedy-nav,
+  .greedy-nav .hidden-links,
+  .page__footer,
+  .author__urls,
+  .modal,
+  .page__comments-form {
+    background: $dark-background;
+  }
+
+  .masthead,
+  .page__footer,
+  hr,
+  table,
+  thead,
+  th,
+  td,
+  .archive__subtitle,
+  .archive__item-teaser,
+  .blog__item .archive__item-teaser,
+  .page__content h2,
+  .page__related,
+  .page__comments-title,
+  .comment:not(:last-child),
+  .author__avatar img,
+  .author__urls,
+  .greedy-nav .hidden-links {
+    border-color: $dark-border;
+  }
+
+  .archive__subtitle,
+  .page__meta,
+  .page__date,
+  .comment__date,
+  .page__footer,
+  .page__footer .fas,
+  .page__footer .fab,
+  .page__footer .far,
+  figcaption,
+  .footnote,
+  .footnotes {
+    color: $dark-muted;
+  }
+
+  a:not(#goog-wm-sb):not(.btn),
+  a:not(#goog-wm-sb):not(.btn):visited,
+  .greedy-nav a,
+  .page__footer a {
+    color: $dark-link;
+  }
+
+  .theme-toggle {
+    color: $dark-link;
+  }
+
+  a:not(#goog-wm-sb):not(.btn):hover,
+  a:not(#goog-wm-sb):not(.btn):active,
+  .greedy-nav a:hover,
+  .page__footer a:hover {
+    color: $dark-link-hover;
+  }
+
+  .theme-toggle:hover,
+  .theme-toggle:focus {
+    color: $dark-link-hover;
+  }
+
+  .greedy-nav .visible-links a:before {
+    background: $dark-link-hover;
+  }
+
+  .greedy-nav button,
+  .btn,
+  #goog-wm-sb {
+    background-color: $dark-surface-strong;
+    color: $dark-text !important;
+  }
+
+  .btn--inverse {
+    background-color: $dark-background;
+    border-color: $dark-border !important;
+    color: $dark-text !important;
+  }
+
+  .blog__item .archive__item-teaser,
+  .archive__item-teaser,
+  thead,
+  p > code,
+  a > code,
+  li > code,
+  figcaption > code,
+  td > code,
+  pre,
+  .highlight,
+  .highlighter-rouge .highlight {
+    background: $dark-surface;
+    color: $dark-text;
+  }
+
+  p > code,
+  a > code,
+  li > code,
+  figcaption > code,
+  td > code {
+    border-color: $dark-border;
+    box-shadow: none;
+  }
+
+  input,
+  textarea,
+  select {
+    background: $dark-surface;
+    border-color: $dark-border;
+    color: $dark-text;
+  }
+
+  .social-icons .fa,
+  .social-icons .fas,
+  .social-icons .fab,
+  .social-icons .far,
+  .social-icons .ai {
+    color: $dark-text;
+  }
+
+  .navicon,
+  .navicon:before,
+  .navicon:after {
+    background: $dark-text;
+  }
+
+  .close .navicon {
+    background: transparent;
+  }
+
+  .screen-reader-text:focus,
+  .screen-reader-shortcut:focus {
+    background: $dark-background;
+    color: $dark-text;
+  }
+}
+
+html.theme-dark {
+  @include dark-mode-colors;
+}
+
+@media (prefers-color-scheme: dark) {
+  html:not(.theme-light) {
+    @include dark-mode-colors;
+  }
+}
