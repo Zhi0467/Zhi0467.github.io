@@ -1,9 +1,1 @@
-{% include base_path %}
-
-{% if site.tag_archive.type and page.tags[0] %}
-  {% include tag-list.html %}
-{% endif %}
-
-{% if site.category_archive.type and page.categories[0] %}
-  {% include category-list.html %}
-{% endif %}
+{% comment %}Tag/category archive links are disabled for the compact site shape.{% endcomment %}

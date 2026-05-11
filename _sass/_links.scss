@@ -19,3 +19,12 @@ a:not(#goog-wm-sb):not(.btn) {
     text-decoration: underline;
   }
 }
+
+.masthead a:not(#goog-wm-sb):not(.btn) {
+  text-decoration: none;
+
+  &:hover,
+  &:active {
+    text-decoration: none;
+  }
+}

@@ -2,12 +2,9 @@
 permalink: /
 title: "Hi! I'm Zhi."
 author_profile: true
-redirect_from: 
-  - /about/
-  - /about.html
 ---
 
-[Here](http://Zhi0467.github.io/files/CV.pdf) is my CV. (last updated: Dec 2, 2024)
+[Here](/files/CV.pdf) is my CV. (last updated: Dec 2, 2024)
 
 I am a PhD student at UC San Diego advised by [Tianhao Wang](https://tiiao.github.io). 
 
