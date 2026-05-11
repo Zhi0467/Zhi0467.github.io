@@ -199,3 +199,60 @@ My initial not-quite-scientific takeaways:
 Next questions would be:
 1. if a naive autoformalizer + Qwen3.6-27B as checker pipeline can produce useful training data for prover, leading to consistent gain over multiple rounds of generating and filtering data.
 2. test other checker workflow, especially the proprietary models, local tool-use agent, and agent team for checking faithfulness.
+
+---
+
+## Follow-up: round-trip checker
+
+I also tested another workflow, which is:
+
+```text
+candidate Lean statement
+  -> Lean-to-NL naturalizer
+  -> round-trip NL statement
+  -> compare original NL and round-trip NL
+```
+
+Then use it as a cascade with the direct checker:
+
+```text
+accept iff direct checker accepts
+       and round-trip NL checker accepts
+```
+
+The motivation is simple. Maybe the direct checker misses some NL-Lean mismatch, but if we decompile the Lean statement back to NL, the mismatch becomes more visible in natural language.
+
+For this follow-up I use Qwen3.6-27B for both the naturalizer and the NL checker. The naturalizer does not see the original NL statement. It only sees the Lean candidate with neutralized theorem name. The NL checker does not see the Lean statement. It only sees the original NL and the round-trip NL.
+
+At majority@31, the results are:
+
+| dataset | gate | positive precision | false positive rate | true accept rate | yield | invalid |
+| --- | --- | ---: | ---: | ---: | ---: | ---: |
+| ProofNetVerif | direct only | 75.0% | 14.5% | 90.8% | 39.2% | 0.4% |
+| ProofNetVerif | round-trip only | 67.4% | 21.6% | 92.8% | 44.4% | 0.7% |
+| ProofNetVerif | direct and round-trip | 76.1% | 13.7% | 90.5% | 38.2% | 1.1% |
+| local | direct only | 82.4% | 33.3% | 98.9% | 68.4% | 7.0% |
+| local | round-trip only | 75.6% | 50.0% | 95.9% | 77.8% | 0.6% |
+| local | direct and round-trip | 83.5% | 30.4% | 95.6% | 65.2% | 7.6% |
+
+So the round-trip checker is not a replacement for the direct checker. Round-trip only is worse than direct only on both datasets.
+
+The actual question is whether it catches the direct checker's false positives. There the answer is: yes, but not much.
+
+| dataset | direct false accepts | caught by round-trip | rescue rate | direct true accepts | wrongly rejected by round-trip |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| ProofNetVerif | 135 | 9 | 6.7% | 406 | 2 |
+| local | 19 | 2 | 10.5% | 89 | 3 |
+
+This means the cascade is directionally positive but weak. On ProofNetVerif, accepted bad examples go from 135 to 126. On local, accepted bad examples go from 19 to 17. Positive precision improves by about 1 point on both datasets. This is a real effect, but small.
+
+The naturalizer itself mostly works:
+
+```text
+ProofNetVerif: 1371 / 1381 valid naturalizations
+local:          157 / 158 valid naturalizations
+```
+
+The invalid naturalizations are mostly not semantic failures. They are Qwen spending the whole 8192-token budget in thinking and returning no final content. 
+
+Round-trip checking is a useful diagnostic, but not a big enough filter improvement in this form. It catches some very obvious direct-checker misses, for example when the Lean statement decompiles to something much narrower than the original problem. But most false accepts that pass the direct checker also pass the round-trip checker. We need a deeper dig into this later.
