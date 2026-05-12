@@ -3,9 +3,6 @@ permalink: /
 title: "Hi! I'm Zhi."
 author_profile: true
 ---
-
-[Here](/files/CV.pdf) is my CV. (last updated: Dec 2, 2024)
-
 I am a PhD student at UC San Diego advised by [Tianhao Wang](https://tiiao.github.io). 
 
 I am interested in agentic training and inference (e.g. RL algorithms and LM post-training methods), AI for math (e.g. Lean prover training frameworks), multi-agent systems, and learning mechanics.
@@ -21,4 +18,5 @@ People I've worked with
 ------
 [Tianhao Wang](https://tiiao.github.io), [Difan Zou](https://difanzou.github.io), [Andrés R. Vindas Meléndez](https://math.hmc.edu/arvm/), Eon Lee, [Quan Wen](http://www.wenlab.org), [Misha Belkin](http://misha.belkin-wang.org).
 
-Huge thanks to all my mentors and collaborators!
+Huge thanks to all my mentors and collaborators! [Here](/files/CV.pdf) is my CV. (last updated: Apr 21th, 2026)
+
