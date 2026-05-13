@@ -18,5 +18,5 @@ People I've worked with
 ------
 [Tianhao Wang](https://tiiao.github.io), [Difan Zou](https://difanzou.github.io), [Andrés R. Vindas Meléndez](https://math.hmc.edu/arvm/), Eon Lee, [Quan Wen](http://www.wenlab.org), [Misha Belkin](http://misha.belkin-wang.org).
 
-Huge thanks to all my mentors and collaborators! [Here](/files/CV.pdf) is my CV. (last updated: Apr 21th, 2026)
+Huge thanks to all my mentors and collaborators! [Here](/files/CV.pdf) is my CV. (last updated: Apr 2026)
 
