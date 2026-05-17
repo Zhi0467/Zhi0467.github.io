@@ -5,9 +5,9 @@ author_profile: true
 ---
 I am a PhD student at UC San Diego advised by [Tianhao Wang](https://tiiao.github.io). 
 
-I am interested in agentic training and inference (e.g. RL algorithms and LM post-training methods), AI for math (e.g. Lean prover training frameworks), multi-agent systems, and learning mechanics.
+I am interested in agentic training (RL, Lean prover training, learn with search/play) and deep learning theory (representation and dynamics).
 
-If possible, I would love to learn more about robotics and ML system/infra as well. 
+If possible, I would love to learn more about robotics and ML system as well. 
 
 Publications
 ------
