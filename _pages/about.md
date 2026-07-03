@@ -5,9 +5,9 @@ author_profile: true
 ---
 I am a PhD student at UC San Diego advised by [Tianhao Wang](https://tiiao.github.io). 
 
-My research interests center on model training, both on the theoretical side, such as optimizer dynamics and representations, and on practical aspects like reinforcement learning and training system optimization/scale. I especially enjoy applying training ideas in the context of Lean.
+I work on reinforcement learning and on how agent improves from its own experience. This is a loop: the agent explores and searches for good behavior in human-crafted or self-generated environments, the results are judged and credit is assigned, and what survives is learned, sometimes in context, ultimately in the weights.
 
-If possible, I would love to learn more about robotics, especially foundational model training. 
+I study each stage of this loop and how it fails. The stages map cleanly onto topics I care about: synthetic environment generation, learning with search, exploration in RL, credit assignment over long horizons, and plasticity in online, non-stationary RL, with continual learning as the end state the whole loop is trying to reach.
 
 Publications
 ------
