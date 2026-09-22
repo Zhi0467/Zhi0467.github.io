@@ -89,5 +89,22 @@
   })();
 </script>
 
+<script>
+  (function () {
+    var el = document.getElementById('visitor-count');
+    if (!el) { return; }
+    fetch('https://zhiwang.goatcounter.com/counter/TOTAL.json')
+      .then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); })
+      .then(function (d) {
+        var plural = function (n, w) { return n.toLocaleString() + ' ' + w + (n === 1 ? '' : 's'); };
+        var views = parseInt(d.count, 10), visitors = parseInt(d.count_unique, 10);
+        if (isNaN(views) || isNaN(visitors)) { return; }
+        document.getElementById('visitor-count-text').textContent = plural(views, 'view') + ' \u00b7 ' + plural(visitors, 'visitor');
+        el.hidden = false;
+      })
+      .catch(function () {});
+  })();
+</script>
+
 {% include analytics.html %}
 {% include /comments-providers/scripts.html %}
