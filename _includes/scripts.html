@@ -93,8 +93,10 @@
   (function () {
     var plural = function (n, w) { return n.toLocaleString() + ' ' + w + (n === 1 ? '' : 's'); };
 
-    // The counter API answers 404 with a valid `{"count": "0"}` body for a path
-    // nobody has visited yet, so read the body regardless of the status code.
+    /* The counter API answers 404 with a valid `{"count": "0"}` body for a path
+       nobody has visited yet, so read the body regardless of the status code.
+       Block comment on purpose: _layouts/compress.html strips newlines, which
+       turns a // comment into a comment over the rest of the script. */
     var count = function (path) {
       return fetch('https://zhiwang.goatcounter.com/counter/' + path + '.json')
         .then(function (r) { return r.json(); })
