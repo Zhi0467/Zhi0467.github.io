@@ -91,18 +91,36 @@
 
 <script>
   (function () {
-    var el = document.getElementById('visitor-count');
-    if (!el) { return; }
-    fetch('https://zhiwang.goatcounter.com/counter/TOTAL.json')
-      .then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); })
-      .then(function (d) {
-        var plural = function (n, w) { return n.toLocaleString() + ' ' + w + (n === 1 ? '' : 's'); };
-        var views = parseInt(d.count, 10), visitors = parseInt(d.count_unique, 10);
-        if (isNaN(views) || isNaN(visitors)) { return; }
-        document.getElementById('visitor-count-text').textContent = plural(views, 'view') + ' \u00b7 ' + plural(visitors, 'visitor');
-        el.hidden = false;
-      })
-      .catch(function () {});
+    var plural = function (n, w) { return n.toLocaleString() + ' ' + w + (n === 1 ? '' : 's'); };
+
+    // The counter API answers 404 with a valid `{"count": "0"}` body for a path
+    // nobody has visited yet, so read the body regardless of the status code.
+    var count = function (path) {
+      return fetch('https://zhiwang.goatcounter.com/counter/' + path + '.json')
+        .then(function (r) { return r.json(); })
+        .then(function (d) {
+          var views = parseInt(d.count, 10), visitors = parseInt(d.count_unique, 10);
+          return isNaN(views) || isNaN(visitors) ? null : { views: views, visitors: visitors };
+        });
+    };
+
+    var total = document.getElementById('visitor-count');
+    if (total) {
+      count('TOTAL').then(function (c) {
+        if (!c) { return; }
+        document.getElementById('visitor-count-text').textContent = plural(c.views, 'view') + ' \u00b7 ' + plural(c.visitors, 'visitor');
+        total.hidden = false;
+      }).catch(function () {});
+    }
+
+    var post = document.getElementById('post-views');
+    if (post) {
+      count(post.dataset.path).then(function (c) {
+        if (!c || c.views === 0) { return; }
+        document.getElementById('post-views-text').textContent = plural(c.views, 'view');
+        post.hidden = false;
+      }).catch(function () {});
+    }
   })();
 </script>
 
