@@ -1,0 +1,163 @@
+/* ==========================================================================
+   Long-form post components
+   --------------------------------------------------------------------------
+   Markup used by hand-written HTML posts: .hero, .lede, .post-toc, .callout,
+   .note, .compare, .card, .mathbox, .timeline, .tiny, .sources and
+   .post-footer-rule.
+
+   This file is the CLASSIC skin's version. `_sass/_retro.scss` restyles the
+   same classes for `html.style-retro`, so both skins render these posts.
+   Use `.post-toc`, never `.toc`: `.toc` is the theme's own uppercase widget.
+   ========================================================================== */
+
+.page__content {
+  .hero {
+    margin: 0 0 1.5em;
+    padding: 1em 1.25em;
+    border: 1px solid $border-color;
+    border-left: 4px solid $light-gray;
+    border-radius: $border-radius;
+    background: mix(#fff, $background-color, 45%);
+
+    p { margin: 0.4em 0; }
+  }
+
+  .lede {
+    font-size: $type-size-4;
+  }
+
+  .post-toc {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5em 1.5em;
+    margin: 0 0 2em;
+    padding: 1em 1.25em;
+    border: 1px solid $border-color;
+    border-radius: $border-radius;
+  }
+
+  .callout {
+    margin: 1.25em 0;
+    padding: 0.85em 1em;
+    border: 1px solid $border-color;
+    border-radius: $border-radius;
+    background: mix(#fff, $background-color, 45%);
+  }
+
+  .note {
+    margin: 1em 0;
+    padding: 0.5em 0.9em;
+    border-left: 4px solid $light-gray;
+    background: mix(#fff, $background-color, 45%);
+  }
+
+  .mathbox {
+    margin: 1em 0;
+    padding: 0.7em 1em;
+    border: 1px solid $border-color;
+    border-radius: $border-radius;
+    overflow-x: auto;
+    text-align: center;
+  }
+
+  .compare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.15em;
+    margin: 1em 0;
+  }
+
+  .card {
+    min-width: 0;
+    padding: 0.85em 1em;
+    border: 1px solid $border-color;
+    border-radius: $border-radius;
+
+    h3 { margin-top: 0; }
+  }
+
+  .timeline {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5em;
+    margin: 1em 0;
+    font-family: $monospace;
+    font-size: $type-size-6;
+
+    span {
+      padding: 0.4em 0.55em;
+      border: 1px solid $border-color;
+      border-radius: $border-radius;
+    }
+
+    b { font-size: $type-size-4; }
+  }
+
+  .tiny {
+    color: $gray;
+    font-size: $type-size-6;
+  }
+
+  .sources li {
+    margin: 0.6em 0;
+  }
+
+  .post-footer-rule {
+    display: flex;
+    justify-content: space-between;
+    gap: 1.25em;
+    margin-top: 2.5em;
+    padding-top: 0.75em;
+    border-top: 1px solid $border-color;
+    color: $gray;
+    font-size: $type-size-7;
+  }
+}
+
+@media (max-width: 760px) {
+  .page__content {
+    .compare,
+    .post-toc {
+      grid-template-columns: 1fr;
+    }
+  }
+}
+
+/*
+   Dark variant of the classic skin
+   ========================================================================== */
+
+@mixin post-components-dark {
+  .page__content {
+    .hero,
+    .callout,
+    .note {
+      border-color: $dark-border;
+      background: $dark-surface;
+    }
+
+    .post-toc,
+    .mathbox,
+    .card,
+    .timeline span,
+    .post-footer-rule {
+      border-color: $dark-border;
+    }
+
+    .tiny,
+    .post-footer-rule {
+      color: $dark-muted;
+    }
+  }
+}
+
+html.theme-dark {
+  @include post-components-dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  html:not(.theme-light) {
+    @include post-components-dark;
+  }
+}

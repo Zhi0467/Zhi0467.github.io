@@ -1,0 +1,961 @@
+---
+title: "Single-Rollout Agent RL: SAO, FlashREINFORCE, BPO and KLPO"
+date: 2026-09-22
+permalink: /posts/2026/post4/
+tags:
+  - RL
+  - agent
+excerpt: "Recent algorithmic progress on two fundamental RL questions: credit assignment on the theory side, and asynchronous inference-trainer separation on the practical side. GRPO, SAO, FlashREINFORCE, BPO and KLPO each answer that pair differently."
+header:
+  teaser: blog/single-rollout-agent-rl.png
+  teaser_alt: "GRPO to SAO to FlashREINFORCE to BPO to KLPO, a chain of single-rollout agent RL methods"
+---
+
+<div class="hero">
+  <p class="lede">In this post we study recent algorithmic progress on two fundamental RL questions: <strong>credit assignment</strong> on the theory side, and <strong>asynchronous inference-trainer separation</strong> on the practical side. GRPO, SAO, FlashREINFORCE, BPO and KLPO each answer that pair differently.</p>
+</div>
+
+<nav class="post-toc">
+  <a href="#setup">1. Setup: why single-rollout agent RL?</a>
+  <a href="#sao">2. SAO: PPO without rollout groups</a>
+  <a href="#flash">3. FlashREINFORCE: critic-free single rollout</a>
+  <a href="#compare">4. SAO vs Flash</a>
+  <a href="#bpo">5. BPO: PMD + Bellman trajectory regression</a>
+  <a href="#klpo">6. KLPO: single-rollout PMD for agents</a>
+  <a href="#conclusion">7. Final synthesis</a>
+</nav>
+
+<section id="setup">
+  <h2>1. Setup: why single-rollout agent RL?</h2>
+
+  <div class="timeline">
+    <span><a href="https://arxiv.org/abs/2402.03300">GRPO</a><br><small>Feb 2024</small></span><b>→</b>
+    <span><a href="https://arxiv.org/abs/2607.07508">SAO</a><br><small>Jul 2026</small></span><b>→</b>
+    <span><a href="https://github.com/yifanzhang-pro/FlashREINFORCE">FlashREINFORCE</a><br><small>Sep 2026</small></span><b>→</b>
+    <span><a href="https://arxiv.org/abs/2609.15987">BPO</a><br><small>Sep 2026</small></span><b>→</b>
+    <span><a href="https://yifanzhang-pro.github.io/KLPO/">KLPO</a><br><small>Sep 2026</small></span>
+  </div>
+
+  <p>For a prompt \(x\), GRPO-like methods sample several complete responses from the same prompt and use their rewards to form a prompt-specific baseline. If the rewards are \(R_1,\ldots,R_G\), a basic group-centered signal is:</p>
+
+  <div class="mathbox">
+    \[
+    A_i \approx R_i-\frac{1}{G}\sum_{j=1}^{G}R_j.
+    \]
+  </div>
+
+  <p>The main appeal is that it is simple and critic-free: the group mean is a drop-in baseline, so no value network has to be trained, and value networks are hard to fit for long, sparsely rewarded trajectories. It also controls for task difficulty as a side effect, since the baseline is computed per prompt. But long-running agents make groups operationally expensive:</p>
+  <ul>
+    <li>one training prompt consumes \(G\) complete agent attempts;</li>
+    <li>a group cannot be finalized until slow siblings finish. This is the straggler problem, and the synchronization barrier it imposes is a major source of slowdown in RL training;</li>
+    <li>during those minutes, the learner may already have moved several policy versions ahead. This demands a correction for the sampling distribution, which we come back to throughout the post, and it is a known source of instability: naive off-policy training on stale data degrades or collapses. <a href="https://arxiv.org/abs/2510.01161">M2PO (2025)</a> traces much of that collapse to over-aggressive clipping of high-importance-weight tokens rather than to staleness itself, and shows that stale data can match on-policy data when the correction is handled carefully, but the failure mode is real either way.</li>
+  </ul>
+
+  <div class="callout"><strong>The single-rollout question:</strong> can we train from one complete trajectory per prompt, let trajectories finish asynchronously, and still get a stable learning signal?</div>
+
+  <div class="compare">
+    <div class="card">
+      <h3>SAO</h3>
+      <p>Keep PPO's actor-critic machinery. Replace the group baseline with a learned value function.</p>
+    </div>
+    <div class="card">
+      <h3>FlashREINFORCE</h3>
+      <p>Remove both the group and the critic. Use batch-centered terminal reward plus explicit stale-policy controls.</p>
+    </div>
+  </div>
+</section>
+
+<section id="sao">
+  <h2>2. SAO: PPO adapted to single-rollout asynchronous agents</h2>
+
+  <p>The most useful shorthand is: <strong>SAO is essentially actor-critic PPO in the single-rollout asynchronous-agent regime.</strong></p>
+
+  <p>Because it inherits that machinery wholesale, let's review the common objects from PPO first: the critic, the TD residual, and GAE. Only then do we look at what SAO changes.</p>
+
+  <h3>2.1 Critic, TD residual, and GAE</h3>
+  <p>The actor is \(\pi(a\mid s)\). The critic estimates expected future return \(V(s)\). A one-step TD residual is:</p>
+
+  <div class="mathbox">
+    \[
+    \delta_t=r_t+\gamma V(s_{t+1})-V(s_t).
+    \]
+  </div>
+
+  <p>With terminal-only rewards, most intermediate \(r_t=0\). GAE aggregates future TD residuals:</p>
+
+  <div class="mathbox">
+    \[
+    A_t
+    =
+    \delta_t
+    +(\gamma\lambda)\delta_{t+1}
+    +(\gamma\lambda)^2\delta_{t+2}
+    +\cdots,
+    \]
+    \[
+    A_t=\delta_t+\gamma\lambda A_{t+1}.
+    \]
+  </div>
+
+  <h4>A worked example on one trace</h4>
+  <p>Take a four-step trace with a terminal reward only, and set \(\gamma=1\), \(\lambda=0.5\). The agent succeeds, so \(r_4=R=1\) and \(r_1=r_2=r_3=0\). Suppose the critic reports the values in the second column. Everything else follows from the two formulas above.</p>
+
+  <table>
+    <thead>
+      <tr><th>\(t\)</th><th>\(V(s_t)\)</th><th>\(r_t\)</th><th>\(\delta_t=r_t+V(s_{t+1})-V(s_t)\)</th><th>\(A_t=\delta_t+0.5\,A_{t+1}\)</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>1</td><td>0.5</td><td>0</td><td>\(0+0.6-0.5=0.1\)</td><td>\(0.1+0.5(0.05)=\mathbf{0.125}\)</td></tr>
+      <tr><td>2</td><td>0.6</td><td>0</td><td>\(0+0.4-0.6=-0.2\)</td><td>\(-0.2+0.5(0.5)=\mathbf{0.05}\)</td></tr>
+      <tr><td>3</td><td>0.4</td><td>0</td><td>\(0+0.8-0.4=0.4\)</td><td>\(0.4+0.5(0.2)=\mathbf{0.5}\)</td></tr>
+      <tr><td>4</td><td>0.8</td><td>1</td><td>\(1+0-0.8=0.2\)</td><td>\(0.2+0.5(0)=\mathbf{0.2}\)</td></tr>
+      <tr><td>5</td><td>0 (terminal)</td><td>n/a</td><td>n/a</td><td>\(A_5=0\)</td></tr>
+    </tbody>
+  </table>
+
+  <p>Read the last column bottom-up: the recursion starts from \(A_5=0\) and walks backward, which is why each row needs the row below it.</p>
+
+  <p>Two things are worth noticing. First, one scalar reward at the end produced four different advantages, ranging from \(0.05\) to \(0.5\). Step 3 is credited ten times as strongly as step 2, because the critic says the state improved sharply there \((0.4\to0.8)\) while step 2 looked like a step backward \((0.6\to0.4)\). Second, \(\delta_2\) is negative even though the trace succeeded: the critic thought that move made things worse, and GAE only rescues it to a slightly positive \(A_2\) because the later steps went well.</p>
+
+  <p>As a sanity check, \(\lambda=1\) makes the recursion telescope back to \(A_t=R-V(s_t)\). Here that gives \(A_1=0.1-0.2+0.4+0.2=0.5=1-V(s_1)\). So \(\lambda\) interpolates between trusting the critic step by step \((\lambda=0)\) and ignoring it in favor of the realized return \((\lambda=1)\).</p>
+
+  <p>This per-token resolution is what the critic buys, and it is the main thing the critic-free methods later in this post give up.</p>
+
+  <h3>2.2 Skip-observation GAE</h3>
+  <p>An agent trajectory alternates between model-controlled actions and externally generated observations:</p>
+
+  <pre>MODEL:        run pytest
+ENVIRONMENT:  stack trace, file contents, tool output ...
+MODEL:        edit auth.py</pre>
+
+  <p>Write \(a_{i,N}\) for the last token of action \(i\), \(o_i\) for the observation block the environment returns, and \(a_{i+1,0}\) for the first token of the next action. Ordinary token-level GAE takes the value difference between <em>adjacent</em> tokens, so at this boundary it would compute:</p>
+
+  <div class="mathbox">
+    \[
+    \delta^{\text{naive}}
+    =
+    r_t+\gamma V(o_{i,\text{start}})-V(a_{i,N}).
+    \]
+  </div>
+
+  <p>SAO instead modifies the Bellman target to bypass the environment tokens and link the value of the current action directly to the value of the next one:</p>
+
+  <div class="mathbox">
+    \[
+    \delta
+    =
+    r_t+\gamma V(a_{i+1,0})-V(a_{i,N}),
+    \]
+    \[
+    \hat A(a_{i,N})
+    =
+    \delta+\gamma\lambda\,\hat A(a_{i+1,0}).
+    \]
+  </div>
+
+  <p>The entire difference is one term: \(V(o_{i,\text{start}})\) becomes \(V(a_{i+1,0})\). The recursion then chains action to action, and every token inside an action inherits its advantage from that chain. The paper's motivation is that the transition from the end of an action into an observation is discontinuous from the model's perspective, since the model did not generate \(o_i\); bridging the gap keeps the stochasticity of environment feedback out of the advantage estimate.</p>
+
+  <div class="note"><strong>“Skip observation” does not mean “ignore observation.”</strong> The next action still conditions on the tool output. It only means the externally generated tokens are not treated as decisions in the policy-gradient chain.</div>
+
+  <h4>How well is this component isolated?</h4>
+  <p><strong>The paper never ablates skip-observation GAE on its own.</strong> Its ablation tables vary the value-model training strategy, the critic update frequency, and the importance-sampling scheme, but no row turns the observation-bypassing Bellman target off and runs with plain token-level GAE through the observation. So the design is argued for, not measured in isolation.</p>
+
+  <p>The nearest experimental evidence is the granularity ablation (Table 5 and Figure 6 in the paper), which asks a related question: at what resolution should credit be assigned inside an agent step?</p>
+
+  <table>
+    <thead>
+      <tr><th>Credit granularity</th><th>AIME2025</th><th>BeyondAIME</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Step-level (average over the action)</td><td>85.8</td><td>60.5</td></tr>
+      <tr><td>Step-level (last token of the action)</td><td>87.3</td><td>62.8</td></tr>
+      <tr><td><strong>Token-level</strong></td><td><strong>89.8</strong></td><td><strong>66.8</strong></td></tr>
+    </tbody>
+  </table>
+
+  <div class="callout"><strong>Does this hold up at scale?</strong> SAO's reported experiments run on Qwen3-30B-A3B, where it trains stably for about a thousand steps and beats GRPO and its variants on agentic coding and reasoning benchmarks including SWE-Bench Verified, BeyondAIME and IMOAnswerBench. The authors also state that SAO was deployed in the agentic RL pipeline that post-trained GLM-5.2 (750B-A40B), but the paper reports no numbers or training curves for that run.</div>
+
+  <h3>2.3 Training the value model</h3>
+  <p>The critic is the fragile part of the design, and SAO spends a lot to keep it steady. The loss itself is ordinary regression onto the realized return, \(\mathcal L^{\mathrm{VF}}_\phi=\mathbb E\bigl[(V_\phi(q,y_{\lt t})-R)^2\bigr]\); the choices around it are what matter. During RL the attention modules of \(V_\phi\) are frozen and only the MoE projections train, worth about 7 points on AIME2025. The critic takes \(K=2\) updates per policy step rather than one, worth another 2 points on AIME2025 and 5 on BeyondAIME. GAE is length-adaptive, \(\lambda_{\text{policy}}=1-1/(\alpha l)\) with \(\alpha=1.5\), so the effective horizon scales with trajectory length \(l\). And a 10-step warmup plus a scaled-up value pretraining corpus answers the cold-start problem, since a fresh critic emits noise and single-rollout training has no group baseline to fall back on while it settles. On that last point the paper is silent about provenance: it says only that it significantly increased the scale of the value pretraining corpus, never what that corpus is or which policy generated it, so this is the one part of the recipe a reader cannot reproduce from the paper alone.</p>
+
+  <h3>2.4 One asynchronous batch of eight prompts</h3>
+  <table>
+    <thead><tr><th>Prompt</th><th>Rollout policy</th><th>Length</th><th>Reward</th></tr></thead>
+    <tbody>
+      <tr><td>x1</td><td>v100</td><td>800</td><td>1</td></tr>
+      <tr><td>x2</td><td>v100</td><td>1400</td><td>0</td></tr>
+      <tr><td>x3</td><td>v101</td><td>600</td><td>1</td></tr>
+      <tr><td>x4</td><td>v101</td><td>2200</td><td>0</td></tr>
+      <tr><td>x5</td><td>v102</td><td>900</td><td>1</td></tr>
+      <tr><td>x6</td><td>v102</td><td>1100</td><td>0</td></tr>
+      <tr><td>x7</td><td>v103</td><td>750</td><td>1</td></tr>
+      <tr><td>x8</td><td>v103</td><td>3000</td><td>0</td></tr>
+    </tbody>
+  </table>
+
+  <p>Suppose the learner is now at v105. Each rollout stored the probability under the behavior policy \(\mu\), while the learner recomputes the current probability under \(\pi\).</p>
+
+  <h3>2.5 Why token importance correction is \(\pi/\mu\)</h3>
+  <p>It is ordinary change of measure. For any quantity \(f(a)\):</p>
+
+  <div class="mathbox">
+    \[
+    \mathbb E_{a\sim\pi}[f(a)]
+    =
+    \mathbb E_{a\sim\mu}
+    \left[
+    \frac{\pi(a)}{\mu(a)}f(a)
+    \right].
+    \]
+  </div>
+
+  <p>Conditioned on a stored history \(h_t\), SAO therefore uses:</p>
+
+  <div class="mathbox">
+    \[
+    \rho_t
+    =
+    \frac{\pi_{\text{current}}(a_t\mid h_t)}
+         {\mu(a_t\mid h_t)}.
+    \]
+  </div>
+
+  <p>SAO then applies a direct double-sided mask, which the paper calls <strong>Direct double-sided Importance Sampling (DIS)</strong>. The trust region is the interval \([1-\epsilon_\ell,\,1+\epsilon_h]\) and the calibration function zeroes everything outside it:</p>
+
+  <div class="mathbox">
+    \[
+    f(x;\epsilon_\ell,\epsilon_h)
+    =
+    \begin{cases}
+    x, & 1-\epsilon_\ell\lt x\lt 1+\epsilon_h,\\
+    0, & \text{otherwise.}
+    \end{cases}
+    \]
+  </div>
+
+  <p>So a token whose ratio strays too far from one is removed from the policy gradient entirely, rather than merely PPO-clipped to the boundary. Note that the bounds are asymmetric and quite wide in practice: \(\epsilon_\ell=0.3,\ \epsilon_h=5.0\) for math reasoning with Python, and \(\epsilon_\ell=0.8,\ \epsilon_h=3.0\) for coding.</p>
+
+  <p>The subtle limitation is that \(\rho_t\) corrects the sampled action <em>given the stored history</em>. The history itself was generated by \(\mu\). Exact trajectory importance correction would involve a product of prefix ratios, which is generally unusably high-variance for long LLM trajectories.</p>
+</section>
+
+<section id="flash">
+  <h2>3. FlashREINFORCE: critic-free single-rollout RL</h2>
+
+  <p>Flash keeps the one-rollout asynchronous setting but removes \(V(s)\), TD errors, and GAE. The whole method fits in three pieces:</p>
+
+  <div class="compare">
+    <div class="card">
+      <h3>1. One-batch update with mean baseline</h3>
+      <div class="mathbox">
+        \[
+        \bar R=B^{-1}\sum_{j=1}^{B}R_j,
+        \qquad
+        A_i=R_i-\bar R.
+        \]
+      </div>
+      <p>Center one fresh batch, update once, discard. No group wait and no replay.</p>
+    </div>
+    <div class="card">
+      <h3>2. Sequence trust region</h3>
+      <div class="mathbox">
+        \[
+        m_i=\mathbf 1\!\left[\bar D_i\le\delta\right].
+        \]
+      </div>
+      <p>Accept the trajectory only if the mean sampled-action proxy is at or below the sequence threshold.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>3. Sample-mean loss instead of token-mean loss</h3>
+    <div class="mathbox">
+      \[
+      \widehat{\mathcal J}_{\text{Flash}}(\theta)
+      =
+      \frac{1}{B}\sum_{i=1}^{B}
+      \frac{m_i A_i}{T_i}
+      \sum_{t=1}^{T_i}
+      \frac{\pi_\theta(a_{i,t}\mid h_{i,t})}
+           {\mu_i(a_{i,t}\mid h_{i,t})}.
+      \]
+    </div>
+    <p class="tiny">\(A_i\): centered advantage. \(\pi_\theta/\mu_i\): learner-to-behavior ratio. \(T_i^{-1}\): within-trajectory average. \(m_i\): one admission decision for the complete trajectory.</p>
+  </div>
+
+  <p class="tiny"><strong>FlashREINFORCE at a glance.</strong> Each fresh batch supplies its own baseline, receives one update, and is discarded. Sequence trust screens complete trajectories; the sample mean limits length-amplified negative updates.</p>
+
+  <h3>3.1 One-Batch REINFORCE</h3>
+  <p>For a batch of independently completed trajectories, Flash uses a trajectory-level centered reward:</p>
+
+  <div class="mathbox">
+    \[
+    A_i=R_i-\bar R_{\text{batch}}.
+    \]
+  </div>
+
+  <p>All policy tokens in one trajectory receive this same basic scalar advantage. This is much coarser credit assignment than SAO.</p>
+
+  <h3>3.2 Token-level importance correction</h3>
+  <p>Stale trajectories are still collected under an older behavior policy \(\mu_i\), so Flash uses the same local change-of-measure ratio:</p>
+
+  <div class="mathbox">
+    \[
+    \rho_{i,t}
+    =
+    \frac{\pi_{\text{current}}(a_{i,t}\mid h_{i,t})}
+         {\mu_i(a_{i,t}\mid h_{i,t})}.
+    \]
+  </div>
+
+  <p>Again, this corrects the action distribution conditional on a stored history, not the probability of reaching that history.</p>
+
+  <h3>3.3 Sequence Trust Region</h3>
+  <p>This is the same gap we hit in the SAO section: the ratio corrects the sampled action given the prefix, but the prefix itself is already stale. Flash does not try to correct for that. Instead it adds a gate, a trajectory-level staleness test, and that test is worth unpacking. At each sampled token, let:</p>
+
+  <div class="mathbox">
+    \[
+    p_t=\mu(a_t\mid h_t),
+    \qquad
+    q_t=\pi(a_t\mid h_t).
+    \]
+  </div>
+
+  <p>Collapse the vocabulary into two events, \(\{a_t,\text{everything else}\}\), and compute the Bernoulli KL:</p>
+
+  <div class="mathbox">
+    \[
+    d_t
+    =
+    p_t\log\frac{p_t}{q_t}
+    +(1-p_t)\log\frac{1-p_t}{1-q_t}.
+    \]
+  </div>
+
+  <p>The Flash paper credits this proxy to DPPO (Qi et al., 2026). We will meet the same computational trick, collapsing the vocabulary to two events, again in BPO, where it falls out of a different derivation entirely.</p>
+
+  <p>The trajectory drift statistic is the mean:</p>
+
+  <div class="mathbox">
+    \[
+    \bar D_i=\frac{1}{T_i}\sum_{t=1}^{T_i}d_{i,t}.
+    \]
+  </div>
+
+  <p>The whole trajectory is admitted only if \(\bar D_i\) is below the trust threshold.</p>
+
+  <h4>Why a sum of token divergences is natural</h4>
+  <p>Autoregressive trajectory probabilities factorize, so log likelihood ratios and trajectory KL decompose additively across conditional token distributions. Flash then divides by \(T_i\) so the threshold measures average per-token staleness rather than automatically rejecting longer trajectories. Note that this runs contrary to Dr.GRPO and sits much closer to the original GRPO, which uses a sample-level normalization that actually makes the estimator biased.</p>
+
+  <h4>Why Bernoulli KL?</h4>
+  <p>Storing the full old-policy vocabulary distribution at every prefix is expensive. The Bernoulli coarsening needs only the sampled-token probability. By data processing, this coarsened KL is no larger than the full categorical KL, so it is a cheap proxy, not a certificate that the full distributions are close.</p>
+
+  <h3>3.4 Sample-Mean Optimization and the Dr.GRPO tension</h3>
+  <p>Flash first averages within each trajectory:</p>
+
+  <div class="mathbox">
+    \[
+    g_i
+    \approx
+    \frac{1}{T_i}
+    \sum_t
+    A_i\rho_{i,t}
+    \nabla\log\pi(a_{i,t}\mid h_{i,t}),
+    \]
+    \[
+    g_{\text{batch}}=\frac{1}{B}\sum_i g_i.
+    \]
+  </div>
+
+  <p>This gives each trajectory roughly equal outer weight, so one 10k-token failed wander does not automatically contribute twenty times the gradient mass of a 500-token failure.</p>
+
+  <p>Flash directly ablates this against token-mean aggregation and reports materially worse long-horizon behavior when removing the per-trajectory normalization. The Flash paper does not discuss Dr.GRPO, but the comparison is worth drawing: this is not the Dr.GRPO correction but its mirror image. Dr.GRPO argues that realized \(1/T_i\) normalization changes the episodic policy-gradient objective and can under-penalize long incorrect responses, and Flash accepts that reweighting anyway because it empirically stabilizes long agent rollouts.</p>
+
+  <p>For the sequence-level gate, the Flash paper cites <a href="https://arxiv.org/abs/2512.23075">Trust Region Masking for Long-Horizon LLM Reinforcement Learning</a> alongside Seq-MIS as motivation for sequence-level admission. TRM makes the same argument that local token-ratio control does not by itself control accumulated long-horizon distribution shift.</p>
+</section>
+
+<section id="compare">
+  <h2>4. SAO vs FlashREINFORCE</h2>
+
+  <table>
+    <thead>
+      <tr><th></th><th>SAO</th><th>FlashREINFORCE</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Core family</td><td>PPO / actor-critic</td><td>REINFORCE</td></tr>
+      <tr><td>Rollouts per prompt</td><td>1</td><td>1</td></tr>
+      <tr><td>Credit assignment</td><td>critic \(V(s)\) + GAE</td><td>batch-centered terminal reward</td></tr>
+      <tr><td>Agent observation tokens</td><td>excluded from the policy loss; the GAE recursion bridges over them (skip-observation)</td><td>excluded from the policy loss; no critic, so nothing to bridge</td></tr>
+      <tr><td>Local off-policy correction</td><td>\(\pi/\mu\)</td><td>\(\pi/\mu\)</td></tr>
+      <tr><td>When drift is too large</td><td>acts at the token level: offending tokens are masked out of the gradient, and there is no trajectory-level gate</td><td>acts at the trajectory level: tokens keep their ratio, and the Sequence Trust Region admits or rejects the whole trajectory</td></tr>
+      <tr><td>Length normalization</td><td>the paper writes the objective as a token-level expectation and does not spell out any per-trajectory divisor, so we read it as token-mean, under which a long trajectory contributes proportionally more gradient; length is handled inside GAE instead, through \(\lambda_{\text{policy}}=1-1/(\alpha l)\)</td><td>sample-mean: an explicit \(1/T_i\) per trajectory, so every trajectory carries equal weight whatever its length</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="bpo">
+  <h2>5. BPO: PMD + Bellman trajectory regression</h2>
+
+  <p>BPO changes the question being asked. A policy-gradient method fixes a parameterization and asks which direction in <em>parameter</em> space increases the objective; the answer is a step, and the parameterization is baked into it. PMD asks instead what the optimal policy itself should be, given the advantages and a KL leash on how far it may move from the behavior policy; the answer is a whole distribution, solved for exactly in <em>function</em> space, with no parameterization involved yet. BPO starts from the second question and only later asks a network to fit the answer.</p>
+
+  <h3>5.1 Policy Mirror Descent</h3>
+  <p>Fix the behavior/reference policy \(\mu\). At a state \(s\), PMD solves:</p>
+
+  <div class="mathbox">
+    \[
+    \max_{\pi}
+    \left\{
+    \mathbb E_{a\sim\pi}[A^\mu(s,a)]
+    -
+    \frac{1}{\eta}
+    D_{\mathrm{KL}}\!\left(\pi(\cdot\mid s)\,\|\,\mu(\cdot\mid s)\right)
+    \right\}.
+    \]
+  </div>
+
+  <p>The exact optimizer is:</p>
+
+  <div class="mathbox">
+    \[
+    \pi^+(a\mid s)
+    =
+    \frac{
+    \mu(a\mid s)\exp\!\left(\eta A^\mu(s,a)\right)
+    }{
+    Z_\mu(s)
+    }.
+    \]
+  </div>
+
+  <p>That normalizer \(Z_\mu(s)\) is not just bookkeeping: taking logs of the optimizer and averaging under \(a\sim\mu\), using \(\mathbb E_\mu[A^\mu]=0\), identifies it:</p>
+
+  <div class="mathbox">
+    \[
+    \log Z_\mu(s)
+    =
+    D_{\mathrm{KL}}
+    \!\left(
+    \mu(\cdot\mid s)\,\|\,\pi^+(\cdot\mid s)
+    \right).
+    \]
+  </div>
+
+  <p>Therefore the local PMD optimality condition is:</p>
+
+  <div class="mathbox">
+    \[
+    \eta A^\mu(s,a)
+    =
+    \log\frac{\pi^+(a\mid s)}{\mu(a\mid s)}
+    +
+    D_{\mathrm{KL}}
+    \!\left(
+    \mu(\cdot\mid s)\,\|\,\pi^+(\cdot\mid s)
+    \right).
+    \]
+  </div>
+
+  <p>Note that both KL directions appear: the forward \(D_{\mathrm{KL}}(\pi\|\mu)\) is what we chose to penalize, while the reverse \(D_{\mathrm{KL}}(\mu\|\pi^+)\) is not a second design choice at all, it simply falls out of the normalizer once the problem is solved. That reverse term is also what makes the summed residual behave well, which the theorem below relies on.</p>
+
+  <p>For small steps, KL-PMD is closely related to natural policy gradient: it takes a first-order improvement step in policy-distribution geometry rather than raw Euclidean parameter coordinates.</p>
+
+  <p>One clarification on the symbols, since they recur throughout. \(\mu\) is the frozen policy at the start of an update cycle: it generates the rollouts and anchors the PMD step. \(\pi_\theta\) is the trainable policy being moved toward \(\pi^+\). So \(\mu\) is not a target to imitate but the base point to improve from, and at the end of each cycle the roles hand off, with \(\mu_{k+1}\) set to the current \(\pi_\theta\).</p>
+
+  <h3>5.2 Bellman telescoping</h3>
+  <p>For terminal-reward autoregressive generation with deterministic token transitions:</p>
+
+  <div class="mathbox">
+    \[
+    A^\mu(s_t,a_t)
+    =
+    V^\mu(s_{t+1})-V^\mu(s_t).
+    \]
+  </div>
+
+  <p>Summing over a complete response telescopes:</p>
+
+  <div class="mathbox">
+    \[
+    \sum_{t=1}^{T}A^\mu(s_t,a_t)
+    =
+    R(x,y)-V^\mu(x).
+    \]
+  </div>
+
+  <p>BPO does <em>not</em> reconstruct the entire advantage vector at every prefix. Instead, it sums the local PMD equations along sampled trajectories so the left side no longer needs intermediate values.</p>
+
+  <p>But then, would this global constraint not relax the set of local PMD equations? One equation per trajectory is on its face a much weaker requirement than one equation per visited state, and you would expect the sum to admit policies that satisfy it while violating the individual terms, with positive residuals at some steps cancelling negative ones elsewhere. It turns out there is a neat central theorem for exactly this, which allows the reduction of constraints: the trajectory condition is not weaker, and enforcing it recovers the local solution. The next part states the theorem.</p>
+
+  <h3>5.3 Exact trajectory residual and theorem</h3>
+
+  <div class="mathbox">
+    \[
+    \delta(x,y;\pi,\mu)
+    =
+    \eta\bigl(R(x,y)-V^\mu(x)\bigr)
+    -
+    \sum_{t=1}^{T}
+    \left[
+    \log\frac{\pi(y_t\mid s_t)}{\mu(y_t\mid s_t)}
+    +
+    D_{\mathrm{KL}}
+    \!\left(
+    \mu(\cdot\mid s_t)\,\|\,\pi(\cdot\mid s_t)
+    \right)
+    \right].
+    \]
+  </div>
+
+  <p>The population regression objective is:</p>
+
+  <div class="mathbox">
+    \[
+    \mathcal L(\pi)
+    =
+    \mathbb E_{x,\;y\sim\mu}
+    \left[
+    \frac{\phi(x)}{2\eta}
+    \delta(x,y;\pi,\mu)^2
+    \right].
+    \]
+  </div>
+
+  <p>Under the paper's finite-horizon terminal-reward autoregressive setup, deterministic token transitions, positive prompt weights, appropriate support conditions, and exact population expectations, the unique induced completion-distribution minimizer of this trajectory loss is the original PMD solution on states reachable under \(\mu\).</p>
+
+  <h3>5.4 From trajectory condition to neural-network update</h3>
+  <p>Parameterize \(\pi=\pi_\theta\) and write \(\delta_\theta=\delta(x,y;\pi_\theta,\mu)\) for the trajectory residual above with the network in place of \(\pi\). The loss on a single trajectory is just that residual squared:</p>
+
+  <div class="mathbox">
+    \[
+    \mathcal L_\theta(x,y)
+    =
+    \frac{\phi(x)}{2\eta}\,\delta_\theta(x,y)^2 ,
+    \qquad
+    \delta_\theta
+    =
+    \eta\bigl(R-V^\mu(x)\bigr)
+    -
+    \sum_{t=1}^{T}
+    \left[
+    \log\frac{\pi_\theta(y_t\mid s_t)}{\mu(y_t\mid s_t)}
+    +
+    D_{\mathrm{KL}}\!\left(\mu(\cdot\mid s_t)\,\|\,\pi_\theta(\cdot\mid s_t)\right)
+    \right].
+    \]
+  </div>
+
+  <p>Only \(\delta_\theta\) depends on \(\theta\), so the chain rule gives \(\nabla_\theta\mathcal L_\theta=\frac{\phi(x)}{\eta}\delta_\theta\nabla_\theta\delta_\theta\). Differentiating the residual term by term leaves:</p>
+
+  <div class="mathbox">
+    \[
+    \nabla_\theta \mathcal L_\theta
+    =
+    -\frac{\phi(x)\delta_\theta}{\eta}
+    \sum_t
+    \nabla_\theta
+    \left[
+    \log\pi_\theta(y_t\mid s_t)
+    +
+    D_{\mathrm{KL}}(\mu\|\pi_\theta)
+    \right].
+    \]
+  </div>
+
+  <p>So BPO's trajectory equation becomes a completely ordinary differentiable regression loss. Backpropagation changes the LLM parameters to reduce the PMD residual.</p>
+
+  <h3>5.5 Exact BPO versus practical BPO</h3>
+  <p>Everything so far is exact, which is the problem. Write the residual out once more and look at what it asks for:</p>
+
+  <div class="mathbox">
+    \[
+    \delta_\theta
+    =
+    \eta\bigl(R-V^\mu(x)\bigr)
+    -
+    \sum_{t=1}^{T}
+    \left[
+    \log\frac{\pi_\theta(y_t\mid s_t)}{\mu(y_t\mid s_t)}
+    +
+    D_{\mathrm{KL}}\!\left(\mu(\cdot\mid s_t)\,\|\,\pi_\theta(\cdot\mid s_t)\right)
+    \right].
+    \]
+  </div>
+
+  <p>Two pieces are expensive. \(V^\mu(x)\) is the value of the prompt under the behavior policy, which a critic-free method does not have. And the reverse KL at each step is a sum over the entire vocabulary, so evaluating it at every prefix means holding or recomputing \(\mu\)'s full next-token distribution at all \(T\) positions, not just the probability of the token that was actually sampled. On top of that, \(\delta_\theta\) depends on \(\theta\), so it is not computed once and reused: the coefficient moves at every gradient step.</p>
+
+  <p>The practical algorithm therefore linearizes around \(\pi=\mu\). At that point all ratio/KL terms vanish, so:</p>
+
+  <div class="mathbox">
+    \[
+    \frac{\delta(\mu,\mu)}{\eta}
+    =
+    R-V^\mu(x).
+    \]
+  </div>
+
+  <p>Thus the exact changing trajectory coefficient is replaced by an advantage-like scalar \(R-V^\mu(x)\).</p>
+
+  <p>The paper estimates \(V^\mu(x)\) from same-prompt groups rather than a learned prompt-value model. The main experiments use 16 responses per prompt, so practical BPO is not a single-rollout method.</p>
+
+  <h3>5.6 Coarsening the reverse KL to two events</h3>
+  <p>That leaves the other expensive term, the vocabulary-sized reverse KL. Practical BPO replaces it with a Bernoulli KL over the two events \(\{\text{sampled token},\text{everything else}\}\), which needs only the sampled token's probability under each policy. Let:</p>
+
+  <div class="mathbox">
+    \[
+    p=\mu(y_t\mid s_t),
+    \qquad
+    q=\pi_\theta(y_t\mid s_t).
+    \]
+  </div>
+
+  <p>Then:</p>
+
+  <div class="mathbox">
+    \[
+    \nabla_\theta
+    \left[
+    \log q
+    +
+    D_{\mathrm{KL}}^{\mathrm{bin}}
+    ([p,1-p]\|[q,1-q])
+    \right]
+    =
+    \frac{1-p}{1-q}
+    \nabla_\theta\log q.
+    \]
+  </div>
+
+  <p>The practical smoothed weight is therefore:</p>
+
+  <div class="mathbox">
+    \[
+    \omega_t
+    =
+    \frac{1+\epsilon-\mu(y_t\mid s_t)}
+         {1+\epsilon-\pi_\theta(y_t\mid s_t)}.
+    \]
+  </div>
+
+  <div class="compare">
+    <div class="card">
+      <h3>SAO / Flash</h3>
+      <div class="mathbox">\[
+      \frac{\pi(a\mid s)}{\mu(a\mid s)}
+      \]</div>
+      <p>Importance sampling: change of measure.</p>
+    </div>
+    <div class="card">
+      <h3>BPO</h3>
+      <div class="mathbox">\[
+      \frac{1-\mu(a\mid s)}{1-\pi(a\mid s)}
+      \]</div>
+      <p>Derivative of the PMD condition after binary-KL approximation.</p>
+    </div>
+  </div>
+
+  <h3>5.7 Practical BPO loop</h3>
+  <pre>freeze mu_k
+  ↓
+sample G responses per prompt
+  ↓
+terminal verifier rewards
+  ↓
+group-normalized response advantage Â_i
+  ↓
+optimize pi_theta
+
+per sampled token:
+  p = mu_k(token | prefix)
+  q = pi_theta(token | prefix)
+  omega = (1 + eps - p) / (1 + eps - q)
+
+  update ~
+    - Â_i
+    × mask
+    × min(omega, C)
+    × grad log pi_theta(token | prefix)
+
+after update cycle:
+  next rollout policy ← pi_theta</pre>
+
+  <div class="callout"><strong>BPO in one sentence:</strong> exact PMD can be represented as critic-free trajectory regression by Bellman telescoping; practical BPO then approximates that exact regression into a group-based token loss with a complementary-probability correction.</div>
+</section>
+
+<section id="klpo">
+  <h2>6. KLPO: single-rollout PMD for agents</h2>
+
+  <p><strong>Core idea:</strong> KLPO keeps the same local PMD root as BPO, but its default route differentiates the local PMD regression before doing any Bellman telescope. The derivative produces a centered policy score; that zero-mean score removes action-independent value terms, allowing one realized terminal return to replace the unknown critic in expectation.</p>
+
+  <h3>6.1 Historical sampler and current trainer</h3>
+  <div class="mathbox">
+    \[
+    q=\text{historical sampler that generated the trajectory},
+    \qquad
+    p_\theta=\text{current trainer}.
+    \]
+  </div>
+  <p>A long agent trajectory may have been collected several learner versions ago. KLPO keeps the sampler identity and its action probabilities fixed as part of the record.</p>
+
+  <h3>6.2 Local PMD regression</h3>
+  <p class="tiny">The KLPO release presents only the final loss (Section 6.6). The PMD-style residual below is our reconstruction of the route from the local PMD condition to that loss.</p>
+  <div class="mathbox">
+    \[
+    p^+(a\mid s)\propto q(a\mid s)
+    \exp\!\left(\frac{A^q(s,a)}{\beta}\right),
+    \qquad
+    \ell_\theta(s,a)=
+    \log\frac{p_\theta(a\mid s)}{q(a\mid s)}.
+    \]
+  </div>
+  <p>Profiling out the state-only normalizer yields a local residual of the form:</p>
+  <div class="mathbox">
+    \[
+    \delta_\theta(s,a)
+    =
+    \frac{A^q(s,a)}{\beta}
+    -
+    \ell_\theta(s,a)
+    -
+    D_{\mathrm{KL}}\!\left(q(\cdot\mid s)\,\|\,p_\theta(\cdot\mid s)\right).
+    \]
+  </div>
+
+  <h3>6.3 Differentiate first: score centering</h3>
+  <p>Let \(g_\theta(s,a)=\nabla_\theta\log p_\theta(a\mid s)\). Because \(q\) is fixed,</p>
+  <div class="mathbox">
+    \[
+    \nabla_\theta D_{\mathrm{KL}}(q\|p_\theta)
+    =
+    -\mathbb E_{v\sim q(\cdot\mid s)}[g_\theta(s,v)].
+    \]
+  </div>
+  <p>Therefore the derivative uses the centered score:</p>
+  <div class="mathbox">
+    \[
+    \widetilde g_\theta(s,a)
+    =
+    g_\theta(s,a)
+    -
+    \mathbb E_{v\sim q(\cdot\mid s)}[g_\theta(s,v)],
+    \qquad
+    \mathbb E_q[\widetilde g_\theta\mid s]=0.
+    \]
+  </div>
+
+  <h3>6.4 Why the critic disappears</h3>
+  <p>Since \(A^q(s,a)=Q^q(s,a)-V^q(s)\) and \(V^q(s)\) is independent of the sampled action, the centered score kills the value baseline in expectation:</p>
+  <div class="mathbox">
+    \[
+    \mathbb E_q[V^q(s)\widetilde g_\theta(s,a)\mid s]=0.
+    \]
+  </div>
+  <p>A complete rollout continuing under \(q\) satisfies \(\mathbb E[R\mid s,a]=Q^q(s,a)\). Hence one realized terminal return is an unbiased sample of the remaining action value inside the expected gradient:</p>
+  <div class="mathbox">
+    \[
+    \boxed{
+    \nabla_\theta\mathcal L_{\mathrm{tok}}
+    =
+    -
+    \mathbb E
+    \left[
+    \left(
+    R-\beta\log\frac{p_\theta(a\mid s)}{q(a\mid s)}
+    \right)
+    \widetilde g_\theta(s,a)
+    \right].
+    }
+    \]
+  </div>
+  <p>No learned critic, no prompt value \(V^q(x)\), and no same-prompt response group are required by the default token-regression route.</p>
+
+  <p>The only thing left in a token-level PMD condition loss gradient is estimating the \(\widetilde g_\theta\) term, and that is directly Monte Carlo.</p>
+
+  <h3>6.5 MC-KL: estimate the centered score with auxiliary tokens</h3>
+  <p>The remaining conditional expectation is estimated with \(M\) independent one-token draws at the same visited prefix:</p>
+  <div class="mathbox">
+    \[
+    v_1,\ldots,v_M\overset{\mathrm{iid}}{\sim}q(\cdot\mid s),
+    \]
+    \[
+    \widehat{\widetilde g}_\theta(s,a)
+    =
+    \nabla\log p_\theta(a\mid s)
+    -
+    \frac1M\sum_{j=1}^M\nabla\log p_\theta(v_j\mid s).
+    \]
+  </div>
+  <p>These auxiliary samples do not advance the environment, call tools, or receive rewards. Token regression permits \(M\ge1\); the released launcher defaults to \(M=128\).</p>
+
+  <h3>6.6 Backprop-friendly default loss</h3>
+  <p>For a policy token \(u\):</p>
+  <div class="mathbox">
+    \[
+    \ell_u
+    =
+    \log p_\theta(a_u\mid s_u)-\log q(a_u\mid s_u),
+    \]
+    \[
+    h_u=R-\beta\ell_u,
+    \]
+    \[
+    z_u=
+    \log p_\theta(a_u\mid s_u)
+    -
+    \frac1M\sum_{j=1}^{M}\log p_\theta(v_{u,j}\mid s_u).
+    \]
+  </div>
+  <p>The default surrogate is:</p>
+  <div class="mathbox">
+    \[
+    \boxed{
+    \mathcal L_{\mathrm{KLPO}}
+    =
+    -\frac1B
+    \sum_{i=1}^{B}
+    \sum_{u\in\text{policy tokens of }i}
+    \operatorname{sg}(h_{i,u})\,z_{i,u}.
+    }
+    \]
+  </div>
+  <p>The coefficient uses stop-gradient. KLPO sums over policy tokens and averages over complete responses; the exact default route does not add Flash's realized \(1/T_i\) trajectory normalization.</p>
+
+  <h3>6.7 Concrete coding-agent walkthrough</h3>
+  <p>Suppose the task is <em>“Fix the authentication bug and make the tests pass.”</em> Historical sampler \(q=\) v100 produces one complete agent attempt:</p>
+
+  <pre>STATE s1: issue + repo
+MODEL q: inspect auth.py
+TOOL: file contents
+
+STATE s2: issue + repo + file output
+MODEL q: run failing test
+TOOL: pytest failure
+
+STATE s3: full history
+MODEL q: edit code, rerun tests
+TOOL: tests pass
+
+TERMINAL REWARD: R = 1</pre>
+
+  <p><strong>Collection step.</strong> For every model-generated policy token \(a_u\), keep the visited prefix \(s_u\), the historical sampler/version, and \(q(a_u\mid s_u)\). Tool/environment tokens remain context and are not policy-loss actions.</p>
+
+  <p>At every visited policy prefix, obtain auxiliary one-token samples \(v_{u,1},\dots,v_{u,M}\sim q(\cdot\mid s_u)\). They stop after one token.</p>
+
+  <p><strong>Training step.</strong> The learner may now be v107, \(p_\theta\). Recompute current trainer log-probabilities for the real action and the auxiliary actions. For one token, if</p>
+
+  <div class="mathbox">
+    \[
+    q(a_u\mid s_u)=0.20,
+    \qquad
+    p_\theta(a_u\mid s_u)=0.25,
+    \]
+  </div>
+
+  <p>then</p>
+
+  <div class="mathbox">
+    \[
+    \ell_u=\log\frac{0.25}{0.20}=\log 1.25,
+    \qquad
+    h_u=1-\beta\log 1.25.
+    \]
+  </div>
+
+  <p>Compute</p>
+  <div class="mathbox">
+    \[
+    z_u=
+    \log p_\theta(a_u\mid s_u)
+    -
+    \frac1M\sum_j\log p_\theta(v_{u,j}\mid s_u),
+    \]
+  </div>
+  <p>and contribute \(-\operatorname{sg}(h_u)z_u\). Repeat for every model-generated token, sum over tokens, then average across the independently completed responses in the learner batch. The prompts need not match.</p>
+
+  <p>This walkthrough had \(R=1\), but a failed attempt still produces signal. With \(R=0\) the coefficient does not vanish, it becomes \(h_u=-\beta\log\frac{p_\theta(a_u\mid s_u)}{q(a_u\mid s_u)}\), so the trainer-to-sampler log ratio supplies a PMD-derived restoring term even on a zero-reward rollout.</p>
+
+  <h3>6.8 Where is the off-policy correction?</h3>
+  <p>Default KLPO does not use a multiplicative importance ratio \(p_\theta/q\). The historical sampler appears additively through:</p>
+  <ul>
+    <li>the log ratio \(\log(p_\theta/q)\) inside the feedback coefficient;</li>
+    <li>the \(q\)-conditioned score mean used for centering.</li>
+  </ul>
+  <p>This is because KLPO fits a PMD optimality condition using data sampled from \(q\); it is not rewriting an expectation under \(p_\theta\) as an expectation under \(q\) via importance sampling.</p>
+
+  <p>Three loose ends. On replay, trainer-dependent scores and log ratios have to be recomputed as \(p_\theta\) changes, and the report states that fresh auxiliary draws from the historical sampler preserve the conditional-unbiasedness argument after adaptive learner updates, so reusing a fixed finite auxiliary record after adapting to it is an empirical surrogate. On alternatives, KLPO also implements a sequence-regression route closer to BPO, where Bellman telescoping under deterministic token transitions and terminal rewards yields a sequence objective, though for MC-KL that route needs \(M\ge2\) and a leave-one-out residual construction; the released default is <strong>token regression plus MC-KL</strong>. On status, as of the September 20, 2026 revision the release contains the theory, the loss implementation, CPU verification and native training integration, but the authors state that GPU training and paper-scale benchmark reproduction have not yet been validated, and the current Molt launcher is synchronous even though the method is designed for asynchronous off-policy use.</p>
+
+  <div class="callout"><strong>KLPO in one sentence:</strong> fit the local PMD log-ratio condition on one historical trajectory, differentiate it to obtain a centered-score gradient, replace \(Q^q\) with the realized terminal return, and estimate the sampler-conditioned score mean using auxiliary one-token draws instead of extra complete rollouts.</div>
+</section>
+
+<section id="conclusion">
+  <h2>7. Final synthesis</h2>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Method</th>
+        <th>Complete rollouts / prompt</th>
+        <th>Credit signal</th>
+        <th>Stale/off-policy handling</th>
+        <th>Main idea</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>GRPO</td><td>many</td><td>same-prompt group reward</td><td>ratio/PPO-style machinery</td><td>avoid critic with rollout groups</td></tr>
+      <tr><td>SAO</td><td>1</td><td>critic + skip-observation GAE</td><td>\(\pi/\mu\) + hard stale-token mask</td><td>single-rollout asynchronous PPO</td></tr>
+      <tr><td>FlashREINFORCE</td><td>1</td><td>batch-centered terminal reward</td><td>token IS + sequence trust gate</td><td>critic-free async REINFORCE</td></tr>
+      <tr><td>BPO</td><td>many in practical paper</td><td>PMD/Bellman trajectory regression; group estimate of \(V^\mu(x)\)</td><td>PMD complement weight after binary-KL approximation</td><td>critic-free PMD via Bellman structure</td></tr>
+      <tr><td>KLPO</td><td>1</td><td>terminal return + centered local PMD regression</td><td>log \(p/q\) + sampler-conditioned score centering</td><td>single-rollout PMD without critic or reward group</td></tr>
+    </tbody>
+  </table>
+
+  <h3>Two different ways to remove the critic</h3>
+  <div class="compare">
+    <div class="card">
+      <h3>BPO</h3>
+      <p>Sum local PMD equations first.</p>
+      <div class="mathbox">
+        \[
+        \sum_t A_t=R-V(x)
+        \]
+      </div>
+      <p>Bellman telescoping removes intermediate values.</p>
+    </div>
+    <div class="card">
+      <h3>KLPO</h3>
+      <p>Differentiate the local PMD regression first.</p>
+      <div class="mathbox">
+        \[
+        \mathbb E_q[\widetilde g\mid s]=0
+        \]
+      </div>
+      <p>Score centering removes action-independent value terms from the expected gradient.</p>
+    </div>
+  </div>
+
+  <p><strong>SAO and Flash</strong> are easiest to read as different ways to make a policy-gradient estimator work for one long stale rollout. <strong>BPO and KLPO</strong> shift the perspective: specify the KL-regularized policy-improvement equation first, then derive a trainable regression whose gradient realizes that improvement.</p>
+
+  <p>The central practical tradeoff in KLPO is that “single rollout” means one <strong>environment-interacting completion</strong> per prompt, not one sample total. It replaces sibling trajectories with potentially many auxiliary one-token samples at visited prefixes. Whether this is a favorable systems trade at scale is still an empirical question.</p>
+
+  <p>Empirically, SAO and Flash currently have concrete agent-training results; BPO has a cleaner exact PMD theorem plus reasoning experiments; KLPO has the newest single-rollout PMD formulation, but paper-scale GPU benchmark validation is not yet established.</p>
+</section>
+
+
+<section class="sources">
+  <h2>Sources</h2>
+  <ol>
+    <li><a href="https://arxiv.org/abs/2402.03300">DeepSeekMath / GRPO, 2024.</a></li>
+    <li><a href="https://arxiv.org/abs/2510.01161">Prosperity before Collapse: How Far Can Off-Policy RL Reach with Stale Data on LLMs? (M2PO), 2025.</a></li>
+    <li><a href="https://arxiv.org/abs/2607.07508">Single-Rollout Asynchronous Optimization for Agentic Reinforcement Learning (SAO), 2026.</a></li>
+    <li><a href="https://github.com/yifanzhang-pro/FlashREINFORCE">FlashREINFORCE repository and experiment notes, 2026.</a></li>
+    <li><a href="https://arxiv.org/abs/2512.23075">Trust Region Masking for Long-Horizon LLM Reinforcement Learning, 2025.</a></li>
+    <li><a href="https://arxiv.org/abs/2503.20783">Dr.GRPO / length-normalization discussion, 2025.</a></li>
+    <li><a href="https://arxiv.org/abs/2609.15987">Bellman Policy Optimization (BPO), 2026.</a></li>
+  
+    <li><a href="https://yifanzhang-pro.github.io/KLPO/">KL-Regularized Policy Optimization for Critic-Free Agentic Reinforcement Learning (KLPO), technical report/project page, updated Sep. 20, 2026.</a></li>
+    <li><a href="https://github.com/yifanzhang-pro/KLPO">KLPO official implementation, algorithm reference, and training notes.</a></li>
+  </ol>
+</section>
+
+<div class="post-footer-rule">
+  <div>GRPO → SAO → FlashREINFORCE → BPO → KLPO</div>
+  <div>Sep 2026</div>
+</div>

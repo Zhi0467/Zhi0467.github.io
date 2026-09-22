@@ -1,0 +1,986 @@
+/* ==========================================================================
+   Retro "System 7" paper skin
+   --------------------------------------------------------------------------
+   Everything here is scoped to `html.style-retro`, so the classic
+   AcademicPages look stays intact when the style toggle is set to "classic".
+   Imported last from assets/css/main.scss so it wins over the defaults and
+   over _dark-mode.scss.
+   ========================================================================== */
+
+$retro-paper        : #f3f0e7;
+$retro-paper-2      : #e8e5dc;
+$retro-ink          : #111;
+$retro-muted        : #5b5b57;
+$retro-shadow       : #77746c;
+$retro-white        : #fffdf7;
+$retro-code-bg      : #eceae3;
+$retro-code-border  : #bbb7ae;
+$retro-bevel-light  : #fff;
+$retro-bevel-dark   : #aaa79e;
+$retro-th           : #dedbd2;
+
+$retro-display : Chicago, Geneva, "Helvetica Neue", Helvetica, Arial, sans-serif;
+$retro-body    : Geneva, "Helvetica Neue", Helvetica, Arial, sans-serif;
+$retro-mono    : Monaco, Menlo, Consolas, "Courier New", monospace;
+
+/* _links.scss and _dark-mode.scss style links through `a:not(#goog-wm-sb):not(.btn)`.
+   The id inside :not() gives those rules id-level specificity, so every retro link
+   rule has to carry the same qualifier to win. */
+$a: "a:not(#goog-wm-sb):not(.btn)";
+
+$retro-d-paper   : #17160f;
+$retro-d-surface : #201e17;
+$retro-d-raised  : #2a2820;
+$retro-d-ink     : #ece4d0;
+$retro-d-muted   : #a9a08c;
+$retro-d-line    : #ece4d0;
+$retro-d-shadow  : #000;
+
+@mixin retro-bevel {
+  box-shadow: inset 2px 2px 0 $retro-bevel-light, inset -2px -2px 0 $retro-bevel-dark;
+}
+
+@mixin retro-box {
+  border: 2px solid $retro-ink;
+  background: $retro-white;
+}
+
+/*
+   Window chrome markup is inert unless the retro skin is on
+   ========================================================================== */
+
+.titlebar {
+  display: none;
+}
+
+.desktop {
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+
+.window {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+
+/*
+   Dark variant of the retro skin
+   ========================================================================== */
+
+@mixin retro-dark {
+  &,
+  body {
+    background: $retro-d-paper;
+    color: $retro-d-ink;
+  }
+
+  body {
+    background:
+      linear-gradient(90deg, rgba(255, 255, 255, 0.022) 1px, transparent 1px) 0 0 / 8px 8px,
+      linear-gradient(rgba(255, 255, 255, 0.016) 1px, transparent 1px) 0 0 / 8px 8px,
+      $retro-d-paper;
+  }
+
+  .window {
+    background: $retro-d-surface;
+    border-color: $retro-d-line;
+    box-shadow: 8px 8px 0 $retro-d-shadow;
+  }
+
+  .titlebar {
+    border-color: $retro-d-line;
+    background: repeating-linear-gradient(
+      to bottom,
+      $retro-d-surface 0, $retro-d-surface 2px,
+      $retro-d-ink 2px, $retro-d-ink 3px,
+      $retro-d-surface 3px, $retro-d-surface 5px
+    );
+  }
+
+  .titlebar__title {
+    background: $retro-d-surface;
+    color: $retro-d-ink;
+  }
+
+  .titlebar__box {
+    border-color: $retro-d-line;
+    background: $retro-d-raised;
+    box-shadow: inset 2px 2px 0 #3d3a30;
+  }
+
+  .masthead {
+    background: $retro-d-raised;
+    border-color: $retro-d-line;
+  }
+
+  /* _dark-mode.scss paints these with its own page background, which shows
+     as a patch against the retro window surface. */
+  .author__urls,
+  .page__comments-form,
+  .modal {
+    background: transparent;
+  }
+
+  .greedy-nav {
+    background: transparent;
+
+    #{$a} {
+      color: $retro-d-ink;
+
+      &:hover {
+        background: $retro-d-ink;
+        color: $retro-d-paper;
+      }
+    }
+
+    button {
+      background-color: $retro-d-ink;
+      color: $retro-d-paper !important;
+    }
+
+    .hidden-links {
+      background: $retro-d-raised;
+      border-color: $retro-d-line;
+      box-shadow: 4px 4px 0 $retro-d-shadow;
+
+      &:before { border-color: $retro-d-line transparent; }
+      &:after { border-color: $retro-d-raised transparent; }
+
+      #{$a}:hover {
+        background: $retro-d-ink;
+        color: $retro-d-paper;
+      }
+    }
+  }
+
+  .masthead__menu-item--active #{$a} {
+    background: $retro-d-ink;
+    color: $retro-d-paper;
+  }
+
+  .theme-toggle,
+  .style-toggle {
+    border-color: $retro-d-line;
+    background: $retro-d-raised;
+    color: $retro-d-ink;
+
+    &:hover,
+    &:focus {
+      background: $retro-d-ink;
+      color: $retro-d-paper;
+    }
+  }
+
+  h1, h2, h3, h4, h5, h6,
+  .page__title,
+  .titlebar__title {
+    color: $retro-d-ink;
+  }
+
+  hr,
+  table, th, td,
+  .page__content h2,
+  .page__share,
+  .page__comments-title,
+  .page__related-title,
+  .page__meta-title,
+  .archive__subtitle,
+  .page__footer,
+  .archive__item--blog,
+  .archive__item-teaser,
+  .blog__item .archive__item-teaser,
+  .sidebar .author__avatar img {
+    border-color: $retro-d-line;
+  }
+
+  .page__meta,
+  .page__date,
+  .page__meta a,
+  .page__footer,
+  .page__footer .fas,
+  .page__footer .fab,
+  .page__footer .far,
+  figcaption,
+  .footnote,
+  .footnotes,
+  .page__content .tiny,
+  .page__content .post-footer-rule {
+    color: $retro-d-muted;
+  }
+
+  .page__content #{$a},
+  .page__footer #{$a},
+  .archive__item-title #{$a} {
+    color: $retro-d-ink;
+
+    &:hover {
+      background: $retro-d-ink;
+      color: $retro-d-paper;
+    }
+  }
+
+  code,
+  p > code,
+  a > code,
+  li > code,
+  td > code,
+  figcaption > code {
+    border-color: #4a4638;
+    background: $retro-d-raised;
+    color: $retro-d-ink;
+  }
+
+  pre,
+  .highlight,
+  .highlighter-rouge .highlight,
+  div.highlighter-rouge {
+    border-color: $retro-d-line;
+    background: #0d0c08;
+    color: #ece4d0;
+  }
+
+  table { background: $retro-d-surface; }
+  th { background: $retro-d-raised; color: $retro-d-ink; }
+  tbody tr:nth-child(even) { background: $retro-d-surface; }
+
+  .btn,
+  #goog-wm-sb,
+  .page__taxonomy #{$a}.page__taxonomy-item {
+    background-color: $retro-d-raised;
+    border-color: $retro-d-line;
+    color: $retro-d-ink !important;
+    box-shadow: none;
+
+    &:hover {
+      background-color: $retro-d-ink;
+      color: $retro-d-paper !important;
+    }
+  }
+
+  .archive__item--blog {
+    background: $retro-d-surface;
+    box-shadow: 4px 4px 0 $retro-d-shadow;
+  }
+
+  .sidebar .author__avatar img {
+    box-shadow: 4px 4px 0 $retro-d-shadow;
+  }
+
+  .page__footer { background-color: $retro-d-raised; }
+
+  .page__content {
+    .hero,
+    .callout,
+    .notice {
+      background: $retro-d-raised;
+      border-color: $retro-d-line;
+      box-shadow: inset 2px 2px 0 #3d3a30, inset -2px -2px 0 #0e0d09;
+    }
+
+    .note {
+      border-left-color: $retro-d-line;
+      background: $retro-d-raised;
+    }
+
+    .post-toc,
+    .mathbox,
+    .card,
+    .timeline span {
+      background: $retro-d-surface;
+      border-color: $retro-d-line;
+    }
+
+    .post-toc #{$a} { border-bottom-color: $retro-d-line; }
+
+    blockquote {
+      border-left-color: $retro-d-line;
+      background: $retro-d-raised;
+    }
+
+    img { border-color: $retro-d-line; }
+  }
+
+  .notice,
+  .notice--primary,
+  .notice--info,
+  .notice--warning,
+  .notice--success,
+  .notice--danger {
+    background: $retro-d-raised;
+    border-color: $retro-d-line;
+    color: $retro-d-ink;
+  }
+}
+
+/*
+   The skin itself (`&` is the <html> element)
+   ========================================================================== */
+
+@mixin retro-skin {
+  background-color: $retro-paper;
+  font-size: 16px;
+
+  @include breakpoint($medium) {
+    font-size: 16px;
+  }
+
+  body {
+    padding: 0;
+    background:
+      linear-gradient(90deg, rgba(0, 0, 0, 0.025) 1px, transparent 1px) 0 0 / 8px 8px,
+      linear-gradient(rgba(0, 0, 0, 0.018) 1px, transparent 1px) 0 0 / 8px 8px,
+      $retro-paper;
+    color: $retro-ink;
+    font-family: $retro-body;
+    font-size: 16px;
+    line-height: 1.56;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: $retro-display;
+    font-weight: bold;
+    letter-spacing: -0.01em;
+  }
+
+  /* Window chrome */
+
+  .desktop {
+    max-width: 1100px;
+    margin: 24px auto 64px;
+    padding: 0 18px;
+  }
+
+  .window {
+    position: relative;
+    background: $retro-white;
+    border: 2px solid $retro-ink;
+    box-shadow: 8px 8px 0 $retro-shadow;
+  }
+
+  .titlebar {
+    display: grid;
+    grid-template-columns: 32px minmax(0, 1fr) 32px;
+    align-items: center;
+    min-height: 34px;
+    border-bottom: 2px solid $retro-ink;
+    background: repeating-linear-gradient(
+      to bottom,
+      #fff 0, #fff 2px,
+      #111 2px, #111 3px,
+      #fff 3px, #fff 5px
+    );
+  }
+
+  .titlebar__box {
+    display: block;
+    width: 18px;
+    height: 18px;
+    margin: auto;
+    border: 2px solid $retro-ink;
+    background: #fff;
+    box-shadow: inset 2px 2px 0 #d2d2d2;
+  }
+
+  .titlebar__title {
+    width: max-content;
+    max-width: 100%;
+    margin: 0 auto;
+    overflow-wrap: break-word;
+    padding: 2px 10px;
+    background: #fff;
+    color: $retro-ink;
+    font-family: $retro-display;
+    font-size: 15px;
+    line-height: 1.25;
+    text-align: center;
+  }
+
+  /* Menu bar */
+
+  .masthead {
+    position: static;
+    width: auto;
+    height: auto;
+    background: $retro-paper-2;
+    border-bottom: 2px solid $retro-ink;
+    animation: none;
+
+    &__inner-wrap {
+      max-width: none;
+      padding: 0;
+      font-family: $retro-display;
+
+      @include breakpoint($x-large) {
+        max-width: none;
+      }
+    }
+  }
+
+  .masthead__menu {
+    padding: 0 4.5rem;
+  }
+
+  .masthead__controls {
+    right: 8px;
+    gap: 6px;
+  }
+
+  .theme-toggle,
+  .style-toggle {
+    width: 20px;
+    height: 20px;
+    border: 2px solid $retro-ink;
+    background: #fff;
+    box-shadow: inset 2px 2px 0 #d2d2d2;
+    color: $retro-ink;
+    font-size: 10px;
+    line-height: 16px;
+    text-align: center;
+
+    &:hover,
+    &:focus {
+      background: $retro-ink;
+      color: $retro-white;
+    }
+  }
+
+  .style-toggle__icon {
+    width: 10px;
+    height: 10px;
+  }
+
+  .greedy-nav {
+    background: transparent;
+
+    #{$a} {
+      margin: 0;
+      padding: 6px 14px;
+      color: $retro-ink;
+      font-family: $retro-display;
+      font-size: 14px;
+      text-decoration: none;
+
+      &:hover {
+        background: $retro-ink;
+        color: $retro-white;
+      }
+    }
+
+    .visible-links li:first-child #{$a},
+    .visible-links li:last-child #{$a} {
+      margin: 0;
+    }
+
+    button {
+      background-color: $retro-ink;
+    }
+
+    .hidden-links {
+      border: 2px solid $retro-ink;
+      border-radius: 0;
+      background: $retro-white;
+      box-shadow: 4px 4px 0 $retro-shadow;
+
+      &:before { border-color: $retro-ink transparent; }
+      &:after { border-color: $retro-white transparent; }
+
+      #{$a}:hover {
+        background: $retro-ink;
+        color: $retro-white;
+      }
+    }
+  }
+
+  .masthead__menu-item--active #{$a} {
+    background: $retro-ink;
+    color: $retro-white;
+  }
+
+  /* Main content area */
+
+  #main {
+    max-width: none;
+    margin: 0;
+    padding: 30px 36px 42px;
+    animation: none;
+
+    @include breakpoint($x-large) {
+      max-width: none;
+    }
+  }
+
+  .main--blog {
+    @include breakpoint($large) {
+      max-width: none;
+    }
+  }
+
+  .page__title {
+    margin: 0 0 12px;
+    font-family: $retro-display;
+    font-size: 30px;
+    line-height: 1.1;
+  }
+
+  .page__meta,
+  .page__date,
+  .page__meta a {
+    color: $retro-muted;
+    font-family: $retro-mono;
+    font-size: 13px;
+  }
+
+  .page__content {
+    h2 {
+      margin: 34px 0 14px;
+      padding-bottom: 6px;
+      border-bottom: 2px solid $retro-ink;
+      font-size: 23px;
+    }
+
+    h3 { margin: 25px 0 8px; font-size: 17px; }
+    h4 { margin: 20px 0 7px; font-size: 15px; }
+
+    p, li, dl { font-size: 1em; }
+    p { margin: 10px 0; }
+
+    ul, ol { margin: 8px 0 10px 22px; padding: 0; }
+    li { margin: 5px 0; }
+
+    #{$a} {
+      color: $retro-ink;
+      font-family: $retro-mono;
+      font-weight: normal;
+      text-decoration: underline;
+
+      &:hover {
+        background: $retro-ink;
+        color: $retro-white;
+        text-decoration: underline;
+      }
+    }
+
+    img {
+      border: 2px solid $retro-ink;
+    }
+
+    blockquote {
+      border-left: 6px double $retro-ink;
+      background: #faf9f4;
+      padding: 8px 12px;
+      font-family: $retro-body;
+    }
+  }
+
+  hr {
+    border: 0;
+    border-top: 2px solid $retro-ink;
+  }
+
+  /* Code */
+
+  code,
+  p > code,
+  a > code,
+  li > code,
+  td > code,
+  figcaption > code {
+    border: 1px solid $retro-code-border;
+    border-radius: 0;
+    background: $retro-code-bg;
+    box-shadow: none;
+    color: $retro-ink;
+    font-family: $retro-mono;
+    font-size: 0.92em;
+    padding: 0.08em 0.3em;
+  }
+
+  pre,
+  .highlight,
+  .highlighter-rouge .highlight,
+  div.highlighter-rouge {
+    border: 2px solid $retro-ink;
+    border-radius: 0;
+    background: #111;
+    color: #f4f1e7;
+    font-family: $retro-mono;
+    font-size: 13px;
+    line-height: 1.43;
+  }
+
+  pre {
+    padding: 14px 16px;
+    box-shadow: inset 2px 2px 0 #555;
+    overflow: auto;
+    white-space: pre;
+  }
+
+  .highlight pre,
+  .highlighter-rouge .highlight pre {
+    border: 0;
+    box-shadow: none;
+    padding: 0;
+  }
+
+  pre code,
+  .highlight code {
+    border: 0;
+    background: transparent;
+    color: inherit;
+    padding: 0;
+  }
+
+  /* Tables */
+
+  table {
+    width: 100%;
+    margin: 14px 0 20px;
+    border-collapse: collapse;
+    border: 1.5px solid $retro-ink;
+    background: #fff;
+    font-family: $retro-body;
+    font-size: 14px;
+  }
+
+  th, td {
+    border: 1.5px solid $retro-ink;
+    padding: 8px 9px;
+    text-align: left;
+    vertical-align: top;
+  }
+
+  th {
+    background: $retro-th;
+    color: $retro-ink;
+    font-family: $retro-display;
+  }
+
+  tbody tr:nth-child(even) { background: #fff; }
+
+  /* Buttons, notices, share, comments */
+
+  .btn,
+  #goog-wm-sb {
+    border: 2px solid $retro-ink;
+    border-radius: 0;
+    background-color: $retro-paper-2;
+    color: $retro-ink !important;
+    font-family: $retro-display;
+    text-transform: none;
+    @include retro-bevel;
+
+    &:hover {
+      background-color: $retro-ink;
+      color: $retro-white !important;
+      box-shadow: none;
+    }
+  }
+
+  .notice,
+  .notice--primary,
+  .notice--info,
+  .notice--warning,
+  .notice--success,
+  .notice--danger {
+    border: 2px solid $retro-ink;
+    border-radius: 0;
+    background: #f0eee7;
+    @include retro-bevel;
+    color: $retro-ink;
+    font-family: $retro-body;
+  }
+
+  .page__share {
+    border-top: 2px solid $retro-ink;
+  }
+
+  .page__comments-title,
+  .page__related-title,
+  .page__meta-title,
+  .archive__subtitle {
+    border-bottom: 2px solid $retro-ink;
+    color: $retro-ink;
+    font-family: $retro-display;
+  }
+
+  .page__taxonomy #{$a}.page__taxonomy-item {
+    border: 2px solid $retro-ink;
+    border-radius: 0;
+    background: $retro-paper-2;
+    color: $retro-ink;
+    font-family: $retro-mono;
+    text-decoration: none;
+
+    &:hover {
+      background: $retro-ink;
+      color: $retro-white;
+    }
+  }
+
+  /* Author sidebar.
+     The theme pins .sidebar to `position: fixed` above 1024px, which only
+     lines up with the classic fixed masthead. Here the masthead scrolls
+     inside the window, so a fixed sidebar drifts over the body text and the
+     footer: keep it in flow instead. */
+
+  .sidebar {
+    position: static;
+    height: auto;
+    overflow-y: visible;
+    padding-top: 0;
+
+    .author__avatar img {
+      border: 2px solid $retro-ink;
+      border-radius: 0;
+      box-shadow: 4px 4px 0 $retro-shadow;
+    }
+
+    .author__name {
+      font-family: $retro-display;
+    }
+
+    .author__urls-wrapper,
+    .author__urls {
+      font-family: $retro-mono;
+      font-size: 13px;
+    }
+
+    .author__urls {
+      max-width: 100%;
+
+      &:before, &:after { display: none; }
+    }
+
+    .btn {
+      font-size: 12px;
+    }
+  }
+
+  /* Blog archive */
+
+  .archive__item--blog {
+    border: 2px solid $retro-ink;
+    background: $retro-white;
+    padding: 14px 16px;
+    box-shadow: 4px 4px 0 $retro-shadow;
+  }
+
+  .archive__item-title {
+    margin-top: 0;
+    font-family: $retro-display;
+
+    #{$a} {
+      font-family: $retro-display;
+      text-decoration: none;
+
+      &:hover {
+        background: $retro-ink;
+        color: $retro-white;
+      }
+    }
+  }
+
+  .archive__item-teaser,
+  .blog__item .archive__item-teaser {
+    border: 2px solid $retro-ink;
+    border-radius: 0;
+    box-shadow: none;
+  }
+
+  .archive__item-excerpt {
+    font-family: $retro-body;
+  }
+
+  /* Footer */
+
+  .page__footer {
+    position: static;
+    float: none;
+    margin-top: 0;
+    padding: 0;
+    border-top: 2px solid $retro-ink;
+    background-color: $retro-paper-2;
+    color: $retro-muted;
+    animation: none;
+
+    footer {
+      max-width: none;
+      margin-top: 0;
+      padding: 12px 36px;
+
+      @include breakpoint($x-large) {
+        max-width: none;
+      }
+    }
+
+    #{$a} {
+      color: $retro-ink;
+      font-family: $retro-mono;
+
+      &:hover {
+        background: $retro-ink;
+        color: $retro-white;
+      }
+    }
+
+    .fas, .fab, .far, .fal {
+      color: $retro-muted;
+    }
+  }
+
+  .page__footer-copyright {
+    font-family: $retro-mono;
+    font-size: 12px;
+  }
+
+  /* Long-form post components */
+
+  .page__content {
+    .hero {
+      margin-bottom: 24px;
+      padding: 19px 20px;
+      border: 2px solid $retro-ink;
+      background: $retro-paper-2;
+      @include retro-bevel;
+
+      h2 {
+        margin: 5px 0 8px;
+        padding: 0;
+        border: 0;
+        font-size: 30px;
+        line-height: 1.08;
+        letter-spacing: -0.02em;
+      }
+
+      p { margin: 6px 0; }
+    }
+
+    .lede { font-size: 18px; }
+
+    .post-toc {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px 22px;
+      margin: 0 0 30px;
+      padding: 14px 16px;
+      @include retro-box;
+
+      #{$a} {
+        text-decoration: none;
+        border-bottom: 1px dotted $retro-ink;
+      }
+    }
+
+    .callout {
+      margin: 18px 0;
+      padding: 13px 15px;
+      border: 2px solid $retro-ink;
+      background: #f0eee7;
+      @include retro-bevel;
+
+      strong { font-family: $retro-display; }
+    }
+
+    .note {
+      margin: 16px 0;
+      padding: 8px 12px;
+      border-left: 6px double $retro-ink;
+      background: #faf9f4;
+    }
+
+    .mathbox {
+      margin: 14px 0;
+      padding: 11px 16px;
+      @include retro-box;
+      overflow-x: auto;
+      text-align: center;
+    }
+
+    .compare {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      margin: 16px 0;
+    }
+
+    .card {
+      min-width: 0;
+      padding: 13px 14px;
+      @include retro-box;
+
+      h3 { margin-top: 0; }
+    }
+
+    .timeline {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      margin: 14px 0;
+      font-family: $retro-mono;
+      font-size: 13px;
+
+      span {
+        padding: 6px 8px;
+        @include retro-box;
+      }
+
+      b { font-size: 17px; }
+    }
+
+    .tiny {
+      color: $retro-muted;
+      font-size: 13px;
+    }
+
+    .sources li { margin: 9px 0; }
+
+    .post-footer-rule {
+      margin-top: 36px;
+      padding: 12px 0 0;
+      border-top: 2px solid $retro-ink;
+      color: $retro-muted;
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      font-size: 12px;
+    }
+  }
+
+  mjx-container[jax="CHTML"][display="true"] {
+    margin: 0.7em 0 !important;
+  }
+
+  /* Responsive */
+
+  @media (max-width: 760px) {
+    .desktop { margin-top: 18px; padding: 0 10px; }
+    #main { padding: 22px 18px 30px; }
+    .page__footer footer { padding: 12px 18px; }
+    .page__title { font-size: 25px; }
+
+    .page__content {
+      .compare,
+      .post-toc { grid-template-columns: 1fr; }
+      .hero h2 { font-size: 25px; }
+    }
+  }
+
+  /* Dark */
+
+  &.theme-dark {
+    @include retro-dark;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    &:not(.theme-light) {
+      @include retro-dark;
+    }
+  }
+}
+
+html.style-retro {
+  @include retro-skin;
+}

@@ -48,6 +48,44 @@
         applyTheme(nextTheme);
       });
     }
+
+    var styleToggle = document.querySelector(".style-toggle");
+
+    function storedStyle() {
+      try {
+        return localStorage.getItem("style");
+      } catch (e) {
+        return null;
+      }
+    }
+
+    function saveStyle(style) {
+      try {
+        localStorage.setItem("style", style);
+      } catch (e) {}
+    }
+
+    function applyStyle(style) {
+      var isRetro = style !== "classic";
+      root.classList.toggle("style-retro", isRetro);
+      root.classList.toggle("style-classic", !isRetro);
+
+      if (!styleToggle) return;
+      var label = isRetro ? "Switch to the classic style" : "Switch to the retro style";
+      styleToggle.setAttribute("aria-pressed", isRetro ? "true" : "false");
+      styleToggle.setAttribute("title", label);
+      styleToggle.setAttribute("aria-label", label);
+    }
+
+    applyStyle(storedStyle());
+
+    if (styleToggle) {
+      styleToggle.addEventListener("click", function () {
+        var nextStyle = root.classList.contains("style-retro") ? "classic" : "retro";
+        saveStyle(nextStyle);
+        applyStyle(nextStyle);
+      });
+    }
   })();
 </script>
 

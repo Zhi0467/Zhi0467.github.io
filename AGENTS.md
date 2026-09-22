@@ -25,7 +25,46 @@ Legacy AcademicPages sample sections such as publications, talks, teaching, port
 
 ## Current Design State
 
-- Site background should be `#FFFCE5`.
+The site ships two skins, chosen by a visitor-facing style toggle:
+
+- `html.style-retro` (default): a System-7 "paper" look ported from a standalone
+  note. Paper background `#f3f0e7` with an 8px grid, the whole page wrapped in a
+  bordered window with a pinstriped title bar, Chicago/Geneva headings, Monaco
+  links and code, 2px black borders with hard offset shadows.
+- `html.style-classic`: the original AcademicPages look, background `#FFFCE5`.
+
+Skin rules:
+
+- All retro styling lives in `_sass/_retro.scss`, imported last from
+  `assets/css/main.scss` (after `_dark-mode.scss`). Everything except a short
+  "chrome is inert" block at the top is inside `@mixin retro-skin`, applied to
+  `html.style-retro`; the dark variant is `@mixin retro-dark`.
+- `_links.scss` and `_dark-mode.scss` style links through
+  `a:not(#goog-wm-sb):not(.btn)`. The id inside `:not()` gives those rules
+  id-level specificity, so every retro link rule must carry the same qualifier.
+  `_retro.scss` keeps it in the `$a` variable; use `#{$a}` instead of bare `a`.
+- The window markup (`.desktop` > `.window` > `.titlebar`) is in
+  `_layouts/default.html` and is neutralized (title bar hidden, no border, no
+  max-width) unless the retro skin is on.
+- Post-level components (`.hero`, `.lede`, `.post-toc`, `.callout`, `.note`,
+  `.compare`, `.card`, `.mathbox`, `.timeline`, `.tiny`, `.sources`,
+  `.post-footer-rule`) must be styled for BOTH skins: the classic versions live
+  in `_sass/_post-components.scss`, the retro overrides in `_retro.scss` under
+  `.page__content`. Adding a component to only one file leaves the other skin
+  rendering raw markup.
+  Use `.post-toc`, not `.toc`: `.toc` is the theme's own uppercase TOC widget.
+- The theme pins `.sidebar` to `position: fixed` above 1024px, which only lines
+  up with the classic fixed masthead. The retro skin resets it to `static`;
+  otherwise the author profile drifts over the body text and the footer.
+- MathJax output is scaled by `chtml: { scale: ... }` in `_includes/head/custom.html`
+  (currently `0.88`); it applies to every post.
+- Both toggles sit in `.masthead__controls` in `_includes/masthead.html`, styled
+  by `_sass/_masthead.scss` (classic) and `_retro.scss` (retro squares). The
+  style toggle's icon is a CSS half-filled square, not a Font Awesome glyph;
+  the bundled Font Awesome subset does not include `fa-palette`.
+- The style choice persists in `localStorage["style"]` (`retro` | `classic`),
+  applied early in `_includes/head.html` and wired up in `_includes/scripts.html`,
+  same pattern as the dark mode toggle.
 - Dark mode is controlled by the icon button at the right side of the top bar.
   - The early theme script is in `_includes/head.html`.
   - The click/persistence script is in `_includes/scripts.html`.
@@ -69,6 +108,10 @@ http://127.0.0.1:4000/sitemap/
 ```
 
 The preview command above uses `--no-watch`, so restart the server after editing Sass, layouts, includes, posts, or pages.
+
+If the shell has no UTF-8 locale (`LANG` empty), Sass conversion fails with
+`Invalid US-ASCII character`. Prefix preview/build/validation commands with
+`LANG=en_US.UTF-8 LC_ALL=en_US.UTF-8`.
 If port `4000` is already in use, use another local port such as `4001`.
 
 ## Validation Commands
@@ -108,6 +151,11 @@ git restore .jekyll-metadata
 This keeps local preview pages from loading stale assets from `https://zhi0467.github.io/...`.
 
 ## Post Notes
+
+`_posts/2026-09-22-single-rollout-agent-rl.html` is an HTML post, not Markdown,
+because its body is hand-written HTML with heavy `\(...\)` / `\[...\]` MathJax.
+Keep long-form notes that use the retro post components in `.html` so kramdown
+does not touch the escapes.
 
 The short note for May 11, 2026 links to a static HTML file:
 

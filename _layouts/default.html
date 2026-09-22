@@ -4,6 +4,8 @@ layout: compress
 
 {% include base_path %}
 
+{% assign window_title = page.title | default: site.name | markdownify | strip_html | strip_newlines %}
+
 <!doctype html>
 <html lang="{{ site.locale | slice: 0,2 }}" class="no-js">
   <head>
@@ -14,15 +16,26 @@ layout: compress
   <body>
 
     {% include browser-upgrade.html %}
-    {% include masthead.html %}
 
-    {{ content }}
+    <div class="desktop">
+      <div class="window">
+        <div class="titlebar">
+          <span class="titlebar__box" aria-hidden="true"></span>
+          <div class="titlebar__title">{{ window_title }}</div>
+          <span class="titlebar__box" aria-hidden="true"></span>
+        </div>
 
-    <div class="page__footer">
-      <footer>
-        {% include footer/custom.html %}
-        {% include footer.html %}
-      </footer>
+        {% include masthead.html %}
+
+        {{ content }}
+
+        <div class="page__footer">
+          <footer>
+            {% include footer/custom.html %}
+            {% include footer.html %}
+          </footer>
+        </div>
+      </div>
     </div>
 
     {% include scripts.html %}
