@@ -5,9 +5,13 @@ author_profile: true
 ---
 I am a PhD student at UC San Diego advised by [Tianhao Wang](https://tiiao.github.io). 
 
-I work on reinforcement learning and on how agent improves from its own experience. This is a loop: the agent explores and searches for good behavior in human-crafted or self-generated environments, the results are judged and credit is assigned, and what survives is learned, sometimes in context, ultimately in the weights.
+My research centers on the predictability and reliability of AI systems. Three questions I'm working on as a PhD student:
 
-I study each stage of this loop and how it fails. The stages map cleanly onto topics I care about: synthetic environment generation, learning with search, exploration in RL, credit assignment over long horizons, and plasticity in online, non-stationary RL, with continual learning as the end state the whole loop is trying to reach.
+1. **How do we know if an optimizer works?** I approach this through theory and predictive science: proving how optimization behaves, or forecasting what training will do to help set up and monitor it. Examples include convergence bounds for adaptive optimizers and predicting or monitoring loss of plasticity.
+
+2. **How do we monitor and steer agents to make agentic systems more reliable?** This connects to safety and credit assignment in long-horizon RL. I'm building [RCP](https://github.com/Zhi0467/RCP), a control hub to make agents more reliable for scientific research, with humans in the loop and an auditable record of their work.
+
+3. **How do we get VLM agents to perform robotic tasks reliably and with low latency?** I'm interested in tasks with different horizons and different demands on the speed of perception and action.
 
 Publications
 ------
