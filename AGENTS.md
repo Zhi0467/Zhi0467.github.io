@@ -20,6 +20,8 @@ Legacy AcademicPages sample sections such as publications, talks, teaching, port
 - Blog archive rendering is split between `_pages/year-archive.html` and `_includes/archive-single.html`.
 - Blog thumbnails come from post front matter under `header.teaser`; teaser paths are relative to `/images/`.
 - Standalone public files live under `files/`; currently keep `files/CV.pdf` and `files/26-post3.html`.
+- The CV source is `cv/CV.tex` (excluded from Jekyll in `_config.yml`). Edit it, then rebuild the PDF; aux files go to the git-ignored `cv/build/`:
+  `latexmk -pdf -interaction=nonstopmode -outdir=cv/build cv/CV.tex && cp cv/build/CV.pdf files/CV.pdf`
 - Current image assets are limited to favicon/app icons, `images/me.jpg`, and images used by posts/social cards. Avoid adding back unused theme sample images.
 - `AGENTS.md` is excluded from Jekyll output in `_config.yml`; keep it as repo-only maintenance documentation.
 

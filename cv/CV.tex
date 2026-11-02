@@ -1,0 +1,123 @@
+\documentclass[11pt]{article}
+\usepackage{geometry}
+\geometry{a4paper, margin=1in}
+\usepackage{setspace}
+\usepackage{xcolor}
+\usepackage{tikz}
+\usepackage{hyperref}
+\usepackage{enumitem}
+\usepackage{needspace}
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,
+    urlcolor=cyan,
+    pdftitle={Zhi Wang CV},
+    pdfpagemode=FullScreen,
+}
+\linespread{0.99}
+% Define custom symbols
+\newcommand{\legendtriangle}[1][black]{\tikz \draw[#1,fill=#1] (0,0) -- (0.15,0.25) -- (0.3,0) -- cycle;}
+\newcommand{\legendsquare}[1][black]{\tikz \draw[#1,fill=#1] (0,0) rectangle (0.25,0.25);}
+\newcommand{\legendcircle}[1][black]{\tikz \draw[#1,fill=#1] (0,0) circle (0.125);}
+
+\setlength{\parskip}{1em}
+\usepackage{titlesec}
+\titlespacing*{\section}{0pt}{0.06\baselineskip}{0.06\baselineskip}
+
+\begin{document}
+
+{\centering \textbf{\huge Zhi Wang} \par}
+{\centering wangzhi0467@gmail.com $\vert$ \href{https://zhi0467.github.io}{Homepage} (zhi0467.github.io)$\vert$ \href{https://github.com/Zhi0467}{GitHub}\par}
+\vspace{0.1em}
+
+\section*{Education}
+\hrule
+\noindent
+\textbf{University of California, San Diego} \hfill  San Diego, CA, USA\\
+\textit{Ph.D. in Data Science} \hfill \textit{Sept. 2025 -- Ongoing}
+
+\noindent
+\textbf{University of Science and Technology of China} \hfill Hefei, China \\
+\textit{B.S. in Mathematics, School of Gifted Young} \hfill \textit{Sept. 2021 -- Jun. 2025}
+
+\noindent
+\textbf{University of California, Berkeley} \hfill Berkeley, CA, USA \\
+\textit{Visiting Undergraduate Student} \hfill \textit{Jan. 2023 -- Dec. 2023}
+
+\vspace{0.2em}
+
+\section*{Research Interests}
+\hrule
+\begin{itemize}[leftmargin=1.5em, topsep=2pt, partopsep=0pt, itemsep=0pt, parsep=0pt]
+    \item \textbf{Reliable agentic systems:} monitoring, steering, and credit assignment for agents, and the infrastructure for scientists to collaborate with them.
+    \item \textbf{Predictive science of optimization:} theory and forecasting of training dynamics, e.g. adaptive optimizers and predicting or monitoring learning metrics.
+    \item \textbf{Embodied agents:} orchestrating reasoning and low-latency control for robotic tasks across different horizons.
+\end{itemize}
+
+\section*{Publications}
+\hrule
+\begin{itemize}
+    \item Ke Zhang, Patricio Gallardo, Sudhir Murthy, Yi Xie, \textbf{Zhi Wang}, and Maziar Raissi, \textit{Beyond Compilation: Human-Calibrated Evaluation of Semantic Faithfulness in Lean Autoformalization}, NeurIPS 2026 MATH-AI Workshop. \href{https://openreview.net/forum?id=NyhNnJEJgL}{[Paper]}
+    \item Eon Lee, Andrés R. Vindas-Meléndez, and \textbf{Zhi Wang}\footnote{In mathematics, authors are conventionally listed alphabetically, signifying equal contribution.}, \textit{Generalized Snake Posets, Order Polytopes, and Lattice-Point Enumeration}, Discrete Mathematics (2026): 115072.
+\end{itemize}
+
+\section*{Open Source Contributions}
+\hrule
+\noindent
+\textbf{\href{https://github.com/Zhi0467/RCP}{RCP: Research Control Platform}}
+\begin{itemize}[leftmargin=1.5em, topsep=2pt, partopsep=0pt, itemsep=0pt, parsep=0pt]
+    \item Harness and control plane over coding agents: one platform for research artifacts and asynchronous compute jobs, mediating how agents interact with humans and with compute.
+    \item Conversational research assistant as the unified entry point: requests like ``start the experiment for me'' become managed asynchronous jobs, with human approval gating protected actions.
+    \item Git-like research graph of questions, hypotheses, experiments, and evidence, with branching and merging.
+    \item Runs as a macOS app or a self-hosted Linux team server with multi-member collaboration and attribution; agent lifecycles are verified by a TLA+-style state-space explorer.
+\end{itemize}
+
+\needspace{4\baselineskip}
+\noindent
+\textbf{Terminal-Bench}
+\begin{itemize}[leftmargin=1.5em, topsep=2pt, partopsep=0pt, itemsep=0pt, parsep=0pt]
+    \item Contributed two benchmark tasks: \href{https://github.com/laude-institute/terminal-bench/pull/724}{merge-diff-arc-agi}, included in Terminal-Bench 2.0, and \href{https://github.com/laude-institute/terminal-bench/pull/936}{solve-sudoku}.
+\end{itemize}
+
+\section*{Current Research}
+\hrule
+\begin{itemize}[leftmargin=1.5em, topsep=2pt, partopsep=0pt, itemsep=0pt, parsep=0pt]
+    \item Comparing two ways to train language-model theorem provers in Lean: writing the whole proof and fixing it from verifier feedback, or proving step by step with tree search and expert iteration, starting from the same checkpoint with compute held equal.
+    \item Studying how sequential, mixed-reward, consolidation-based and stabilized reinforcement learning trade off keeping skills in trained domains against staying able to learn new ones.
+    \item Predicting and steering away from chain-of-thought loops in reasoning language models using their internal activations, and studying why lightweight activation edits make models like Olmo-3 reason better on math.
+    \item Making vision-language model agents faster and cheaper at robot manipulation, both by controlling the robot directly and by instructing a vision-language-action policy.
+    \item Extending self on-policy distillation to multi-turn agentic settings, testing whether its denser training signal yields better small SWE agents.
+\end{itemize}
+
+\section*{Research Experience (Undergraduate)}
+\hrule
+\noindent
+\textbf{Ehrhart Theory of Order Polytopes} \hfill \textit{Jun. 2023 -- Sept. 2024} \\
+\textit{Mentor: Andrés R. Vindas Meléndez, UC Berkeley}
+\begin{itemize}[leftmargin=1.5em, topsep=2pt, partopsep=0pt, itemsep=0pt, parsep=0pt]
+    \item Proved closed-form and combinatorial formulas for a family of order polytopes, establishing key base cases and monotonicity results by introducing a novel lattice path coloring method to connect geometric objects with combinatorial enumerations.
+\end{itemize}
+
+\noindent
+\textbf{Accelerating Grokking via Low-Rank Structures} \hfill \textit{May. 2024 -- Oct. 2024} \\
+\textit{Mentor: Difan Zou, University of Hong Kong}
+\begin{itemize}[leftmargin=1.5em, topsep=2pt, partopsep=0pt, itemsep=0pt, parsep=0pt]
+    \item Investigated the NTK-to-rich regime transition, leveraging low-rank initialization in MLPs and transformers to accelerate grokking for various tasks.
+\end{itemize}
+
+\noindent
+\textbf{Simulate Worm Neural activity} \hfill \textit{Sept. 2024 -- Jun. 2025} \\
+\textit{Mentor: Quan Wen, University of Science and Technology of China}
+\begin{itemize}[leftmargin=1.5em, topsep=2pt, partopsep=0pt, itemsep=0pt, parsep=0pt]
+    \item Trained RNN simulators based on C. elegans connectome to reproduce neural activities, carried out ablation study and visualization to guide training principles for neural simulators.
+\end{itemize}
+
+\section*{Teaching}
+\hrule
+\begin{itemize}[leftmargin=1.5em, topsep=2pt, partopsep=0pt, itemsep=0pt, parsep=0pt]
+    \item Teaching Assistant, DSC 242: High-Dimensional Probability and Statistics, UC San Diego, Fall 2026.
+    \item Teaching Assistant, DSC 140B: Representation Learning, UC San Diego, Winter 2026.
+\end{itemize}
+
+\end{document}
