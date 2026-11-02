@@ -7,6 +7,7 @@
 \usepackage{hyperref}
 \usepackage{enumitem}
 \usepackage{needspace}
+\usepackage{tabularx}
 \hypersetup{
     colorlinks=true,
     linkcolor=blue,
@@ -65,8 +66,8 @@
 \section*{Open Source Contributions}
 \hrule
 \noindent
-\textbf{\href{https://github.com/Zhi0467/RCP}{RCP: Research Control Platform}}
-\begin{itemize}[leftmargin=1.5em, topsep=2pt, partopsep=0pt, itemsep=0pt, parsep=0pt]
+\textbf{\href{https://github.com/Zhi0467/RCP}{RCP: Research Control Platform}}\vspace{-\parskip}
+\begin{itemize}[leftmargin=1.5em, topsep=0pt, partopsep=0pt, itemsep=0pt, parsep=0pt]
     \item Harness and control plane over coding agents: one platform for research artifacts and asynchronous compute jobs, mediating how agents interact with humans and with compute.
     \item Conversational research assistant as the unified entry point: requests like ``start the experiment for me'' become managed asynchronous jobs, with human approval gating protected actions.
     \item Git-like research graph of questions, hypotheses, experiments, and evidence, with branching and merging.
@@ -75,43 +76,51 @@
 
 \needspace{4\baselineskip}
 \noindent
-\textbf{Terminal-Bench}
-\begin{itemize}[leftmargin=1.5em, topsep=2pt, partopsep=0pt, itemsep=0pt, parsep=0pt]
+\textbf{Terminal-Bench}\vspace{-\parskip}
+\begin{itemize}[leftmargin=1.5em, topsep=0pt, partopsep=0pt, itemsep=0pt, parsep=0pt]
     \item Contributed two benchmark tasks: \href{https://github.com/laude-institute/terminal-bench/pull/724}{merge-diff-arc-agi}, included in Terminal-Bench 2.0, and \href{https://github.com/laude-institute/terminal-bench/pull/936}{solve-sudoku}.
 \end{itemize}
 
 \section*{Current Research}
 \hrule
-\begin{itemize}[leftmargin=1.5em, topsep=2pt, partopsep=0pt, itemsep=0pt, parsep=0pt]
-    \item Comparing two ways to train language-model theorem provers in Lean: writing the whole proof and fixing it from verifier feedback, or proving step by step with tree search and expert iteration, starting from the same checkpoint with compute held equal.
-    \item Studying how sequential, mixed-reward, consolidation-based and stabilized reinforcement learning trade off keeping skills in trained domains against staying able to learn new ones.
-    \item Predicting and steering away from chain-of-thought loops in reasoning language models using their internal activations, and studying why lightweight activation edits make models like Olmo-3 reason better on math.
-    \item Making vision-language model agents faster and cheaper at robot manipulation, both by controlling the robot directly and by instructing a vision-language-action policy.
-    \item Extending self on-policy distillation to multi-turn agentic settings, testing whether its denser training signal yields better small SWE agents.
+\noindent
+\textbf{Lean Prover Training: Whole-Proof Repair vs.\ Tree Search}\vspace{-\parskip}
+\begin{itemize}[leftmargin=1.5em, topsep=0pt, partopsep=0pt, itemsep=0pt, parsep=0pt]
+    \item Starting from the same checkpoint at equal compute, does a Lean prover learn more by writing whole proofs and repairing them from verifier feedback, or by proving step by step with tree search and expert iteration?
 \end{itemize}
 
-\section*{Research Experience (Undergraduate)}
+\noindent
+\textbf{Retention vs.\ Plasticity in RL Post-Training}\vspace{-\parskip}
+\begin{itemize}[leftmargin=1.5em, topsep=0pt, partopsep=0pt, itemsep=0pt, parsep=0pt]
+    \item When a language model is trained with RL across domains, how do sequential, mixed-reward, consolidation-based and stabilized training trade off keeping skills in trained domains against staying able to learn new ones?
+\end{itemize}
+
+\noindent
+\textbf{Predicting and Steering Chain-of-Thought Loops}\vspace{-\parskip}
+\begin{itemize}[leftmargin=1.5em, topsep=0pt, partopsep=0pt, itemsep=0pt, parsep=0pt]
+    \item Can a reasoning model's internal activations predict a chain-of-thought loop and steer the model away from it, and why do lightweight activation edits make models like Olmo-3 reason better on math?
+\end{itemize}
+
+\noindent
+\textbf{Vision-Language Model Agents for Robot Manipulation}\vspace{-\parskip}
+\begin{itemize}[leftmargin=1.5em, topsep=0pt, partopsep=0pt, itemsep=0pt, parsep=0pt]
+    \item How can vision-language model agents perform robot manipulation faster and more cheaply, whether they control the robot directly or instruct a vision-language-action policy?
+\end{itemize}
+
+\noindent
+\textbf{Self On-Policy Distillation for Multi-Turn Agents}\vspace{-\parskip}
+\begin{itemize}[leftmargin=1.5em, topsep=0pt, partopsep=0pt, itemsep=0pt, parsep=0pt]
+    \item Does extending self on-policy distillation to multi-turn agentic settings give a denser training signal that trains better small agents?
+\end{itemize}
+
+
+\section*{Prior Research Experience}
 \hrule
-\noindent
-\textbf{Ehrhart Theory of Order Polytopes} \hfill \textit{Jun. 2023 -- Sept. 2024} \\
-\textit{Mentor: Andrés R. Vindas Meléndez, UC Berkeley}
-\begin{itemize}[leftmargin=1.5em, topsep=2pt, partopsep=0pt, itemsep=0pt, parsep=0pt]
-    \item Proved closed-form and combinatorial formulas for a family of order polytopes, establishing key base cases and monotonicity results by introducing a novel lattice path coloring method to connect geometric objects with combinatorial enumerations.
-\end{itemize}
-
-\noindent
-\textbf{Accelerating Grokking via Low-Rank Structures} \hfill \textit{May. 2024 -- Oct. 2024} \\
-\textit{Mentor: Difan Zou, University of Hong Kong}
-\begin{itemize}[leftmargin=1.5em, topsep=2pt, partopsep=0pt, itemsep=0pt, parsep=0pt]
-    \item Investigated the NTK-to-rich regime transition, leveraging low-rank initialization in MLPs and transformers to accelerate grokking for various tasks.
-\end{itemize}
-
-\noindent
-\textbf{Simulate Worm Neural activity} \hfill \textit{Sept. 2024 -- Jun. 2025} \\
-\textit{Mentor: Quan Wen, University of Science and Technology of China}
-\begin{itemize}[leftmargin=1.5em, topsep=2pt, partopsep=0pt, itemsep=0pt, parsep=0pt]
-    \item Trained RNN simulators based on C. elegans connectome to reproduce neural activities, carried out ablation study and visualization to guide training principles for neural simulators.
-\end{itemize}
+\noindent\begin{tabularx}{\textwidth}{@{}p{5.5em}X@{}}
+2024 -- 2025 & Simulating \textit{C. elegans} neural activity with connectome-constrained RNNs. \textit{Quan Wen, USTC.} \\[2pt]
+2024 & Grokking and low-rank initialization in MLPs and transformers. \textit{Difan Zou, HKU.} \\[2pt]
+2023 -- 2024 & Ehrhart theory of order polytopes; led to the \textit{Discrete Mathematics} paper. \textit{Andrés R. Vindas-Meléndez, UC Berkeley.} \\
+\end{tabularx}
 
 \section*{Teaching}
 \hrule
