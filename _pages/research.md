@@ -7,8 +7,12 @@ author_profile: true
 
 ## Ongoing projects
 
-**Lean prover training with graph search.** I'm writing a Lean prover training framework that supports graph-search-based expert iteration, built for throughput and flexibility. In parallel, I'm studying how to check Lean autoformalization for semantic faithfulness, so the checker and the trainer can feed each other as a data flywheel. The goal is a strong specialized Lean prover trained with graph-search expert iteration and other post-training methods.
+**Two ways to train Lean theorem provers.** One way to train a language-model prover writes the whole proof and repairs it from verifier feedback. The other proves step by step with tree search and expert iteration. I'm comparing the two starting from the same checkpoint, with compute held equal.
 
-**Controlling degenerate chain-of-thought.** Reasoning models sometimes overthink or loop. I'm building an online gated controller that detects these behaviors and intervenes during generation. This is mostly probing and steering work.
+**Retention versus plasticity in reinforcement learning.** I'm studying how sequential, mixed-reward, consolidation-based and stabilized RL trade off two goals: keeping the skills learned in trained domains, and staying able to learn new ones.
 
-**Self on-policy distillation for SWE agents.** I'm extending self on-policy distillation (SDPO/OPD) to the multi-turn agentic setting, to see whether its denser training signal lets a small model become a better SWE agent.
+**Chain-of-thought loops and activation steering.** Reasoning language models sometimes fall into chain-of-thought loops. I use their internal activations to predict these loops and steer away from them. I also study why lightweight activation edits make models like Olmo-3 reason better on math.
+
+**Fast, cheap robot manipulation with VLM agents.** I'm making vision-language model agents faster and cheaper at robot manipulation in two settings: controlling the robot directly, and instructing a vision-language-action policy.
+
+**Self on-policy distillation for SWE agents.** I'm extending self on-policy distillation to the multi-turn agentic setting, to test whether its denser training signal yields better small SWE agents.
