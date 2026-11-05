@@ -1,0 +1,529 @@
+---
+title: "Two shortcuts around instruction grounding: how a VLA picks the wrong object"
+date: 2026-11-05
+permalink: /posts/2026/post5/
+tags:
+  - Robotics
+  - VLA
+excerpt: "When the OpenPI π0.5 LIBERO checkpoint is asked for a different object than the one it was trained to pick in a scene, it usually picks the wrong object. We trace each shortcut to a separate coupling in the fine-tuning data."
+header:
+  teaser: blog/vla-shortcuts/fig1-policy-shortcuts.svg
+  teaser_alt: "The policy, grounding, and two shortcuts"
+---
+
+<p><strong>TL;DR.</strong> When the OpenPI π0.5 LIBERO checkpoint is
+asked for a different object than the one it was trained to pick in a
+scene, it usually picks the wrong object. That benchmark is called
+LIBERO PRO. The usual explanation is “it ignores language and replays
+what it saw in training.” That’s only half of it. Following an
+instruction requires <em>grounding</em> it: tying the requested object
+to where that object is in the current scene. The policy fails at
+grounding in two ways. The <strong>scene shortcut</strong> (E1, short
+for error type 1) grabs the object this scene was trained with. The
+<strong>instruction shortcut</strong> (E2) grabs whatever stands where
+the requested object stood in <em>its own</em> training scene, in other
+words, action is retrieved by reaching to the position of the training
+data of the requested object, sort of over-adhering to language rather
+than the typical “VLA relies on vision” view. Rewording the instruction
+moves failures between the two modes but rarely fixes them: an
+instruction search run by Astra, an LLM agent, solved 3 of 10 scenes,
+and the benchmark instruction already worked in only one (alphabet
+soup), so prompt engineering does not solve these two types of grounding
+issue. We trace each shortcut to a separate coupling in the fine-tuning
+data: a fine-tune that breaks one coupling removes its own error and
+leaves the other. I think this is a pretty useful to think about
+diversifying VLA finetune data.</p>
+<blockquote>
+<p>We treat the robot policy as a function of two inputs: the
+<strong>scene</strong> (everything the cameras show) and the
+<strong>instruction</strong>. In these tasks every instruction asks for
+one object, so we use <em>instruction</em> and <em>requested object</em>
+interchangeably. When the wording matters (does it say the object’s name
+or not?), I would be explicit. <strong>Grounding</strong> means using
+both inputs together: the instruction says <em>which</em> object, and
+the scene says <em>where</em> it is now. Both shortcuts skip grounding,
+because each one decides where to reach from a single input.</p>
+</blockquote>
+<h2 id="setup-operations">1. Setup &amp; Operations</h2>
+<p>Just like any less-confusing blog, I will lay out exactly what I ran
+first.</p>
+<ul>
+<li><strong>Policy:</strong> official OpenPI <code>pi05_libero</code>
+(PyTorch), frozen. No weights change in sections 2–3.<a href="#fn1"
+class="footnote-ref" id="fnref1"
+role="doc-noteref"><sup>1</sup></a></li>
+<li><strong>Generation:</strong> 10 flow-matching denoising steps per
+action chunk. Each chunk has 10 actions; the robot executes the first 5,
+then the policy replans from a fresh observation. Inputs are the
+standard OpenPI LIBERO ones: agent-view and wrist camera plus robot
+state.</li>
+<li><strong>Episodes:</strong> 15 settle steps after reset, then the
+policy runs until success, 200 action chunks, or 3,600 s, whichever
+comes first. Each seed fixes both the starting layout and the policy’s
+sampling noise, and the same seeds are reused across instructions, so
+comparisons are paired.</li>
+<li><strong>Test:</strong> ten LIBERO-PRO object scenes, each with a
+changed target. The scene is one the model was trained on, but the
+instruction asks for a different object that is also on the table.</li>
+<li><strong>What we score:</strong> the first object lifted (lift
+defined as more than 3 cm above ground for three consecutive actions),
+plus task success.</li>
+</ul>
+<p><strong>Experiments in this post.</strong> There are three, one per
+section, and every number below comes from one of them.</p>
+<div class="table-wrapper">
+<table class="table-exp">
+
+<thead>
+<tr>
+<th></th>
+<th>Question</th>
+<th>What runs</th>
+<th>Episodes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Exp. 1</strong> (§2)</td>
+<td>When the policy fails, which wrong object does it pick?</td>
+<td>The frozen policy on the ten changed-target scenes, under every kind
+of instruction I tried: the benchmark sentence and a one-word variant of
+it (800 episodes), visual descriptions of the object with and without
+its name (200), and the instructions Astra wrote in Exp. 2 (5,899)</td>
+<td>6,899</td>
+</tr>
+<tr>
+<td><strong>Exp. 2</strong> (§3)</td>
+<td>Can a better-written instruction fix it?</td>
+<td>Astra searches for instructions over 30 rounds on the same ten
+scenes and 20 seeds, scored against the benchmark sentence run three
+times on those seeds</td>
+<td>5,899 searched + 600 benchmark</td>
+</tr>
+<tr>
+<td><strong>Exp. 3</strong> (§4)</td>
+<td>Do the shortcuts come from the fine-tuning data?</td>
+<td><strong>3a</strong> a pilot that picks the new object and its
+positions: popcorn, never named in fine-tuning, placed at free
+positions, with the original checkpoint (440); <strong>3b</strong> two
+fine-tunes, each breaking one coupling, two training seeds each,
+evaluated on the benchmark scenes (4 checkpoints × 1,100)</td>
+<td>see parts</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Exp. 1 is done earlier than Exp. 2 but I put Exp. 2’s data inside
+Exp. 1 since the purpose is data analysis, so the more the merrier.</p>
+<p>Roughly the motivation is that I wanted a text bridge for agentic
+robotics harness, so that agents can control VLA via tool call more
+reliably. That only works if the VLA grounds the instructions it gets in
+the scene in front of it. Otherwise you get: - agent spending time
+debugging VLA, making it even slower. - agent struggling with
+contact-rich operations like gripping and twisting, again, even slower
+when fine-grained actions need repeated agent turns.</p>
+<div class="figure-block" id="fig-1">
+  <p class="figure-title"><strong>Figure 1. The policy, grounding, and two shortcuts</strong></p>
+  <div class="figure-img-wrap"><img src="/images/blog/vla-shortcuts/fig1-policy-shortcuts.svg" alt="Figure 1: grounding uses both inputs; the scene shortcut (E1) and the instruction shortcut (E2) each reach from one input alone" /></div>
+  <p class="figure-caption">Grounding uses the instruction to pick <strong>which</strong> object and the scene to find <strong>where</strong> it is now. Each shortcut decides where to reach from one input alone.</p>
+</div>
+<h2
+id="ask-for-a-different-object-and-see-which-wrong-object-you-get">2.
+Ask for a different object, and see which wrong object you get</h2>
+<p>The simplest test of grounding is to keep a scene the policy knows
+well and ask it for something else. LIBERO-PRO’s object suite does
+exactly this. Each of its ten scenes comes from training, where the
+policy always picked one particular object and put it in the basket. Now
+the instruction asks for a different object that is also on the table.
+With the benchmark’s own sentence, “Pick the X and place it in the
+basket”, run on all ten scenes with 20 seeds three times over, the
+policy mostly fails: in eight of the ten scenes it succeeds at most 3
+times in 20. These runs belong to Exp. 1 and also serve as the baseline
+for Exp. 2; Fig. 4 in §3 shows every scene.</p>
+<p>Success alone doesn’t say <em>how</em> it fails, so in Exp. 1 I
+looked at which object the robot lifts first. If the policy were simply
+ignoring the instruction, the answer would always be the object this
+scene was trained with. It often is. But there is a second object it
+keeps going for, and it only makes sense once you know where the
+<em>requested</em> object sat in its own training scene. Whatever
+happens to stand at that position now is what the robot grabs (Fig.
+2).</p>
+<div class="figure-block" id="fig-2">
+  <p class="figure-title"><strong>Figure 2. How we label a failure (illustrative)</strong></p>
+  <div class="figure-img-wrap"><img src="/images/blog/vla-shortcuts/fig2-e1-e2-example.svg" alt="Figure 2: in a scene trained with “pick up the milk”, asked for the butter; the milk is E1, the orange juice standing at the butter’s training position is E2, the butter is correct" /></div>
+  <p class="figure-caption">The scene was trained with “pick up the milk”; the instruction now asks for the butter. A failure is classed by the first object lifted (more than 3 cm for three consecutive actions). In some scenes E1 and E2 name the same object; those failures count as “both”.</p>
+</div>
+<p>Note that E2 is only well-defined when the mapping from
+<em>object</em> to <em>position</em> is injective, i.e. a requested
+object is always in the same position in its training scenes, because
+then given any requested object in one LIBERO PRO object task, we can
+reverse map out where its “training position” is, hence predicting the
+E2 object. In the example above, E2 object is the orange juice.</p>
+<p>To make sure this pattern isn’t tied to one particular sentence, Exp.
+1 counts first picks under every kind of instruction/prompts I tried on
+these scenes: the benchmark sentence, visual descriptions of the object,
+and the thousands of instructions Astra wrote during the search in §3.
+That is 6,899 changed-target episodes, and 6,602 of them failed. Fig. 3
+shows what the robot picked up first in each failure.</p>
+<p>For each failed episode, we compute what E1 and E2 objects are (they
+can coincide), and we classify the 6,602 errors into the quarterion
+shown below.</p>
+<div class="figure-block" id="fig-3">
+  <p class="figure-title"><strong>Figure 3. First object lifted in 6,602 failed changed-target episodes (Exp. 1)</strong></p>
+  <div class="figure-img-wrap"><img src="/images/blog/vla-shortcuts/fig3-failure-breakdown.svg" alt="Figure 3: E1 only 1,698 (26%), both 2,573 (39%), E2 only 1,693 (26%), other 638 (10%)" /></div>
+  <p class="figure-caption">“Other” means another object was lifted first (619), the requested object was lifted first but dropped (12), or nothing was lifted (7). The instructions Astra wrote in Exp. 2 supply most of these episodes.</p>
+</div>
+<p>Nine in ten failures are one of the two shortcuts, and they are about
+equally common. In four of the ten scenes the two shortcuts point at the
+same object, which is where the “both” bar comes from. In the other five
+(cream cheese, ketchup, orange juice, salad dressing and pudding) they
+point at different objects, so those five scenes are where the two can
+be told apart, and the rest of the post leans on them.</p>
+<p>So “the policy ignores language” can’t be the whole story. E2 only
+exists because the policy reads the requested object’s name; it just
+turns that name into a remembered position instead of looking for the
+object.</p>
+<p>E2 has been seen before. <a
+href="https://arxiv.org/abs/2609.39971">Chen et al., <em>When
+Instructions Retrieve Trajectories</em> (2026)</a> keep the instruction
+fixed and swap the requested object with whatever stands at its training
+pickup position. In a stress test of 9 rollouts (swap, then shift the
+swapped object 10 cm), π0.5 picks up the object now at that position
+every time, not the one it was asked for; with the swap alone it does so
+in 25 of 30. That is E2: the name recalls a position. Because the
+instruction is the scene’s own, the scene’s trained object is the
+requested object, so E1 can’t show up as an error and the failures are
+E2 alone. What Exp. 1 adds is the trained-scene case, where both
+shortcuts are available at once and compete for the same reach.</p>
+<h2 id="is-it-just-a-badly-written-instruction">3. Is it just a badly
+written instruction?</h2>
+<p>If the benchmark sentence is simply a bad way to ask, a better
+sentence should fix it. In the recent spirit of agentifying everything,
+we did the following search experiment over instruction wordings.</p>
+<p>Astra (GPT-6) searched over instructions for 30 rounds (Exp. 2): up
+to 70 tokens per instruction, 20 seeds per scene, 10 scenes. A scene
+counted as solved when its best instruction, run on all 20 seeds,
+succeeded at least 11 times and beat the median of three
+benchmark-sentence runs on the same seeds by at least 25 percentage
+points. If that median was above 75%, the instruction instead needed 18
+of 20 and strictly more than the median. Basically we operationalized
+“if a prompt solves a scene” in this arbitrary yet sensible way.</p>
+<div class="figure-block" id="fig-4">
+  <p class="figure-title"><strong>Figure 4. Successes out of 20 seeds: benchmark instruction vs Astra’s best instruction (Exp. 2)</strong></p>
+  <div class="figure-img-wrap"><img src="/images/blog/vla-shortcuts/fig4-search-per-scene.svg" alt="Figure 4: per-scene successes out of 20 for the benchmark instruction and Astra’s best; cream cheese, butter and pudding solved" /></div>
+  <p class="figure-caption">3 of 10 scenes solved. Only butter’s win changed the first pick (16/20 vs 2/20). Cream cheese and pudding won because the robot recovered after delivering the wrong object first.</p>
+</div>
+<div class="figure-block" id="fig-5">
+  <p class="figure-title"><strong>Figure 5. How Astra’s strategy changed over 30 rounds (Exp. 2)</strong></p>
+  <div class="figure-img-wrap"><img src="/images/blog/vla-shortcuts/fig5-search-timeline.svg" alt="Figure 5: what Astra tried in each phase of the 30 rounds, with successes per phase; all three solves came in rounds 1–4" /></div>
+  <p class="figure-caption">All three solves came in rounds 1–4. Over the remaining 26 rounds Astra tried increasingly unusual wordings and solved nothing more. Astra maintained best wordings for each scene and allocated small budgets for exploration runs and bigger verification runs on promising wordings.</p>
+</div>
+<p>So yes a lot of weird word plays have been tried! But an early
+plateau already forecasts the doom of just searching over prose.
+<strong>What the search does do: it moves failures between the two
+shortcuts.</strong></p>
+<div class="figure-block" id="fig-6">
+  <p class="figure-title"><strong>Figure 6. Naming the object pushes failures toward E2 (Exp. 1)</strong></p>
+  <div class="figure-img-wrap"><img src="/images/blog/vla-shortcuts/fig6-name-flip.svg" alt="Figure 6: share of failures that are E2 in the five separating scenes, with and without the object’s name" /></div>
+  <p class="figure-caption">The five scenes where E1 and E2 differ, figure shows the percentage of E2 in failures. With the object’s name, failures lean E2 (pooled 72%). With a description that omits the name, they lean E1 (pooled 30% E2). The name is what turns on the instruction shortcut.</p>
+</div>
+<p>Rewording swaps one shortcut for the other instead of producing
+grounding. That is the ceiling a text bridge runs into.</p>
+<p>Most instructions without the name come from Astra’s search, which
+spent its episodes unevenly across instructions. Counting each distinct
+instruction once instead of each episode gives the same picture: 64% of
+instructions that name the object lean E2, and 71% of those that don’t
+lean E1.</p>
+<h2 id="where-the-shortcuts-come-from">4. Where the shortcuts come
+from</h2>
+<p><strong>Two couplings in the fine-tuning data</strong> (40 tasks,
+1,693 demos, one fixed instruction per task):</p>
+<div class="figure-block" id="fig-7">
+  <p class="figure-title"><strong>Figure 7. Two couplings in the fine-tuning data, and how Exp. 3b breaks each (illustrative, three scenes shown)</strong></p>
+  <div class="figure-img-wrap"><img src="/images/blog/vla-shortcuts/fig7-data-couplings.svg" alt="Figure 7: top, the fine-tuning data maps each scene to one instruction and each object to one position; bottom, the new-request arm gives every scene a second instruction (popcorn) and the new-position arm gives every trained object a second position (G2–G4)" /></div>
+  <p class="figure-caption">Top: in the fine-tuning data each scene comes with exactly one instruction, and each object stands at exactly one position. Bottom: each Exp. 3b arm adds demos that give one of the two mappings a second arrow, and leaves the other one-to-one.</p>
+</div>
+<p><strong>Two related VLA instruction following work map onto the two
+couplings.</strong> - <strong><a
+href="https://arxiv.org/abs/2508.13446">CAST</a></strong> (Glossop et
+al., 2025) relabels trajectories with counterfactual instructions. This
+targets scene → instruction (E1). - <strong><a
+href="https://arxiv.org/abs/2609.39971">Chen et al.</a></strong> (2026),
+whose swap test isolates E2 (§2), also propose a fix (ECT). It mirrors
+whole scenes, which breaks name → position and keeps scene → object. It
+raises swap success on LIBERO-Object from 38% to 71% (36% → 59% averaged
+over four suites), with in-distribution success no lower (−0.9 to +2.5
+points by suite). After the fix they report follow, retrieval-like and
+collapse rates (plus one Spatial error type) but no E1/E2 split, so
+whether it lowers E2 and leaves E1 is not measured. - we add: E1 and E2
+competing <em>in trained scenes</em>, the name flip (Fig. 6), and an
+account where both errors come from data couplings.</p>
+<h3 class="experiment-title">Exp. 3a. Pilot: choosing the new object and where to put
+it.</h3>
+<p>The goal of Exp. 3 is to trace each error back to the data causally:
+break the two couplings independently, one fine-tune each, and check
+that each fine-tune removes its own error and leaves the other. Two
+choices have to be made before any training. The new-request arm needs a
+request the checkpoint can’t already follow; if the policy could already
+be asked for the new object, the extra demos would teach it nothing and
+wouldn’t break scene → instruction. Both arms also need positions for
+the new things that leave the policy’s current habits in the test scenes
+alone, since those habits, E1 and E2, are exactly what we measure
+afterwards. Popcorn is never named in the 40 fine-tuning tasks, so it is
+the candidate object. We put it at one of four free positions on the
+table (G1 near a position where a test object stands, G2–G4 far from all
+of them) and ran the original checkpoint, asking either for the popcorn
+or for the scene’s usual changed target.</p>
+<div class="figure-block" id="fig-8">
+  <p class="figure-title"><strong>Figure 8. The policy can grasp popcorn, but can’t be asked for it (Exp. 3a, original checkpoint)</strong></p>
+  <div class="figure-img-wrap"><img src="/images/blog/vla-shortcuts/fig8-popcorn.svg" alt="Figure 8: asked for the popcorn, popcorn is lifted first 0 of 200 times at G1 and at G4; asked for the cream cheese in scene 0, popcorn is lifted first 13 of 20 times at G1 and 7 of 20 at G4" /></div>
+  <p class="figure-caption">Share of episodes in which popcorn is the first object lifted. Asked for by name, it never is. Asked for something else, it often is.</p>
+</div>
+<p>The pilot settles both choices. First, popcorn is something the
+policy can learn but doesn’t yet know: the robot reaches and grasps it
+when asked for something else, so the motion is within reach, yet it
+never goes for it when asked by name. Demos of “pick up the popcorn”
+therefore add a request the checkpoint lacks, which is what breaking
+scene → instruction requires. Second, position matters for preserving
+the habits. At G1 the popcorn takes every first pick away from the
+scene’s trained object, the alphabet soup (0 of 20, against 58 of 60
+with no popcorn on the table). A position like that would change E1 and
+E2 through the layout alone, and a later drop couldn’t be credited to
+the broken coupling. At G4 the alphabet soup keeps 13 of 20 and stays
+the most frequent first pick. So Exp. 3b puts new things only at the far
+positions G2–G4.</p>
+<h3 class="experiment-title">Exp. 3b. Breaking one coupling at a time.</h3>
+<p>Two fine-tunes continue from the original checkpoint. Each breaks one
+coupling and keeps the other, and both put new things only at the three
+far positions (G2, G3, G4) where no test object stands, so neither one
+practises reaching to a position the test scores.</p>
+<ul>
+<li><strong>New-request arm</strong> (breaks scene → instruction
+injective coupling, expected to drop more E1 than E2): in each trained
+scene, popcorn stands at a far position and the new demo asks for the
+popcorn, with 10% replay of the original trained task object. Every
+other object keeps its usual position, hence every object still has a
+unique position in this extended finetune dataset.</li>
+<li><strong>New-position arm</strong> (breaks object → position
+injection, expected to drop more E2 than E1): the scene’s trained object
+is moved to one of the far positions, and the demo uses the scene’s own
+instruction. Every scene keeps one instruction in this extended
+dataset.</li>
+</ul>
+<div class="figure-block" id="fig-9">
+  <p class="figure-title"><strong>Figure 9. How the two extended datasets are built (Exp. 3b)</strong></p>
+  <div class="figure-img-wrap"><img src="/images/blog/vla-shortcuts/fig9-extended-datasets.svg" alt="Figure 9: for one trained scene, the original demo, the breaking half and the matched half of each arm’s extra data" /></div>
+  <p class="figure-caption">One trained scene, with X its trained object. New-request arm: the breaking half adds popcorn at a far position and asks for it, so the scene now has two requests while every object stays at its own position; the matched half has the same popcorn but the usual request. New-position arm: the breaking half moves X to a far position under the usual request, so X is now trained at a second position while the scene keeps one request; the matched half is the plain scene.</p>
+</div>
+<p><strong>Data.</strong> Each arm’s extra data comes in two halves of
+equal size. One half is the breaking demos just described. The other
+half is matched demos of the same scenes that keep the scene’s own
+instruction: popcorn on the table but the usual request in the
+new-request arm, and the plain scene in the new-position arm. The
+matched half is there so that the two arms differ only in their breaking
+half. Every demo is a human LIBERO demo with the hand’s path shifted to
+where the object now stands, replayed in the simulator, and kept only if
+it succeeds, lifts the requested object first, and moves nothing else by
+more than 3 cm. That gives 760 demos per arm, with the same number per
+scene in both arms. On top of these, the 454 original LIBERO-Object
+demos are mixed in as 10% of training, so the policy keeps practising
+its original tasks.</p>
+<p><strong>Training.</strong> Each arm is a full fine-tune starting from
+the released <code>pi05_libero</code> checkpoint: 7,000 more steps at
+batch 256, on 8 H100s. Each arm is trained twice, with seeds 42 and 43,
+so there are four checkpoints.</p>
+<p><strong>Evaluation.</strong> The benchmark scenes themselves, with no
+popcorn on the table: the five scenes where E1 and E2 differ, 20 seeds
+each, once with the benchmark sentence, which names the object, and once
+with a visual description of the object that leaves out its name.
+Training and test therefore don’t match. Every extra demo has popcorn on
+the table or an object at a far position, and the test has neither. So
+we expect benchmark success to drop even if the first pick follows the
+instruction more often. Raising success isn’t the point of these
+fine-tunes. The point is to show that each error mode traces back to its
+own coupling in the fine-tuning data: remove the coupling, and its error
+should go away.</p>
+<p>Both arms learned what they were taught and kept the original tasks.
+Asked for the popcorn on held-out layouts, the new-request arm succeeds
+in 297 of 300 episodes (original: 0 of 150). With the trained object
+moved, the new-position arm succeeds in 268 of 300 (original: 31 of
+150). On the original tasks, success is 99.8% for both arms against
+99.5%.</p>
+<div class="figure-block" id="fig-10">
+  <p class="figure-title"><strong>Figure 10. Instructions that name the object: each fine-tune removes its own error (Exp. 3b)</strong></p>
+  <div class="figure-img-wrap"><img src="/images/blog/vla-shortcuts/fig10-pairing-finetune.svg" alt="Figure 10: with the benchmark sentence, E1 falls from 19.3% to 0.5% under the new-request arm and stays at 19.5% under the new-position arm; E2 stays at 82.5% under the new-request arm and falls from 78.7% to 61.5% under the new-position arm" /></div>
+  <p class="figure-caption">The benchmark sentence, “Pick the X and place it in the basket”, in the five scenes where E1 and E2 differ. Bars are % of episodes, with 95% intervals.</p>
+</div>
+<div class="figure-block" id="fig-11">
+  <p class="figure-title"><strong>Figure 11. Instructions that describe the object without naming it (Exp. 3b)</strong></p>
+  <div class="figure-img-wrap"><img src="/images/blog/vla-shortcuts/fig11-pairing-finetune-unnamed.svg" alt="Figure 11: with a description that omits the name, E1 falls from 57% to 47.5% under the new-request arm and stays at 58% under the new-position arm; E2 stays at 42% under the new-request arm and falls from 37% to 22.5% under the new-position arm" /></div>
+  <p class="figure-caption">Same scenes and seeds, but the instruction describes what the requested object looks like and leaves out its name.</p>
+</div>
+<p>The same numbers, with intervals:</p>
+<div class="table-wrapper">
+<table class="table-data">
+
+<thead>
+<tr>
+<th></th>
+<th>E1, names the object</th>
+<th>E1, without the name</th>
+<th>E2, names the object</th>
+<th>E2, without the name</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>original checkpoint</td>
+<td>19.3 [15.3, 24.2]</td>
+<td>57.0 [47.2, 66.3]</td>
+<td>78.7 [73.7, 82.9]</td>
+<td>37.0 [28.2, 46.8]</td>
+</tr>
+<tr>
+<td>new-request arm</td>
+<td><strong>0.5</strong> [0.1, 2.8]</td>
+<td><strong>47.5</strong> [40.7, 54.4]</td>
+<td>82.5 [76.6, 87.1]</td>
+<td>42.0 [35.4, 48.9]</td>
+</tr>
+<tr>
+<td>new-position arm</td>
+<td>19.5 [14.6, 25.5]</td>
+<td>58.0 [51.1, 64.6]</td>
+<td><strong>61.5</strong> [54.6, 68.0]</td>
+<td><strong>22.5</strong> [17.3, 28.8]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><em>Fine-tuned rows are the mean of two training seeds (200 episodes
+per cell). The original is 300 episodes with the name and 100 without.
+The intervals cover episode-to-episode noise only, not differences
+between seeds or scenes. Bold marks the error each arm targets.</em></p>
+<p>The two arms make opposite moves. The new-request arm lowers E1 and
+leaves E2 where it was; the new-position arm lowers E2 in both wordings
+and leaves E1. Scene 6, without the name, shows both moves inside one
+scene: the original splits its errors evenly, 10 E1 and 10 E2 out of 20;
+the new-request arm turns them into E2 (36 of 40), and the new-position
+arm turns them into E1 (36 of 40). Each arm removes its own shortcut,
+and the other shortcut takes over those picks. This is the evidence for
+the claim of this section: the two errors come from two separate
+couplings in the data, and breaking one does not touch the other. It
+also means a fix has to diversify the data along both couplings; a
+fine-tune that targets only one hands its failures to the other.</p>
+<p><strong>Picking the right object first vs. finishing the task (Exp.
+3b).</strong> Same episodes and intervals as Figs. 10–11.</p>
+<div class="table-wrapper">
+<table class="table-data">
+
+<thead>
+<tr>
+<th></th>
+<th>requested object lifted first</th>
+<th>success</th>
+<th>success after a wrong first lift</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>original, names the object</td>
+<td>0.0 [0.0, 1.3]</td>
+<td>12.7 [9.4, 16.9]</td>
+<td>12.7 [9.4, 16.9]</td>
+</tr>
+<tr>
+<td>original, without the name</td>
+<td>0.0 [0.0, 3.7]</td>
+<td>18.0 [11.7, 26.7]</td>
+<td>18.0 [11.7, 26.7]</td>
+</tr>
+<tr>
+<td>new-request, names the object</td>
+<td>9.0 [5.8, 13.8]</td>
+<td>4.5 [2.4, 8.3]</td>
+<td>0.0 [0.0, 1.9]</td>
+</tr>
+<tr>
+<td>new-request, without the name</td>
+<td>8.0 [5.0, 12.6]</td>
+<td>6.0 [3.5, 10.2]</td>
+<td>0.5 [0.1, 2.8]</td>
+</tr>
+<tr>
+<td>new-position, names the object</td>
+<td>9.0 [5.8, 13.8]</td>
+<td>7.5 [4.6, 12.0]</td>
+<td>0.5 [0.1, 2.8]</td>
+</tr>
+<tr>
+<td>new-position, without the name</td>
+<td>5.5 [3.1, 9.6]</td>
+<td>5.0 [2.7, 9.0]</td>
+<td>0.0 [0.0, 1.9]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The first pick is the instruction-following measure here, since that
+is what the two arms are trained to change. It goes up: in these scenes
+the original never lifts the requested object first, and the arms do in
+5.5–9% of episodes. With the name, about half of the errors each arm
+removed became correct first picks; the rest went to other objects.</p>
+<p>Overall success goes down, as expected from the train–test mismatch
+above. Success counts delivering the requested object at any point.
+Every success of the original comes from recovering after lifting the
+wrong object first, mostly in scene 0. Both arms lose that recovery
+almost entirely, which points to the continued fine-tuning itself rather
+than either coupling. The fine-tunes change which object the policy goes
+for, not how well it finishes a task it wasn’t trained on.</p>
+<h2 id="takeaways">5. Takeaways</h2>
+<ol type="1">
+<li><strong>There are two shortcuts around grounding.</strong> One runs
+from the scene and one from the object’s name, and each comes from its
+own coupling in the data.</li>
+<li><strong>Rewording trades one shortcut for the other.</strong> It
+doesn’t produce grounding, so instruction search hits a ceiling.</li>
+<li><strong>For better instruction grounding, one needs diversity fixes
+for both couplings in data:</strong> new requests per scene (against E1)
+and each object at varied positions (against E2). Prior work covers each
+coupling separately, though E1 and E2 are not orthogonal, it’s useful to
+identify the two different shortcuts. Exp. 3b shows the two fixes are
+separable: each removes its own error and leaves the other.</li>
+</ol>
+<h2 id="notes">Notes</h2>
+<ul>
+<li>Everything here is one VLA on ten scenes. So I am not sure if this
+error profile transfers to other benchmarks where either injection is
+already broken, or to other VLAs.</li>
+<li>Exp. 1 pools different kinds of instruction, and the instructions
+Astra wrote in Exp. 2 supply most of its episodes.</li>
+<li>E1 has two possible readings. In the Fig. 2 example, the robot might
+grab the milk because the scene recalls <em>which object</em> it was
+trained to pick, or because the scene recalls <em>where its hand
+went</em>, the position where the milk stands. In these scenes the milk
+always stands at that position, so both readings predict the same grab.
+Telling them apart would take a trained scene with the milk moved away
+and another object put at its position, which I haven’t run.</li>
+<li>In Exp. 3b the new-request arm lowers E1 less without the name (57 →
+47.5) than with it (19.3 → 0.5). That is what you’d expect: its demos
+break scene → instruction through <em>named</em> requests, so
+descriptions without the name are never trained directly. They improve,
+just not as much.</li>
+<li>Exp. 3b uses two training seeds per arm and five scenes, and each
+drop sits in one or two scenes. Scene 0 is the only scene where E1
+happens with the name, so the whole named E1 drop is there (58/60 →
+1/40). The E2 drop comes mostly from scene 8, then scene 6; scenes 3 and
+9 don’t move. Without the name, the new-request arm still lifts the
+trained object first in all 40 episodes in scenes 0 and 3, where the
+scene habit is strongest.</li>
+</ul>
+<section id="footnotes" class="footnotes footnotes-end-of-document"
+role="doc-endnotes">
+<ol>
+<li id="fn1"><p>An RLinf π0.5 checkpoint shows a different profile. Its
+fine-tuning data and denoising steps differ, so we don’t draw
+conclusions from the comparison.<a href="#fnref1" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>

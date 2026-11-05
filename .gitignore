@@ -12,3 +12,6 @@ node_modules
 package-lock.json
 # LaTeX build output for the CV
 cv/build/
+
+# macOS Finder metadata
+.DS_Store

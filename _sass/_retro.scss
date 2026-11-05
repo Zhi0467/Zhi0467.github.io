@@ -300,6 +300,10 @@ $retro-d-shadow  : #000;
     }
 
     img { border-color: $retro-d-line; }
+
+    .figure-caption {
+      color: $retro-d-muted;
+    }
   }
 
   .notice,
@@ -946,6 +950,22 @@ $retro-d-shadow  : #000;
       justify-content: space-between;
       gap: 20px;
       font-size: 12px;
+    }
+
+    .experiment-title {
+      font-family: $retro-display;
+    }
+
+    .figure-title {
+      font-family: $retro-display;
+    }
+
+    .figure-img-wrap img {
+      border: 1.5px solid $retro-ink;
+    }
+
+    .figure-caption {
+      color: $retro-muted;
     }
   }
 

@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 750 390" font-family="Helvetica, Arial, sans-serif" font-size="12">
+  <rect width="750" height="390" fill="#ffffff"/>
+  <!-- column headers -->
+  <g font-size="11" font-weight="bold" fill="#424242">
+    <text x="50" y="32" text-anchor="middle">rounds</text>
+    <text x="97" y="32">what Astra tried</text>
+    <text x="510" y="32" text-anchor="middle">successes / episodes</text>
+    <text x="580" y="32">solved</text>
+  </g>
+  <!-- one band per phase; height = 11 px per round -->
+  <rect x="85" y="45" width="375" height="22" fill="#bbdefb"/>
+  <rect x="85" y="67" width="375" height="22" fill="#c8e6c9"/>
+  <rect x="85" y="89" width="375" height="55" fill="#eeeeee"/>
+  <rect x="85" y="144" width="375" height="66" fill="#e0e0e0"/>
+  <rect x="85" y="210" width="375" height="55" fill="#eeeeee"/>
+  <rect x="85" y="265" width="375" height="55" fill="#e0e0e0"/>
+  <rect x="85" y="320" width="375" height="55" fill="#eeeeee"/>
+  <g text-anchor="middle" fill="#555">
+    <text x="50" y="60">1–2</text>
+    <text x="50" y="82">3–4</text>
+    <text x="50" y="120">5–9</text>
+    <text x="50" y="181">10–15</text>
+    <text x="50" y="241">16–20</text>
+    <text x="50" y="296">21–25</text>
+    <text x="50" y="351">26–30</text>
+  </g>
+  <g font-size="11.5">
+    <text x="97" y="60">40 different wordings, side by side</text>
+    <text x="97" y="82">contrast ("…, not the butter")</text>
+    <text x="97" y="113">object order, containment, richer descriptions,</text>
+    <text x="97" y="128">other languages, upper case</text>
+    <text x="97" y="181">variants of the best wordings so far</text>
+    <text x="97" y="241">filler words, coordinates, spelled-out names</text>
+    <text x="97" y="289">packaging cues, pointing at one object,</text>
+    <text x="97" y="304">exclusions, repetition, ordinals</text>
+    <text x="97" y="351">more variants</text>
+  </g>
+  <g text-anchor="middle" fill="#333">
+    <text x="510" y="60">66 / 400</text>
+    <text x="510" y="82">33 / 400</text>
+    <text x="510" y="120">a few / 1,000</text>
+    <text x="510" y="181">5 / 1,195</text>
+    <text x="510" y="241">3 / 976</text>
+    <text x="510" y="296">8 / 960</text>
+    <text x="510" y="351">5 / 968</text>
+  </g>
+  <g fill="#1565c0" font-size="11.5">
+    <text x="580" y="60">★★ cream cheese, butter</text>
+    <text x="580" y="82">★ pudding</text>
+  </g>
+  <line x1="20" y1="89" x2="700" y2="89" stroke="#c62828" stroke-dasharray="4,3"/>
+  <text x="580" y="120" fill="#c62828" font-size="11.5">none after round 4</text>
+</svg>

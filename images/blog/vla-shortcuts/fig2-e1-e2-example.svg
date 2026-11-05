@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 250" font-family="Helvetica, Arial, sans-serif" font-size="13">
+  <rect width="640" height="250" fill="#ffffff"/>
+  <!-- tabletop -->
+  <rect x="15" y="15" width="610" height="220" rx="14" fill="#faf6ef" stroke="#e0d6c8"/>
+  <!-- basket -->
+  <rect x="535" y="75" width="70" height="60" rx="8" fill="#efe7dd" stroke="#bcaaa4"/>
+  <text x="570" y="110" text-anchor="middle" font-size="12" fill="#6d4c41">basket</text>
+  <!-- objects -->
+  <circle cx="110" cy="100" r="34" fill="#ffffff" stroke="#c62828" stroke-width="3"/>
+  <text x="110" y="105" text-anchor="middle">milk</text>
+  <circle cx="275" cy="100" r="34" fill="#ffffff" stroke="#ef6c00" stroke-width="3"/>
+  <text x="275" y="97" text-anchor="middle" font-size="12">orange</text>
+  <text x="275" y="112" text-anchor="middle" font-size="12">juice</text>
+  <circle cx="440" cy="100" r="34" fill="#ffffff" stroke="#2e7d32" stroke-width="3"/>
+  <text x="440" y="105" text-anchor="middle">butter</text>
+  <!-- tags -->
+  <rect x="88" y="152" width="44" height="24" rx="12" fill="#c62828"/>
+  <text x="110" y="169" text-anchor="middle" fill="#ffffff" font-weight="bold">E1</text>
+  <rect x="253" y="152" width="44" height="24" rx="12" fill="#ef6c00"/>
+  <text x="275" y="169" text-anchor="middle" fill="#ffffff" font-weight="bold">E2</text>
+  <rect x="404" y="152" width="72" height="24" rx="12" fill="#2e7d32"/>
+  <text x="440" y="169" text-anchor="middle" fill="#ffffff" font-weight="bold">correct</text>
+  <g font-size="11.5" text-anchor="middle" fill="#555">
+    <text x="110" y="200">the scene's trained object</text>
+    <text x="275" y="200">at the butter's</text>
+    <text x="275" y="215">training position</text>
+    <text x="440" y="200">the requested object</text>
+  </g>
+</svg>

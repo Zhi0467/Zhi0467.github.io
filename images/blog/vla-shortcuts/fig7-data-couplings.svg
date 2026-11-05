@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 390" font-family="Helvetica, Arial, sans-serif" font-size="11">
+  <defs>
+    <marker id="g" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#757575"/></marker>
+    <marker id="b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#1565c0"/></marker>
+    <marker id="o" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#ef6c00"/></marker>
+  </defs>
+  <rect width="760" height="390" fill="#ffffff"/>
+  <line x1="380" y1="10" x2="380" y2="380" stroke="#e0e0e0"/>
+  <!-- headers -->
+  <text x="190" y="24" text-anchor="middle" font-size="13" font-weight="bold" fill="#c62828">scene → instruction (E1)</text>
+  <text x="570" y="24" text-anchor="middle" font-size="13" font-weight="bold" fill="#ef6c00">object → position (E2)</text>
+  <g font-size="11.5" font-weight="bold" fill="#424242">
+    <text x="20" y="52">fine-tuning data</text>
+    <text x="400" y="52">fine-tuning data</text>
+    <text x="20" y="190">+ new-request arm</text>
+    <text x="400" y="190">+ new-position arm</text>
+  </g>
+  <g font-size="10" fill="#757575" text-anchor="middle">
+    <text x="100" y="72">scene</text><text x="270" y="72">instruction</text>
+    <text x="480" y="72">object</text><text x="650" y="72">position</text>
+  </g>
+  <!-- boxes -->
+  <g fill="#ffffff" stroke="#9e9e9e">
+    <!-- left, before -->
+    <rect x="60" y="78" width="80" height="24" rx="4"/><rect x="60" y="108" width="80" height="24" rx="4"/><rect x="60" y="138" width="80" height="24" rx="4"/>
+    <rect x="230" y="78" width="80" height="24" rx="4"/><rect x="230" y="108" width="80" height="24" rx="4"/><rect x="230" y="138" width="80" height="24" rx="4"/>
+    <!-- left, after -->
+    <rect x="60" y="200" width="80" height="24" rx="4"/><rect x="60" y="230" width="80" height="24" rx="4"/><rect x="60" y="260" width="80" height="24" rx="4"/>
+    <rect x="230" y="200" width="80" height="24" rx="4"/><rect x="230" y="230" width="80" height="24" rx="4"/><rect x="230" y="260" width="80" height="24" rx="4"/>
+    <!-- right, before -->
+    <rect x="440" y="78" width="80" height="24" rx="4"/><rect x="440" y="108" width="80" height="24" rx="4"/><rect x="440" y="138" width="80" height="24" rx="4"/>
+    <rect x="610" y="78" width="80" height="24" rx="4"/><rect x="610" y="108" width="80" height="24" rx="4"/><rect x="610" y="138" width="80" height="24" rx="4"/>
+    <!-- right, after -->
+    <rect x="440" y="200" width="80" height="24" rx="4"/><rect x="440" y="230" width="80" height="24" rx="4"/><rect x="440" y="260" width="80" height="24" rx="4"/>
+    <rect x="610" y="200" width="80" height="24" rx="4"/><rect x="610" y="230" width="80" height="24" rx="4"/><rect x="610" y="260" width="80" height="24" rx="4"/>
+  </g>
+  <rect x="230" y="290" width="80" height="24" rx="4" fill="#ffffff" stroke="#1565c0" stroke-width="1.5"/>
+  <g fill="#ffffff" stroke="#ef6c00" stroke-width="1.5">
+    <rect x="610" y="290" width="80" height="24" rx="4"/><rect x="610" y="320" width="80" height="24" rx="4"/><rect x="610" y="350" width="80" height="24" rx="4"/>
+  </g>
+  <!-- box labels -->
+  <g text-anchor="middle">
+    <text x="100" y="94">scene 1</text><text x="100" y="124">scene 2</text><text x="100" y="154">scene 3</text>
+    <text x="270" y="94">"milk"</text><text x="270" y="124">"butter"</text><text x="270" y="154">"soup"</text>
+    <text x="100" y="216">scene 1</text><text x="100" y="246">scene 2</text><text x="100" y="276">scene 3</text>
+    <text x="270" y="216">"milk"</text><text x="270" y="246">"butter"</text><text x="270" y="276">"soup"</text>
+    <text x="270" y="306" fill="#1565c0">"popcorn"</text>
+    <text x="480" y="94">milk</text><text x="480" y="124">butter</text><text x="480" y="154">soup</text>
+    <text x="650" y="94">position 1</text><text x="650" y="124">position 2</text><text x="650" y="154">position 3</text>
+    <text x="480" y="216">milk</text><text x="480" y="246">butter</text><text x="480" y="276">soup</text>
+    <text x="650" y="216">position 1</text><text x="650" y="246">position 2</text><text x="650" y="276">position 3</text>
+    <text x="650" y="306" fill="#ef6c00">G2</text><text x="650" y="336" fill="#ef6c00">G3</text><text x="650" y="366" fill="#ef6c00">G4</text>
+  </g>
+  <!-- original mappings: one arrow each -->
+  <g stroke="#757575" stroke-width="1.3" marker-end="url(#g)">
+    <line x1="142" y1="90" x2="228" y2="90"/><line x1="142" y1="120" x2="228" y2="120"/><line x1="142" y1="150" x2="228" y2="150"/>
+    <line x1="142" y1="212" x2="228" y2="212"/><line x1="142" y1="242" x2="228" y2="242"/><line x1="142" y1="272" x2="228" y2="272"/>
+    <line x1="522" y1="90" x2="608" y2="90"/><line x1="522" y1="120" x2="608" y2="120"/><line x1="522" y1="150" x2="608" y2="150"/>
+    <line x1="522" y1="212" x2="608" y2="212"/><line x1="522" y1="242" x2="608" y2="242"/><line x1="522" y1="272" x2="608" y2="272"/>
+  </g>
+  <!-- added by each arm -->
+  <g stroke="#1565c0" stroke-width="1.5" marker-end="url(#b)">
+    <line x1="142" y1="214" x2="228" y2="298"/><line x1="142" y1="244" x2="228" y2="300"/><line x1="142" y1="274" x2="228" y2="302"/>
+  </g>
+  <g stroke="#ef6c00" stroke-width="1.5" marker-end="url(#o)">
+    <line x1="522" y1="214" x2="608" y2="302"/><line x1="522" y1="244" x2="608" y2="332"/><line x1="522" y1="274" x2="608" y2="362"/>
+  </g>
+</svg>

@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 270" font-family="Helvetica, Arial, sans-serif" font-size="12">
+  <rect width="560" height="270" fill="#ffffff"/>
+  <!-- y = 210 - 1.6 * percent -->
+  <line x1="60" y1="210" x2="380" y2="210" stroke="#424242"/>
+  <line x1="60" y1="30" x2="60" y2="210" stroke="#424242"/>
+  <g font-size="10" fill="#555" text-anchor="end"><text x="54" y="214">0%</text><text x="54" y="134">50%</text><text x="54" y="54">100%</text></g>
+  <g stroke="#eeeeee"><line x1="60" y1="130" x2="380" y2="130"/><line x1="60" y1="50" x2="380" y2="50"/></g>
+  <text x="18" y="130" font-size="10" fill="#555" text-anchor="middle" transform="rotate(-90 18 130)">popcorn lifted first</text>
+  <!-- popcorn at G1 -->
+  <rect x="100" y="209" width="44" height="1" fill="#6a1b9a"/>
+  <rect x="150" y="106" width="44" height="104" fill="#ce93d8"/>
+  <!-- popcorn at G4 -->
+  <rect x="250" y="209" width="44" height="1" fill="#6a1b9a"/>
+  <rect x="300" y="154" width="44" height="56" fill="#ce93d8"/>
+  <g font-size="11" text-anchor="middle">
+    <text x="122" y="202">0/200</text><text x="172" y="100">13/20</text>
+    <text x="272" y="202">0/200</text><text x="322" y="148">7/20</text>
+  </g>
+  <g text-anchor="middle">
+    <text x="147" y="230">popcorn at G1</text>
+    <text x="297" y="230">popcorn at G4</text>
+  </g>
+  <!-- legend -->
+  <rect x="400" y="80" width="12" height="12" fill="#6a1b9a"/><text x="418" y="90" font-size="11">asked for the popcorn</text>
+  <rect x="400" y="110" width="12" height="12" fill="#ce93d8"/><text x="418" y="120" font-size="11">asked for the</text>
+  <text x="418" y="134" font-size="11">cream cheese (scene 0)</text>
+</svg>
