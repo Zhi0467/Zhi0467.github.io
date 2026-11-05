@@ -22,7 +22,7 @@ Legacy AcademicPages sample sections such as publications, talks, teaching, port
 - Standalone public files live under `files/`; currently keep `files/CV.pdf` and `files/26-post3.html`.
 - The CV source is `cv/CV.tex` (excluded from Jekyll in `_config.yml`). Edit it, then rebuild the PDF; aux files go to the git-ignored `cv/build/`:
   `latexmk -pdf -interaction=nonstopmode -outdir=cv/build cv/CV.tex && cp cv/build/CV.pdf files/CV.pdf`
-- Current image assets are limited to favicon/app icons, `images/me.jpg`, and images used by posts/social cards. Avoid adding back unused theme sample images.
+- Current image assets are organized under `images/`: favicon/app icons and `images/me.jpg` sit at root; all blog post illustrations, figures, and teasers live in `images/blog/`. Avoid adding back unused theme sample images.
 - `AGENTS.md` is excluded from Jekyll output in `_config.yml`; keep it as repo-only maintenance documentation.
 
 ## Current Design State
@@ -79,6 +79,7 @@ Skin rules:
 - Browser `<title>` should use the current page title, not constant `Home`; this is handled in `_includes/seo.html`.
 - Social cards use existing post thumbnails, not separate images.
   - `_includes/seo.html` resolves social image metadata from `header.image`, `header.overlay_image`, then `header.teaser`.
+  - Post teasers and social card images must ALWAYS be raster images (`.png`, `.jpg`, `.webp`), never `.svg`. Social platforms (Slack, Twitter/X, LinkedIn, Facebook, iMessage) cannot decode SVGs in card previews and will show broken/blank thumbnails. If figures are created as SVG, export or render a raster version (e.g. 1200x600 PNG) for `header.teaser` while keeping the SVG for inline article figures.
   - X/Twitter card image URLs must be absolute and lowercase under `https://zhi0467.github.io`.
 - Blog archive thumbnail sizing is in `_sass/_archive.scss`.
   - Desktop blog thumbnails are currently `200px`.

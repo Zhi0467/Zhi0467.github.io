@@ -5,7 +5,7 @@ permalink: /posts/2026/post1/
 tags:
   - agent
 header:
-  teaser: murphy-architecture.png
+  teaser: blog/murphy-architecture.png
   teaser_alt: "Architecture diagram for Agent Murphy"
 ---
 Recently my research lab built a custom agent running on a spare lower-end Mac mini box that my mentor happens to have. We call it Murphy, in defiant spirit to Murphy's law and tribute to the beloved Interstellar.
@@ -82,7 +82,7 @@ Examples that came out of the dev phase:
 Due to multiple users, we also implemented parallel workers so two queued tasks can be dispatched concurrently. There were a few issues with how these workers merge worktrees back to main, but those were resolved by both humans and dev. We also drew a clear line between Murphy and dev by forbidding Murphy from editing its source code via git pre-commit hooks, but Murphy is allowed and encouraged to document issues, feature requests, and potential skills under `docs/dev/`, which get picked up by dev in the next review phase.
 
 Overall we ended up with this architecture.
-![arch](/images/murphy-architecture.png)
+![arch](/images/blog/murphy-architecture.png)
 
 A few more things that rounded out the system:
 
