@@ -33,7 +33,7 @@ The site ships two skins, chosen by a visitor-facing style toggle:
   note. Paper background `#f3f0e7` with an 8px grid, the whole page wrapped in a
   bordered window with a pinstriped title bar, Chicago/Geneva headings, Monaco
   links and code, 2px black borders with hard offset shadows.
-- `html.style-classic`: the original AcademicPages look, background `#FFFCE5`.
+- `html.style-classic`: the original AcademicPages look, background `#FFFEF2`.
 
 Skin rules:
 
@@ -75,7 +75,7 @@ Skin rules:
   - The active/current nav item is assigned in `_includes/masthead.html` and styled by `.masthead__menu-item--active` in `_sass/_masthead.scss`.
   - Blog posts should mark `Blog` active.
 - Link styling is defined in `_sass/_links.scss`, imported late from `assets/css/main.scss`.
-- Text links should be monospace, underlined, and dark text color, not blue.
+- Text links should be underlined and dark text color, not blue. Links in post text (`.page__content`) use the surrounding font; chrome links (sidebar, footer, meta) stay monospace.
 - Browser `<title>` should use the current page title, not constant `Home`; this is handled in `_includes/seo.html`.
 - Social cards use existing post thumbnails, not separate images.
   - `_includes/seo.html` resolves social image metadata from `header.image`, `header.overlay_image`, then `header.teaser`.
@@ -93,6 +93,17 @@ Skin rules:
 - Blog post comments use the theme's `custom` provider with an Utterances widget in `_includes/comments-providers/custom.html`.
 - Utterances requires the GitHub app to be installed/authorized for `Zhi0467/Zhi0467.github.io` before visitors can create comments.
 - Facebook has been removed from `_includes/social-share.html`; share buttons currently include Twitter/X and LinkedIn.
+
+## Post Layout (rails)
+
+A post with `rails: true` in its front matter gets a left section menu and right margin notes. This is layout only and works under every skin and theme:
+
+- Styles: `_sass/_post-layout.scss`, imported after `_retro.scss`. Layout rules are shared; each skin and dark mode only sets the `--rail-*` color variables at the top of that file.
+- Markup: `_layouts/single.html` adds `main--rails` and an empty `nav.post-rail`; `_layouts/default.html` adds `desktop--wide` so the retro window is wide enough.
+- Script: the rails block in `_includes/scripts.html` builds the menu from the post's `h2`s (an `h2`'s `data-nav-label` gives a shorter menu name, as `render_blog.py` writes) and places notes beside their reference.
+- Notes use the markup `blog/render_blog.py` (sensed-steering repo) emits: `<a class="note-ref" id="note-ref-N" href="#margin-note-N">N</a>` in the text and `<aside class="margin-note" id="margin-note-N">` after the paragraph.
+- Post HTML keeps only class names; its look comes from the site. Any class a post needs styled must be defined in `_sass/_post-layout.scss` (today: `.example-positive` / `.example-negative`, with light and dark colors), or it renders unstyled.
+- Widths: menu on the left from 900px; notes in the right margin from 1300px (same value in the SCSS and the script); below that, notes are boxes after their paragraph and the menu collapses into a "Sections" bar.
 
 ## Local Preview
 

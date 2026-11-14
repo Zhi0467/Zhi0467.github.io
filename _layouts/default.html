@@ -17,7 +17,7 @@ layout: compress
 
     {% include browser-upgrade.html %}
 
-    <div class="desktop">
+    <div class="desktop{% if page.rails %} desktop--wide{% endif %}">
       <div class="window">
         <div class="titlebar">
           <span class="titlebar__box" aria-hidden="true"></span>

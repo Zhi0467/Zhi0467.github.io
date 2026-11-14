@@ -14,8 +14,15 @@ layout: default
   {% endunless %}
 {% endif %}
 
-<div id="main" class="{% unless page.author_profile or layout.author_profile or page.sidebar %}main--no-sidebar{% endunless %}{% if page.collection == 'posts' %} main--blog{% endif %}" role="main">
+<div id="main" class="{% unless page.author_profile or layout.author_profile or page.sidebar %}main--no-sidebar{% endunless %}{% if page.collection == 'posts' %} main--blog{% endif %}{% if page.rails %} main--rails{% endif %}" role="main">
   {% include sidebar.html %}
+
+  {% if page.rails %}
+    <nav class="post-rail" aria-label="Sections">
+      <button class="post-rail__toggle" type="button" aria-expanded="false">Sections ▾</button>
+      <div class="post-rail__links"></div>
+    </nav>
+  {% endif %}
 
   <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
     {% if page.title %}<meta itemprop="headline" content="{{ page.title | markdownify | strip_html | strip_newlines | escape_once }}">{% endif %}

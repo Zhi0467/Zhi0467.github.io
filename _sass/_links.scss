@@ -28,3 +28,8 @@ a:not(#goog-wm-sb):not(.btn) {
     text-decoration: none;
   }
 }
+
+/* Links in post text use the surrounding font, so they don't change size or spacing mid-sentence. */
+.page__content a:not(#goog-wm-sb):not(.btn) {
+  font-family: inherit;
+}

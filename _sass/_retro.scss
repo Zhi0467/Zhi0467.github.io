@@ -391,7 +391,9 @@ $retro-d-shadow  : #000;
     width: max-content;
     max-width: 100%;
     margin: 0 auto;
-    overflow-wrap: break-word;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
     padding: 2px 10px;
     background: #fff;
     color: $retro-ink;
@@ -555,7 +557,7 @@ $retro-d-shadow  : #000;
 
     #{$a} {
       color: $retro-ink;
-      font-family: $retro-mono;
+      font-family: inherit;
       font-weight: normal;
       text-decoration: underline;
 

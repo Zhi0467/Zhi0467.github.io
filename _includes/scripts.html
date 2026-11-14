@@ -41,6 +41,18 @@
 
     applyTheme(storedTheme());
 
+    if (window.matchMedia) {
+      var systemDark = window.matchMedia("(prefers-color-scheme: dark)");
+      var onSystemChange = function () {
+        if (!storedTheme()) applyTheme(null);
+      };
+      if (systemDark.addEventListener) {
+        systemDark.addEventListener("change", onSystemChange);
+      } else if (systemDark.addListener) {
+        systemDark.addListener(onSystemChange);
+      }
+    }
+
     if (toggle) {
       toggle.addEventListener("click", function () {
         var nextTheme = root.classList.contains("theme-dark") ? "light" : "dark";
@@ -123,6 +135,95 @@
         post.hidden = false;
       }).catch(function () {});
     }
+  })();
+</script>
+
+<script>
+  /* Post layout (rails: true): builds the left section menu from the post's h2s
+     and places margin notes beside their reference on wide screens.
+     Block comments only: _layouts/compress.html strips newlines. */
+  (function () {
+    var main = document.querySelector(".main--rails");
+    if (!main) { return; }
+    var content = main.querySelector(".page__content");
+    var rail = main.querySelector(".post-rail");
+    var list = rail.querySelector(".post-rail__links");
+    var toggle = rail.querySelector(".post-rail__toggle");
+    var heads = [].slice.call(content.querySelectorAll("h2"));
+
+    heads.forEach(function (h, i) {
+      if (!h.id) { h.id = "section-" + (i + 1); }
+      var a = document.createElement("a");
+      a.href = "#" + h.id;
+      a.textContent = h.getAttribute("data-nav-label") || h.textContent;
+      list.appendChild(a);
+    });
+    var links = [].slice.call(list.querySelectorAll("a"));
+
+    function markCurrent() {
+      var current = heads[0];
+      heads.forEach(function (h) {
+        if (h.getBoundingClientRect().top <= 120) { current = h; }
+      });
+      links.forEach(function (a) {
+        if (current && a.hash === "#" + current.id) {
+          a.setAttribute("aria-current", "location");
+        } else {
+          a.removeAttribute("aria-current");
+        }
+      });
+    }
+    window.addEventListener("scroll", markCurrent, { passive: true });
+    markCurrent();
+
+    function setOpen(open) {
+      rail.classList.toggle("is-open", open);
+      toggle.setAttribute("aria-expanded", open ? "true" : "false");
+    }
+    toggle.addEventListener("click", function () {
+      setOpen(!rail.classList.contains("is-open"));
+    });
+    /* The theme binds jQuery smoothScroll to every link once the page is ready;
+       these listeners are registered first, so they take over menu clicks. */
+    links.forEach(function (a) {
+      a.addEventListener("click", function (e) {
+        var target = document.getElementById(a.hash.slice(1));
+        if (!target) { return; }
+        e.preventDefault();
+        e.stopImmediatePropagation();
+        setOpen(false);
+        target.scrollIntoView();
+        history.pushState(null, "", a.hash);
+      });
+    });
+
+    var notes = [].slice.call(content.querySelectorAll(".margin-note"));
+    if (!notes.length) { return; }
+    var wide = window.matchMedia("(min-width: 1300px)");
+    var pending = false;
+
+    function placeNotes() {
+      pending = false;
+      main.classList.toggle("rails-notes-wide", wide.matches);
+      var origin = content.getBoundingClientRect().top;
+      var bottom = 0;
+      notes.forEach(function (note) {
+        if (!wide.matches) { note.style.top = ""; return; }
+        var ref = document.getElementById(note.id.replace("margin-note", "note-ref"));
+        var wanted = ref ? ref.getBoundingClientRect().top - origin - 6 : bottom;
+        var top = Math.max(wanted, bottom);
+        note.style.top = top + "px";
+        bottom = top + note.offsetHeight + 16;
+      });
+    }
+    function schedule() {
+      if (!pending) { pending = true; window.requestAnimationFrame(placeNotes); }
+    }
+
+    window.addEventListener("resize", schedule);
+    window.addEventListener("load", schedule);
+    if (window.ResizeObserver) { new ResizeObserver(schedule).observe(content); }
+    placeNotes();
   })();
 </script>
 
