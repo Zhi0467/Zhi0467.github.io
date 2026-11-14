@@ -266,3 +266,21 @@ html .main--rails.rails-notes-wide .page__content .margin-note {
   margin: 0;
   background: transparent;
 }
+
+/* Tag chips (post header and blog index cards; _includes/post-tags.html) */
+
+html .page__tags {
+  margin: 4px 0 0;
+}
+
+html .page__tag {
+  display: inline-block;
+  margin: 0 6px 6px 0;
+  padding: 1px 8px;
+  border: 1px solid var(--rail-line);
+  border-radius: 3px;
+  background: var(--rail-soft);
+  color: var(--rail-muted);
+  font-size: 12px;
+  line-height: 1.6;
+}

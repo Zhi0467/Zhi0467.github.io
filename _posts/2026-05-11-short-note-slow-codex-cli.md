@@ -3,7 +3,7 @@ title: "My Codex CLI is sufferably slow, switching to IPv4 solved it"
 date: 2026-05-11
 permalink: /posts/2026/post3/
 tags:
-  - Misc
+  - misc
 header:
   teaser: blog/ipv6.png
   teaser_alt: "IPv6 is slow with coding CLI"

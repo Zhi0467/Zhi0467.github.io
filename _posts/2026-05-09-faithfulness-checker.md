@@ -3,7 +3,7 @@ title: "Can LLMs tell if a Lean 4 statement is faithful to a natural-language st
 date: 2026-05-09
 permalink: /posts/2026/post2/
 tags:
-  - Lean
+  - lean
 header:
   teaser: blog/faithfulness-checker.png
   teaser_alt: "Natural-language theorem statement mapped to a Lean 4 formal statement"

@@ -1,0 +1,2 @@
+{% comment %}Tag chips for a post (plain labels: the site has no tag archive pages). Used on post pages and blog index cards.{% endcomment %}
+{% if include.tags and include.tags.size > 0 %}<p class="page__tags">{% for tag in include.tags %}<span class="page__tag">#{{ tag }}</span>{% endfor %}</p>{% endif %}

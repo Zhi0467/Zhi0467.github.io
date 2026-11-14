@@ -178,3 +178,12 @@ The short note for May 11, 2026 links to a static HTML file:
 ```
 
 Keep standalone HTML notes under `files/` when linking them from posts.
+
+## Post Tags
+
+Give each post at most two tags (`tags:` in front matter), usually one. Tags are
+short, lowercase, and faithful to what the post is about; acronyms stay
+uppercase (`RL`, `VLA`). Reuse a tag other posts already use when it fits rather
+than coining a near-duplicate. Tags render as plain chips
+(`_includes/post-tags.html`) on post pages and blog index cards, exactly as
+written; there are no tag archive pages.
