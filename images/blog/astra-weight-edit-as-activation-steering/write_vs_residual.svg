@@ -220,7 +220,7 @@ z
     <g id="ytick_1">
      <g id="line2d_11"/>
      <g id="text_6">
-      <!-- $s=4v$ · MLP output -->
+      <!-- $s=4v$, MLP output -->
       <g transform="translate(146.86 77.619571) scale(0.1 -0.1)">
        <defs>
         <path id="DejaVuSans-Oblique-73" d="M 3200 3397 
@@ -297,13 +297,7 @@ L 459 3500
 z
 " transform="scale(0.015625)"/>
         <path id="DejaVuSans-20" transform="scale(0.015625)"/>
-        <path id="DejaVuSans-b7" d="M 684 2619 
-L 1344 2619 
-L 1344 1825 
-L 684 1825 
-L 684 2619 
-z
-" transform="scale(0.015625)"/>
+        <path id="DejaVuSans-b7" transform="scale(0.015625)" d="M 750 794 L 1409 794 L 1409 256 L 897 -744 L 494 -744 L 750 256 z"/>
         <path id="DejaVuSans-4d" d="M 628 4666 
 L 1569 4666 
 L 2759 1491 
@@ -464,7 +458,7 @@ z
     <g id="ytick_2">
      <g id="line2d_12"/>
      <g id="text_7">
-      <!-- $s=4v$ · Residual stream -->
+      <!-- $s=4v$, Residual stream -->
       <g transform="translate(122.06 115.216168) scale(0.1 -0.1)">
        <defs>
         <path id="DejaVuSans-52" d="M 2841 2188 
@@ -706,7 +700,7 @@ z
     <g id="ytick_3">
      <g id="line2d_13"/>
      <g id="text_8">
-      <!-- $s=v$ · Residual stream -->
+      <!-- $s=v$, Residual stream -->
       <g transform="translate(128.46 152.802609) scale(0.1 -0.1)">
        <use xlink:href="#DejaVuSans-Oblique-73" transform="translate(0 0.015625)"/>
        <use xlink:href="#DejaVuSans-3d" transform="translate(71.582031 0.015625)"/>
@@ -735,7 +729,7 @@ z
     <g id="ytick_4">
      <g id="line2d_14"/>
      <g id="text_9">
-      <!-- Unlikelihood · MLP output -->
+      <!-- Unlikelihood, MLP output -->
       <g transform="translate(115.361562 209.18227) scale(0.1 -0.1)">
        <defs>
         <path id="DejaVuSans-55" d="M 556 4666 
@@ -839,7 +833,7 @@ z
     <g id="ytick_5">
      <g id="line2d_15"/>
      <g id="text_10">
-      <!-- Unlikelihood · Residual stream -->
+      <!-- Unlikelihood, Residual stream -->
       <g transform="translate(91.305312 246.76871) scale(0.1 -0.1)">
        <use xlink:href="#DejaVuSans-55"/>
        <use xlink:href="#DejaVuSans-6e" transform="translate(73.193359 0)"/>

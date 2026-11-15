@@ -155,7 +155,7 @@
     <text style="font-size: 11.5px; font-family: 'Arial', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1f1e1c" x="456.924604" y="265.504448" transform="rotate(-0 456.924604 265.504448)">−8.4</text>
    </g>
    <g id="text_14">
-    <text style="font-size: 12px; font-family: 'Arial', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #55534d" x="179.568" y="116.74" transform="rotate(-0 179.568 116.74)">Δ loop rate (pp)</text>
+    <text style="font-size: 12px; font-family: 'Arial', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #55534d" x="179.568" y="116.74" transform="rotate(-0 179.568 116.74)">Δ loop rate (percentage points) ↓</text>
    </g>
   </g>
   <g id="axes_2">
@@ -256,7 +256,7 @@
     <text style="font-size: 11.5px; font-family: 'Arial', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1f1e1c" x="770.945358" y="265.504448" transform="rotate(-0 770.945358 265.504448)">+2.4</text>
    </g>
    <g id="text_22">
-    <text style="font-size: 12px; font-family: 'Arial', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #55534d" x="569.590642" y="116.74" transform="rotate(-0 569.590642 116.74)">Δ accuracy (pp)</text>
+    <text style="font-size: 12px; font-family: 'Arial', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #55534d" x="569.590642" y="116.74" transform="rotate(-0 569.590642 116.74)">Δ accuracy (percentage points) ↑</text>
    </g>
   </g>
   <g id="axes_3">
@@ -387,7 +387,7 @@
     <text style="font-size: 11.5px; font-family: 'Arial', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1f1e1c" x="430.332151" y="496.825019" transform="rotate(-0 430.332151 496.825019)">−13.6</text>
    </g>
    <g id="text_36">
-    <text style="font-size: 12px; font-family: 'Arial', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #55534d" x="179.568" y="348.060571" transform="rotate(-0 179.568 348.060571)">Δ loop rate (pp)</text>
+    <text style="font-size: 12px; font-family: 'Arial', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #55534d" x="179.568" y="348.060571" transform="rotate(-0 179.568 348.060571)">Δ loop rate (percentage points) ↓</text>
    </g>
   </g>
   <g id="axes_4">
@@ -488,7 +488,7 @@
     <text style="font-size: 11.5px; font-family: 'Arial', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #1f1e1c" x="707.911396" y="496.825019" transform="rotate(-0 707.911396 496.825019)">−2.4</text>
    </g>
    <g id="text_44">
-    <text style="font-size: 12px; font-family: 'Arial', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #55534d" x="569.590642" y="348.060571" transform="rotate(-0 569.590642 348.060571)">Δ accuracy (pp)</text>
+    <text style="font-size: 12px; font-family: 'Arial', 'DejaVu Sans', sans-serif; text-anchor: start; fill: #55534d" x="569.590642" y="348.060571" transform="rotate(-0 569.590642 348.060571)">Δ accuracy (percentage points) ↑</text>
    </g>
   </g>
   <g id="text_45">
