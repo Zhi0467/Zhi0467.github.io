@@ -213,6 +213,15 @@ html .page__content {
   }
 }
 
+/* Subtitle under the post title, from front matter `subtitle:` */
+
+html .page__subtitle {
+  margin: 0.4em 0 0;
+  font-size: 1.15em;
+  line-height: 1.45;
+  color: var(--rail-muted);
+}
+
 /* Author byline under the post header, from front matter:
      authors: [{name, url?}, ...]   affiliation: "shared affiliation"
    Rendered by _layouts/single.html; posts without `authors` show nothing. */

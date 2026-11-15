@@ -18,7 +18,11 @@
   {% assign canonical_url = page.url | replace: "index.html", "" | prepend: site.url %}
 {% endif %}
 
-<title>{{ page.title | default: site.title | markdownify | strip_html | strip_newlines | escape_once }}</title>
+{% assign full_title = page.title | default: site.title %}
+{% if page.subtitle %}{% assign full_title = full_title | append: ": " | append: page.subtitle %}{% endif %}
+{% assign full_title = full_title | markdownify | strip_html | strip_newlines | strip %}
+
+<title>{{ full_title | escape_once }}</title>
 
 {% assign seo_description = page.description | default: page.excerpt | default: site.description %}
 {% if seo_description %}
@@ -56,7 +60,7 @@
 
 <meta property="og:locale" content="{{ site.locale | default: "en" }}">
 <meta property="og:site_name" content="{{ site.name | default: site.title }}">
-<meta property="og:title" content="{{ page.title | default: site.title | markdownify | strip_html | strip_newlines | escape_once }}">
+<meta property="og:title" content="{{ full_title | escape_once }}">
 
 {% if seo_url %}
   <link rel="canonical" href="{{ page.url | prepend: seo_url | replace: "/index.html", "/" }}">
@@ -73,7 +77,7 @@
 
 {% if site.twitter.username %}
   <meta name="twitter:site" content="@{{ site.twitter.username | replace: "@", "" }}">
-  <meta name="twitter:title" content="{{ page.title | default: site.title | markdownify | strip_html | strip_newlines | escape_once }}">
+  <meta name="twitter:title" content="{{ full_title | escape_once }}">
   <meta name="twitter:description" content="{{ seo_description }}">
   <meta name="twitter:url" content="{{ canonical_url }}">
 
@@ -145,7 +149,7 @@
     {
       "@context": "https://schema.org",
       "@type": "BlogPosting",
-      "headline": {{ page.title | strip_html | jsonify }},
+      "headline": {{ full_title | jsonify }},
       "description": {{ page.excerpt | strip_html | strip_newlines | jsonify }},
       "datePublished": {{ page.date | date_to_xmlschema | jsonify }},
       "dateModified": {{ page.last_modified_at | default: page.date | date_to_xmlschema | jsonify }},
