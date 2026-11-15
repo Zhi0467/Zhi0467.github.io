@@ -119,6 +119,8 @@ html .main--rails {
     grid-template-columns: $rails-side minmax(0, $rails-text) $rails-side;
     justify-content: center;
     .page__inner-wrap { max-width: none; }
+    /* Optical nudge: extra space between menu and text, right edge unchanged. */
+    .page { padding-left: 20px; }
   }
 }
 
@@ -211,6 +213,38 @@ html .page__content {
   }
 }
 
+/* Author byline under the post header, from front matter:
+     authors: [{name, url?}, ...]   affiliation: "shared affiliation"
+   Rendered by _layouts/single.html; posts without `authors` show nothing. */
+
+html .post-byline {
+  margin: 1.2em 0 1.6em;
+
+  /* Header links default to the grey monospace chrome style; match the plain names instead.
+     The doubled :not(#goog-wm-sb) matches the id-level specificity of the retro link rule. */
+  a:not(#goog-wm-sb):not(.btn):not(#goog-wm-sb) {
+    font-family: inherit;
+    color: inherit;
+  }
+
+  .post-authors {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4em 1.6em;
+  }
+
+  .post-authors span {
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+
+  .post-affil {
+    margin-top: 0.3em;
+    font-size: 0.85em;
+    color: var(--rail-muted);
+  }
+}
+
 /* Colored example text (spans the post marks with these classes) */
 
 html .page__content {
@@ -265,6 +299,31 @@ html .main--rails.rails-notes-wide .page__content .margin-note {
   width: $rails-side;
   margin: 0;
   background: transparent;
+}
+
+/* Post header: read time, date and tags share one row, wrapping on narrow screens */
+
+html .page__header-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 20px;
+  margin: 0.6em 0 0;
+
+  > p {
+    margin: 0;
+  }
+
+  .page__tag {
+    margin-bottom: 0;
+  }
+}
+
+/* The theme makes .page__meta full width (float + width: 100%); undo it inside the row */
+.page .page__inner-wrap .page__header-meta > .page__meta {
+  width: auto;
+  float: none;
+  clear: none;
 }
 
 /* Tag chips (post header and blog index cards; _includes/post-tags.html) */

@@ -6,11 +6,19 @@ tags:
   - steering
 excerpt: "Astra’s weight edit of Qwen is context-dependent activation steering. Training the sensing vector reduces looping further, and Astra’s synthetic data gives better steering directions than Qwen’s own traces."
 rails: true
+authors:
+  - name: Zhi Wang
+    url: https://zhi0467.github.io
+  - name: Brandon Hsu
+  - name: Tianhao Wang
+    url: https://tiiao.github.io
+  - name: Mikhail Belkin
+    url: https://misha.belkin-wang.org
+affiliation: UC San Diego
 header:
   teaser: blog/astra-weight-edit-as-activation-steering/mlp_equivalence.png
   teaser_alt: "Activation steering equals weight editing the MLP output matrix"
 ---
-
 
 <p>In a widely circulated blog post <a href="https://rikiyat.github.io/blog/weight-space-programming/"><em>Sparks of Weight-Space Programming</em></a>, the authors highlight how GPT-6 Astra edits a small language model without any training: it writes a short program that changes parts of the MLP weight matrices to significantly improve the math performance of the model. The authors present this as evidence for a new paradigm they call Weight-Space Programming, stating that “neural network weights will soon be natively optimized by LLMs that deliberately reason about their weights.” The post, and especially its claim that frontier LLMs like Astra can “natively” edit weights, has received considerable attention. A single <a href="https://x.com/rikiyatakehi/status/2117313742891327994">tweet</a> by the lead author has been viewed nearly 10 million times (as of November 2026). While the authors and many commentators interpret this as “native weight editing,” we argue that Astra is acting like a good researcher, effectively implementing existing activation steering techniques, combined with a clever use of synthetic data. Additionally, recognizing the edit as activation steering allows us to further improve Astra's approach.</p>
 <h2 data-nav-label="TL;DR" id="tl-dr">TL;DR</h2>
